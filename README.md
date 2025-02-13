@@ -20,14 +20,15 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
     - [Features](#features)
     - [Installation](#installation)
     - [Usage](#usage)
+    - [Contributing](#contributing)
     - [Disclaimer](#disclaimer)
   - [Italiano](#italiano)
     - [Descrizione](#descrizione)
     - [Funzionalità](#funzionalità)
     - [Installazione](#installazione)
     - [Utilizzo](#utilizzo)
+    - [Contribuisci](#contribuisci)
     - [Dichiarazione di non responsabilità](#dichiarazione-di-non-responsabilità)
-  - [Contribuisci](#contribuisci)
   - [MIT License](#mit-license)
 
 
@@ -74,6 +75,10 @@ TimbrApp is a Chrome and Edge extension that helps you remember to clock in and 
     * Click on the notification or the extension icon with the **red badge**.
         * **If the URL of the HR portal has been set**, TimbrApp will open it for you.
         * **If the URL of the HR portal has NOT been set**, you will have to clock in/out manually on the device. **Important:** Remember to click on the notification or the icon after clocking in/out to reset the reminder.
+
+### Contributing
+
+If you'd like to contribute to the development of TimbrApp, please visit the repository on [GitHub](https://github.com/fvlgnn/timbrapp).
 
 ### Disclaimer
 
@@ -126,6 +131,10 @@ TimbrApp è un'estensione per Chrome e Edge che ti aiuta a ricordare di timbrare
         * **Se è stato impostato l'URL del portale HR**, TimbrApp lo aprirà per te.
         * **Se NON è stato impostato l'URL del portale HR**, dovrai andare a timbrare manualmente sul dispositivo. **Importante:** Ricordati di cliccare sulla notifica o sull'icona dopo aver timbrato per resettare il promemoria.
 
+### Contribuisci
+
+Se vuoi contribuire allo sviluppo di TimbrApp, visita il repository su [GitHub](https://github.com/fvlgnn/timbrapp).
+
 ### Dichiarazione di non responsabilità
 
 L'estensione TimbrApp è fornita "così com'è", senza alcuna garanzia esplicita o implicita. Lo sviluppatore non si assume alcuna responsabilità per eventuali mancate timbrature, siano esse causate da bug del software, errata configurazione da parte dell'utente, problemi con il computer, il sistema operativo, il browser o qualsiasi altra causa.
@@ -133,13 +142,7 @@ L'estensione TimbrApp è fornita "così com'è", senza alcuna garanzia esplicita
 L'utente è l'unico responsabile della corretta timbratura della propria presenza al lavoro. TimbrApp è uno strumento di supporto e non sostituisce in alcun modo le procedure di timbratura aziendali.
 
 
-## Contribuisci
-
-Se vuoi contribuire allo sviluppo di TimbrApp, visita il repository su [GitHub](https://github.com/fvlgnn/timbrapp).
-
-
 ## MIT License
 
 [MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE)
-
 
