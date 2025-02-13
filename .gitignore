@@ -1,0 +1,7 @@
+.archivio/
+archivio/
+.cose/
+cose/
+log/
+*.log
+*.log.*

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="app_name"></title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="saved" class="hidden"></div>
+    <h2><span data-i18n="app_name"></span> <span id="appVersion"></span></h2>
+    <hr />
+    <h3><span data-i18n="title"></span> <span id="statusNotification">OFF</span></h3>
+    <p><span id="cleanSettings" data-i18n="clear_string"></span> <span data-i18n="disable_hint"></span></p>
+    <p><span data-i18n="empty_field_hint"></span></p>
+    <div class="form-container">
+
+        <label for="morningTime" data-i18n="morning_label"></label>
+        <input type="time" id="morningTime" />
+
+        <label for="afternoonTime" data-i18n="afternoon_label"></label>
+        <input type="time" id="afternoonTime" />
+
+        <label for="url" data-i18n="url_label"></label>
+        <input type="text" id="url" placeholder="https://hr.portal.tdl/" />
+
+        <button id="saveSettings" data-i18n="save_button"></button>
+
+    </div>
+    <script src="options.js"></script>
+</body>
+
+</html>

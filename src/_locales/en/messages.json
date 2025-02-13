@@ -1,0 +1,17 @@
+{
+  "app_name": { "message": "TimbrApp" },
+  "title": { "message": "Clock-in Reminder" },
+  "clear_string": { "message": "Clear" },
+  "disable_hint": { "message": "the fields and save to disable reminders." },
+  "empty_field_hint": { "message": "(*) If the field is empty, the corresponding reminder is disabled." },
+  "morning_label": { "message": "Morning Reminder Time (*)" },
+  "afternoon_label": { "message": "Afternoon Reminder Time (*)" },
+  "url_label": { "message": "URL to open (optional)" },
+  "save_button": { "message": "Save" },
+  "settings_saved": { "message": "Settings saved!" },
+  "notification_title": { "message": "Clock in!" },
+  "notification_message_default": { "message": "Go punch in $1. Click here or on the extension icon to dismiss the alert." },
+  "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and punch in $1." },
+  "notification_morning_label": { "message": "morning" },
+  "notification_afternoon_label": { "message": "afternoon" }
+}
