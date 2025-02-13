@@ -6,7 +6,7 @@
   "empty_field_hint": { "message": "(*) If the field is empty, the corresponding reminder is disabled." },
   "morning_label": { "message": "Morning Reminder Time (*)" },
   "afternoon_label": { "message": "Afternoon Reminder Time (*)" },
-  "url_label": { "message": "URL to open (optional)" },
+  "url_label": { "message": "URL HR portal to open (optional)" },
   "save_button": { "message": "Save" },
   "settings_saved": { "message": "Settings saved!" },
   "notification_title": { "message": "Clock in!" },

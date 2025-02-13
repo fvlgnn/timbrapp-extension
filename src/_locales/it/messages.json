@@ -6,7 +6,7 @@
   "empty_field_hint": { "message": "(*) Se il campo è vuoto, il promemoria corrispondente è disattivato." },
   "morning_label": { "message": "Orario promemoria mattutino (*)" },
   "afternoon_label": { "message": "Orario promemoria pomeridiano (*)" },
-  "url_label": { "message": "URL da aprire (opzionale)" },
+  "url_label": { "message": "URL portale HR da aprire (opzionale)" },
   "save_button": { "message": "Salva" },
   "settings_saved": { "message": "Impostazioni salvate!" },
   "notification_title": { "message": "Timbra il cartellino!" },
