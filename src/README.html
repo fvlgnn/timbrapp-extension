@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>TimbrApp</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="timbrapp">TimbrApp</h1>
+<p>Developed by Gianni F. <em>fvlgnn</em></p>
+<p>Work Time Clock-in Reminder - Chrome &amp; Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome &amp; Edge</p>
+<p><img src="https://raw.githubusercontent.com/fvlgnn/timbrapp/main/timbrapp-logo.png" alt="TimbrApp" title="TimbrApp Logo"></p>
+<ul>
+<li><a href="link-chrome-web-store">Chrome Web Store</a></li>
+<li><a href="link-edge-addons">Edge Add-ons</a></li>
+<li><a href="link-github-release">Releases/Versioni</a> (developers only / solo per sviluppatori)</li>
+</ul>
+<h2 id="menu">Menu</h2>
+<ul>
+<li><a href="#timbrapp">TimbrApp</a>
+<ul>
+<li><a href="#menu">Menu</a></li>
+<li><a href="#english">English</a>
+<ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#disclaimer">Disclaimer</a></li>
+</ul>
+</li>
+<li><a href="#italiano">Italiano</a>
+<ul>
+<li><a href="#descrizione">Descrizione</a></li>
+<li><a href="#funzionalit%C3%A0">Funzionalità</a></li>
+<li><a href="#installazione">Installazione</a></li>
+<li><a href="#utilizzo">Utilizzo</a></li>
+<li><a href="#dichiarazione-di-non-responsabilit%C3%A0">Dichiarazione di non responsabilità</a></li>
+</ul>
+</li>
+<li><a href="#contribuisci">Contribuisci</a></li>
+<li><a href="#mit-license">MIT License</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="english">English</h2>
+<h3 id="description">Description</h3>
+<p>TimbrApp is a Chrome and Edge extension that helps you remember to clock in and out at work.</p>
+<h3 id="features">Features</h3>
+<ul>
+<li><strong>Reminders</strong>: Receive a reminder when it's time to clock in or out.</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<ol>
+<li>
+<p><strong>Download the extension:</strong></p>
+<ul>
+<li>Open the <a href="https://www.google.com/url?sa=E&amp;source=gmail&amp;q=link-chrome-web-store">Chrome Web Store</a> or <a href="https://www.google.com/url?sa=Esource=gmail&amp;q=https://www.google.com/url?sa=E%26source=gmail%26q=link-edge-addons">Edge Add-ons</a>.</li>
+<li>Search for &quot;TimbrApp&quot;.</li>
+<li>Click &quot;Add to Chrome&quot; or &quot;Add to Edge&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure the icon:</strong></p>
+<ul>
+<li>Click the extensions icon (usually a puzzle piece) in the address bar.</li>
+<li>Find TimbrApp in the drop-down menu.</li>
+<li>Click the pin icon next to TimbrApp to make it visible in the toolbar.</li>
+</ul>
+</li>
+</ol>
+<h3 id="usage">Usage</h3>
+<ol>
+<li>
+<p><strong>Set reminders:</strong></p>
+<ul>
+<li>Make sure the TimbrApp icon in the toolbar does not have a red badge.</li>
+<li>Click the TimbrApp icon to open the settings.</li>
+<li>Configure the times you want to receive a reminder.</li>
+<li>If necessary, set the URL of the HR portal.</li>
+</ul>
+</li>
+<li>
+<p><strong>Receive reminders:</strong></p>
+<ul>
+<li>When it's time to clock in or out, a red badge with a triangle will appear on the TimbrApp icon.</li>
+<li>You may also receive a notification from your operating system (if enabled and supported by your operating system).</li>
+</ul>
+</li>
+<li>
+<p><strong>Clock in/out:</strong></p>
+<ul>
+<li>Click on the notification or the extension icon with the <strong>red badge</strong>.
+<ul>
+<li><strong>If the URL of the HR portal has been set</strong>, TimbrApp will open it for you.</li>
+<li><strong>If the URL of the HR portal has NOT been set</strong>, you will have to clock in/out manually on the device. <strong>Important:</strong> Remember to click on the notification or the icon after clocking in/out to reset the reminder.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="disclaimer">Disclaimer</h3>
+<p>The TimbrApp extension is provided &quot;as is&quot;, without any explicit or implicit warranty. The developer assumes no responsibility for any missed clock-ins or clock-outs, whether caused by software bugs, incorrect user configuration, computer problems, operating system issues, browser issues, or any other cause.</p>
+<p>The user is solely responsible for correctly clocking in and out at work. TimbrApp is a support tool and does not in any way replace company clock-in procedures.</p>
+<h2 id="italiano">Italiano</h2>
+<h3 id="descrizione">Descrizione</h3>
+<p>TimbrApp è un'estensione per Chrome e Edge che ti aiuta a ricordare di timbrare la tua presenza al lavoro.</p>
+<h3 id="funzionalità">Funzionalità</h3>
+<ul>
+<li><strong>Promemoria</strong>: Ricevi un promemoria quando è ora di timbrare.</li>
+</ul>
+<h3 id="installazione">Installazione</h3>
+<ol>
+<li>
+<p><strong>Scarica l'estensione:</strong></p>
+<ul>
+<li>Apri il <a href="https://www.google.com/url?sa=E&amp;source=gmail&amp;q=link-chrome-web-store">Chrome Web Store</a> o <a href="https://www.google.com/url?sa=Esource=gmail&amp;q=link-edge-addons">Edge Add-ons</a>.</li>
+<li>Cerca &quot;TimbrApp&quot;.</li>
+<li>Clicca su &quot;Aggiungi a Chrome&quot; o &quot;Aggiungi a Edge&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configura l'icona:</strong></p>
+<ul>
+<li>Clicca sull'icona delle estensioni (solitamente un puzzle) nella barra degli indirizzi.</li>
+<li>Trova TimbrApp nel menu a tendina.</li>
+<li>Clicca sull'icona a forma di spillo accanto a TimbrApp per renderla visibile nella barra degli strumenti.</li>
+</ul>
+</li>
+</ol>
+<h3 id="utilizzo">Utilizzo</h3>
+<ol>
+<li>
+<p><strong>Imposta i promemoria:</strong></p>
+<ul>
+<li>Assicurati che l'icona di TimbrApp nella barra degli strumenti non abbia un badge rosso.</li>
+<li>Clicca sull'icona di TimbrApp per aprire le impostazioni.</li>
+<li>Configura gli orari in cui vuoi ricevere il promemoria.</li>
+<li>Se necessario, imposta l'URL del portale HR.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ricevi i promemoria:</strong></p>
+<ul>
+<li>Quando è ora di timbrare, sull'icona dell'estensione comparirà un badge rosso con un triangolo.</li>
+<li>Potresti anche ricevere una notifica dal tuo sistema operativo (se abilitata e se supportato dal tuo sistema operativo).</li>
+</ul>
+</li>
+<li>
+<p><strong>Timbra:</strong></p>
+<ul>
+<li>Clicca sulla notifica o sull'icona dell'estensione con il <strong>badge rosso</strong>.
+<ul>
+<li><strong>Se è stato impostato l'URL del portale HR</strong>, TimbrApp lo aprirà per te.</li>
+<li><strong>Se NON è stato impostato l'URL del portale HR</strong>, dovrai andare a timbrare manualmente sul dispositivo. <strong>Importante:</strong> Ricordati di cliccare sulla notifica o sull'icona dopo aver timbrato per resettare il promemoria.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="dichiarazione-di-non-responsabilità">Dichiarazione di non responsabilità</h3>
+<p>L'estensione TimbrApp è fornita &quot;così com'è&quot;, senza alcuna garanzia esplicita o implicita. Lo sviluppatore non si assume alcuna responsabilità per eventuali mancate timbrature, siano esse causate da bug del software, errata configurazione da parte dell'utente, problemi con il computer, il sistema operativo, il browser o qualsiasi altra causa.</p>
+<p>L'utente è l'unico responsabile della corretta timbratura della propria presenza al lavoro. TimbrApp è uno strumento di supporto e non sostituisce in alcun modo le procedure di timbratura aziendali.</p>
+<h2 id="contribuisci">Contribuisci</h2>
+<p>Se vuoi contribuire allo sviluppo di TimbrApp, visita il repository su <a href="https://github.com/fvlgnn/timbrapp">GitHub</a>.</p>
+<h2 id="mit-license">MIT License</h2>
+<p><a href="https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE">MIT License</a></p>
+
+            
+            
+        </body>
+        </html>
