@@ -1,2 +1,3 @@
 # TimbrApp
-TimbrApp - Clock-in Reminder (Promemoria Timbratura) | Chrome / Edge extension
+Work Time Clock-in Reminder | Chrome & Edge Extension
+Promemoria Timbratura Presenza sul Lavoro | Estensione per Chrome & Edge
