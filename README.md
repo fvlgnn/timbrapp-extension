@@ -144,5 +144,5 @@ L'utente è l'unico responsabile della corretta timbratura della propria presenz
 
 ## MIT License
 
-[MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE)
+[MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE) Copyright (c) 2025 Gianni F. _fvlgnn_
 

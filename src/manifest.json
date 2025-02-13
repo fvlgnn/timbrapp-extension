@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TimbrApp",
-  "version": "1.1.0",
-  "description": "Work Time Clock-in Reminder | Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro | Estensione per Chrome & Edge",
+  "version": "1.1.1",
+  "description": "Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome & Edge",
   "author": {
     "email": "fvlgnn+timbrapp@gmail.com"
   },
