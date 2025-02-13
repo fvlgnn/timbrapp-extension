@@ -1,6 +1,6 @@
 # TimbrApp
 
-Developed by Gianni F. _fvlgnn_
+Developed by **Gianni F. _fvlgnn_**
 
 Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome & Edge
 
@@ -144,5 +144,5 @@ L'utente è l'unico responsabile della corretta timbratura della propria presenz
 
 ## MIT License
 
-[MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE) Copyright (c) 2025 Gianni F. _fvlgnn_
+[MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp/main/LICENSE) - Copyright (c) 2025 Gianni F. _fvlgnn_
 
