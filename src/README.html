@@ -143,9 +143,9 @@
 <p>Work Time Clock-in Reminder - Chrome &amp; Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome &amp; Edge</p>
 <p><img src="https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/timbrapp-extension-logo.png" alt="TimbrApp Extension" title="TimbrApp Extension Logo"></p>
 <ul>
-<li><a href="link-chrome-web-store">Chrome Web Store</a></li>
-<li><a href="link-edge-addons">Edge Add-ons</a></li>
-<li><a href="link-github-release">Releases/Versioni</a> (developers only / solo per sviluppatori)</li>
+<li><a href="https://github.com/fvlgnn/timbrapp-extension/releases">Releases/Versioni</a> (developer mode / modalità sviluppatore)</li>
+<li><s><a href="link-chrome-web-store">Chrome Web Store</a></s> (Coming Soon / Prossimamente)</li>
+<li><s><a href="link-edge-addons">Edge Add-ons</a></s> (Coming Soon / Prossimamente)</li>
 </ul>
 <h2 id="menu">Menu</h2>
 <ul>
@@ -156,7 +156,13 @@
 <ul>
 <li><a href="#description">Description</a></li>
 <li><a href="#features">Features</a></li>
-<li><a href="#installation">Installation</a></li>
+<li><a href="#installation">Installation</a>
+<ul>
+<li><a href="#1a-developer-mode">1a. Developer Mode</a></li>
+<li><a href="#1b-installation-from-store-coming-soon">1b. Installation from Store (Coming Soon)</a></li>
+<li><a href="#2-configure-the-icon-important">2. Configure the Icon (Important!)</a></li>
+</ul>
+</li>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#contributing">Contributing</a></li>
 <li><a href="#disclaimer">Disclaimer</a></li>
@@ -166,7 +172,13 @@
 <ul>
 <li><a href="#descrizione">Descrizione</a></li>
 <li><a href="#funzionalit%C3%A0">Funzionalità</a></li>
-<li><a href="#installazione">Installazione</a></li>
+<li><a href="#installazione">Installazione</a>
+<ul>
+<li><a href="#1a-modalit%C3%A0-sviluppatore">1a. Modalità sviluppatore</a></li>
+<li><a href="#1b-installazione-da-store-prossimamente">1b. Installazione da Store (Prossimamente)</a></li>
+<li><a href="#2-configura-licona-importante">2. Configura l'icona (Importante!)</a></li>
+</ul>
+</li>
 <li><a href="#utilizzo">Utilizzo</a></li>
 <li><a href="#contribuisci">Contribuisci</a></li>
 <li><a href="#dichiarazione-di-non-responsabilit%C3%A0">Dichiarazione di non responsabilità</a></li>
@@ -184,56 +196,85 @@
 <li><strong>Reminders</strong>: Receive a reminder when it's time to clock in or out.</li>
 </ul>
 <h3 id="installation">Installation</h3>
+<p>TimbrApp Extension can be installed in two ways: in developer mode (for now) or through the official stores (coming soon).</p>
+<h4 id="1a-developer-mode">1a. Developer Mode</h4>
 <ol>
 <li>
 <p><strong>Download the extension:</strong></p>
 <ul>
-<li>Open the <a href="https://www.google.com/url?sa=E&amp;source=gmail&amp;q=link-chrome-web-store">Chrome Web Store</a> or <a href="https://www.google.com/url?sa=Esource=gmail&amp;q=https://www.google.com/url?sa=E%26source=gmail%26q=link-edge-addons">Edge Add-ons</a>.</li>
-<li>Search for <code>TimbrApp Extension</code>.</li>
-<li>Click &quot;Add to Chrome&quot; or &quot;Add to Edge&quot;.</li>
+<li>Download the latest version from the official <a href="https://www.google.com/search?q=https://github.com/fvlgnn/timbrapp-extension/releases/latest">TimbrApp Extension</a> repository.</li>
+<li>Unzip the file to a folder that you will not delete or move later (e.g., <code>~/Documents/timbrapp-extension</code>).</li>
 </ul>
 </li>
 <li>
-<p><strong>Configure the icon:</strong></p>
+<p><strong>Enable developer mode:</strong></p>
 <ul>
-<li>Click the extensions icon (usually a puzzle piece) in the address bar.</li>
-<li>Find TimbrApp Extension in the drop-down menu.</li>
-<li>Click the pin icon next to TimbrApp Extension to make it visible in the toolbar.</li>
+<li>Open Google Chrome or Microsoft Edge.</li>
+<li>Type <code>chrome://extensions</code> in the address bar and press Enter, or click on the puzzle icon and select &quot;Manage extensions&quot;.</li>
+<li>Turn on the &quot;Developer mode&quot; switch in the upper right corner (or in the sidebar for Edge).</li>
+</ul>
+</li>
+<li>
+<p><strong>Load the uncompressed extension:</strong></p>
+<ul>
+<li>Click on the &quot;Load unpacked&quot; button.</li>
+<li>Select the <code>timbrapp-extension</code> folder containing the unzipped files.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verify the installation:</strong></p>
+<ul>
+<li>The TimbrApp Extension should now be visible on the extensions page.</li>
+<li>If the extension was loaded correctly, you should see its icon in the browser toolbar.</li>
 </ul>
 </li>
 </ol>
+<h4 id="1b-installation-from-store-coming-soon">1b. Installation from Store (Coming Soon)</h4>
+<p>The extension will soon be available on the Chrome Web Store and Edge Add-ons.</p>
+<ol>
+<li><s>Open the <a href="https://www.google.com/search?q=timbrapp-extension">Chrome Web Store</a> or <a href="https://www.google.com/search?q=timbrapp-extension">Edge Add-ons</a>.</s></li>
+<li><s>Search for <code>TimbrApp Extension</code>.</s></li>
+<li><s>Click on &quot;Add to Chrome&quot; or &quot;Add to Edge&quot;.</s></li>
+</ol>
+<h4 id="2-configure-the-icon-important">2. Configure the Icon (Important!)</h4>
+<p>The TimbrApp Extension icon must always be visible in the browser toolbar to allow you to view clock-in reminders. If the icon is not visible, you will not know when it is time to clock in! To configure the icon, follow these steps:</p>
+<ul>
+<li>Click on the extensions icon (usually a puzzle piece) in the address bar.</li>
+<li>Find TimbrApp Extension in the drop-down menu.</li>
+<li><strong>At this point, it is crucial to make the icon always visible:</strong> Click on the pin icon next to TimbrApp Extension to &quot;pin&quot; it to the toolbar. This way, the icon will always be within reach and you can immediately view the reminders (indicated by a red badge).</li>
+</ul>
 <h3 id="usage">Usage</h3>
 <ol>
 <li>
 <p><strong>Set reminders:</strong></p>
 <ul>
-<li>Make sure the TimbrApp Extension icon in the toolbar does not have a red badge.</li>
-<li>Click the TimbrApp Extension icon to open the settings.</li>
-<li>Configure the times you want to receive a reminder.</li>
+<li>Make sure that the TimbrApp Extension icon in the toolbar does not have a red badge.</li>
+<li>Click on the TimbrApp Extension icon to open the settings.</li>
+<li>Configure the times you want to receive the reminder.</li>
 <li>If necessary, set the URL of the HR portal.</li>
 </ul>
 </li>
 <li>
 <p><strong>Receive reminders:</strong></p>
 <ul>
-<li>When it's time to clock in or out, a red badge with a triangle will appear on the TimbrApp Extension icon.</li>
+<li>When it is time to clock in, a red badge with a triangle will appear on the extension icon.</li>
 <li>You may also receive a notification from your operating system (if enabled and supported by your operating system).</li>
 </ul>
 </li>
 <li>
-<p><strong>Clock in/out:</strong></p>
+<p><strong>Clock in:</strong></p>
 <ul>
 <li>Click on the notification or the extension icon with the <strong>red badge</strong>.
 <ul>
 <li><strong>If the URL of the HR portal has been set</strong>, TimbrApp Extension will open it for you.</li>
-<li><strong>If the URL of the HR portal has NOT been set</strong>, you will have to clock in/out manually on the device. <strong>Important:</strong> Remember to click on the notification or the icon after clocking in/out to reset the reminder.</li>
+<li><strong>If the URL of the HR portal has NOT been set</strong>, you will have to manually clock in on the device. <strong>Important:</strong> Remember to click on the notification or the icon after clocking in to reset the reminder.</li>
 </ul>
 </li>
 </ul>
 </li>
 </ol>
 <h3 id="contributing">Contributing</h3>
-<p>If you'd like to contribute to the development of TimbrApp Extension, please visit the repository on <a href="https://github.com/fvlgnn/timbrapp">GitHub</a>.</p>
+<p>If you'd like to contribute to the development of TimbrApp Extension, please visit the repository on <a href="https://github.com/fvlgnn/timbrapp-extension">GitHub</a>.</p>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>The TimbrApp Extension extension is provided &quot;as is&quot;, without any explicit or implicit warranty. The developer assumes no responsibility for any missed clock-ins or clock-outs, whether caused by software bugs, incorrect user configuration, computer problems, operating system issues, browser issues, or any other cause.</p>
 <p>The user is solely responsible for correctly clocking in and out at work. TimbrApp Extension is a support tool and does not in any way replace company clock-in procedures.</p>
@@ -245,24 +286,53 @@
 <li><strong>Promemoria</strong>: Ricevi un promemoria quando è ora di timbrare.</li>
 </ul>
 <h3 id="installazione">Installazione</h3>
+<p>TimbrApp Extension può essere installata in due modi: in modalità sviluppatore (per ora) o tramite gli store ufficiali (prossimamente).</p>
+<h4 id="1a-modalità-sviluppatore">1a. Modalità sviluppatore</h4>
 <ol>
 <li>
 <p><strong>Scarica l'estensione:</strong></p>
 <ul>
-<li>Apri il <a href="https://www.google.com/url?sa=E&amp;source=gmail&amp;q=link-chrome-web-store">Chrome Web Store</a> o <a href="https://www.google.com/url?sa=Esource=gmail&amp;q=link-edge-addons">Edge Add-ons</a>.</li>
-<li>Cerca <code>TimbrApp Extension</code>.</li>
-<li>Clicca su &quot;Aggiungi a Chrome&quot; o &quot;Aggiungi a Edge&quot;.</li>
+<li>Scarica l'ultima versione dal repository ufficiale <a href="https://www.google.com/search?q=hhttps://github.com/fvlgnn/timbrapp-extension/releases/latest">TimbrApp Extension</a>.</li>
+<li>Decomprimi il file zip in una cartella che non eliminerai o sposterai in seguito (ad esempio, <code>~/Documents/timbrapp-extension</code>).</li>
 </ul>
 </li>
 <li>
-<p><strong>Configura l'icona:</strong></p>
+<p><strong>Abilita la modalità sviluppatore:</strong></p>
 <ul>
-<li>Clicca sull'icona delle estensioni (solitamente un puzzle) nella barra degli indirizzi.</li>
-<li>Trova TimbrApp Extension nel menu a tendina.</li>
-<li>Clicca sull'icona a forma di spillo accanto a TimbrApp Extension per renderla visibile nella barra degli strumenti.</li>
+<li>Apri Google Chrome o Microsoft Edge.</li>
+<li>Digita <code>chrome://extensions</code> nella barra degli indirizzi e premi Invio, oppure clicca sull'icona del puzzle e seleziona &quot;Gestisci estensioni&quot;.</li>
+<li>Attiva l'interruttore &quot;Modalità sviluppatore&quot; in alto a destra (o nella barra laterale per Edge).</li>
+</ul>
+</li>
+<li>
+<p><strong>Carica l'estensione decompressa:</strong></p>
+<ul>
+<li>Clicca sul pulsante &quot;Carica estensione non compressa&quot;.</li>
+<li>Seleziona la cartella <code>timbrapp-extension</code> contenente i file decompressi.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verifica l'installazione:</strong></p>
+<ul>
+<li>L'estensione TimbrApp Extension dovrebbe ora essere visibile nella pagina delle estensioni.</li>
+<li>Se l'estensione è stata caricata correttamente, dovresti vedere la sua icona nella barra degli strumenti del browser.</li>
 </ul>
 </li>
 </ol>
+<h4 id="1b-installazione-da-store-prossimamente">1b. Installazione da Store (Prossimamente)</h4>
+<p>L'estensione sarà presto disponibile sul Chrome Web Store e su Edge Add-ons.</p>
+<ol>
+<li><s>Apri il <a href="https://www.google.com/search?q=timbrapp-extension">Chrome Web Store</a> o <a href="https://www.google.com/search?q=timbrapp-extension">Edge Add-ons</a>.</s></li>
+<li><s>Cerca <code>TimbrApp Extension</code>.</s></li>
+<li><s>Clicca su &quot;Aggiungi a Chrome&quot; o &quot;Aggiungi a Edge&quot;.</s></li>
+</ol>
+<h4 id="2-configura-licona-importante">2. Configura l'icona (Importante!)</h4>
+<p>L'icona di TimbrApp Extension deve essere sempre visibile nella barra degli strumenti del browser per consentirti di visualizzare i promemoria di timbratura. Se l'icona non è visibile, non potrai sapere quando è ora di timbrare! Per configurare l'icona, segui questi passaggi:</p>
+<ul>
+<li>Clicca sull'icona delle estensioni (solitamente un puzzle) nella barra degli indirizzi.</li>
+<li>Trova TimbrApp Extension nel menu a tendina.</li>
+<li><strong>A questo punto, è fondamentale rendere l'icona sempre visibile:</strong> Clicca sull'icona a forma di spillo accanto a TimbrApp Extension per &quot;fissarla&quot; nella barra degli strumenti. In questo modo, l'icona sarà sempre a portata di click e potrai visualizzare immediatamente i promemoria (indicati con un badge rosso).</li>
+</ul>
 <h3 id="utilizzo">Utilizzo</h3>
 <ol>
 <li>
@@ -294,7 +364,7 @@
 </li>
 </ol>
 <h3 id="contribuisci">Contribuisci</h3>
-<p>Se vuoi contribuire allo sviluppo di TimbrApp Extension, visita il repository su <a href="https://github.com/fvlgnn/timbrapp">GitHub</a>.</p>
+<p>Se vuoi contribuire allo sviluppo di TimbrApp Extension, visita il repository su <a href="https://github.com/fvlgnn/timbrapp-extension">GitHub</a>.</p>
 <h3 id="dichiarazione-di-non-responsabilità">Dichiarazione di non responsabilità</h3>
 <p>L'estensione TimbrApp Extension è fornita &quot;così com'è&quot;, senza alcuna garanzia esplicita o implicita. Lo sviluppatore non si assume alcuna responsabilità per eventuali mancate timbrature, siano esse causate da bug del software, errata configurazione da parte dell'utente, problemi con il computer, il sistema operativo, il browser o qualsiasi altra causa.</p>
 <p>L'utente è l'unico responsabile della corretta timbratura della propria presenza al lavoro. TimbrApp Extension è uno strumento di supporto e non sostituisce in alcun modo le procedure di timbratura aziendali.</p>
