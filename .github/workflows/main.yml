@@ -20,8 +20,8 @@ jobs:
       - name: Package
         id: package
         run: |
-          mv src $ARTIFACT_NAME
-          zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
+          mv src ${{ env.ARTIFACT_NAME }}
+          zip -r ${{ env.ARTIFACT_NAME }}.zip ${{ env.ARTIFACT_NAME }}
 
       - name: Release
         id: release
@@ -38,4 +38,4 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ./${{ ARTIFACT_NAME }}.zip
+            ./${{ env.ARTIFACT_NAME }}.zip
