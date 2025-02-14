@@ -1,5 +1,5 @@
 {
-  "app_name": { "message": "TimbrApp" },
+  "app_name": { "message": "TimbrApp Extension" },
   "title": { "message": "Promemoria Timbratura" },
   "clear_string": { "message": "Svuotare" },
   "disable_hint": { "message": "i campi e salvare, per disabilitare i promemoria." },

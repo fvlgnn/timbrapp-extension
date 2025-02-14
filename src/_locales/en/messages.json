@@ -1,5 +1,5 @@
 {
-  "app_name": { "message": "TimbrApp" },
+  "app_name": { "message": "TimbrApp Extension" },
   "title": { "message": "Clock-in Reminder" },
   "clear_string": { "message": "Clear" },
   "disable_hint": { "message": "the fields and save to disable reminders." },
