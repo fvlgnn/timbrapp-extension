@@ -3,7 +3,7 @@ name: Release and Deploy TimbrApp Extension
 on:
   push:
     tags:
-      - 'v*'
+      - "v*.*.*"
 
 jobs:
   build-and-deploy:
@@ -13,35 +13,29 @@ jobs:
       ARTIFACT_NAME: "timbrapp-extension"
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout
+        id: checkout
         uses: actions/checkout@v3
 
-      - name: Package Extension (.zip)
-        id: package-extension
+      - name: Package
+        id: package
         run: |
           mv src $ARTIFACT_NAME
           zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
-          echo "ZIP_PATH=$ARTIFACT_NAME.zip" >> $GITHUB_ENV
 
-      - name: Create GitHub Release
-        id: create-release
-        uses: actions/create-release@v1.1.4
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           body: |
-            A new TimbrApp release is here! **Version:** ${{ github.ref_name }}
+            A new TimbrApp release is here! 
+            **Version:** ${{ github.ref_name }}
             Download the ZIP, extract the files, and load the extension in Chrome/Edge (make sure developer mode is enabled).
-
-      - name: Upload Zip to Release
-        id: upload-release-assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ${{ env.ZIP_PATH }}
-          asset_name: $ARTIFACT_NAME.zip
-          asset_content_type: application/zip
+          draft: false
+          prerelease: false
+          files: |
+            ./${{ ARTIFACT_NAME }}.zip
