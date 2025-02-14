@@ -34,7 +34,7 @@ jobs:
           body: |
             A new TimbrApp release is here! 
             **Version:** ${{ github.ref_name }}
-            Download the ZIP, extract the files, and load the extension in Chrome/Edge (make sure developer mode is enabled).
+            Download `${{ env.ARTIFACT_NAME }}.zip`, extract the files, and load the extension in Chrome/Edge (make sure developer mode is enabled).
           draft: false
           prerelease: false
           files: |
