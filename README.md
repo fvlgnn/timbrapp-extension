@@ -1,4 +1,4 @@
-# TimbrApp
+# TimbrApp Extension
 
 Developed by **Gianni F. _fvlgnn_**
 
@@ -13,7 +13,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
 
 ## Menu
 
-- [TimbrApp](#timbrapp)
+- [TimbrApp Extension](#timbrapp-extension)
   - [Menu](#menu)
   - [English](#english)
     - [Description](#description)
