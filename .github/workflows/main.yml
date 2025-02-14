@@ -21,6 +21,7 @@ jobs:
         id: package
         run: |
           mv src ${{ env.ARTIFACT_NAME }}
+          cp LICENSE ${{ env.ARTIFACT_NAME }}
           zip -r ${{ env.ARTIFACT_NAME }}.zip ${{ env.ARTIFACT_NAME }}
 
       - name: Release
