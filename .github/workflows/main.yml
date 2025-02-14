@@ -34,7 +34,7 @@ jobs:
           name: TimbrApp Extension ${{ github.ref_name }}
           body: |
             The **TimbrApp Extension ${{ github.ref_name }}** release is here! 🎉
-            Download the ${{ env.ARTIFACT_NAME }}.zip file below, extract it, and load the extension in *developer mode* on Chrome/Edge.
+            Download the `${{ env.ARTIFACT_NAME }}.zip` file below, extract it, and load the extension in *developer mode* on Chrome/Edge.
           draft: false
           prerelease: false
           files: |
