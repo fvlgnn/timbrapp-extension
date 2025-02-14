@@ -1,7 +1,6 @@
 .archivio/
 archivio/
-.cose/
-cose/
+.vscode/
 log/
 *.log
 *.log.*
