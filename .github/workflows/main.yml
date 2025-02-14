@@ -1,4 +1,4 @@
-name: Release and Deploy Chrome Extension
+name: Release and Deploy TimbrApp Extension
 
 on:
   push:
