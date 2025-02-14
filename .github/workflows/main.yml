@@ -21,6 +21,7 @@ jobs:
         run: |
           mv src $ARTIFACT_NAME
           zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
+          echo "ZIP_PATH=$ARTIFACT_NAME.zip" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         id: create-release
@@ -41,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: $ARTIFACT_NAME.zip
+          asset_path: ${{ env.ZIP_PATH }}
           asset_name: $ARTIFACT_NAME.zip
           asset_content_type: application/zip
