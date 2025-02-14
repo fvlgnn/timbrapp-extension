@@ -1,13 +1,17 @@
 name: Release and Deploy TimbrApp Extension
 
+# on:
+#   push:
+#     tags:
+#       - 'v*'
+
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     env:
       ARTIFACT_NAME: "timbrapp-extension"
 
@@ -18,8 +22,8 @@ jobs:
       - name: Package Extension (.zip)
         id: package-extension
         run: |
-          mv src ${{ ARTIFACT_NAME }}
-          zip -r ${{ ARTIFACT_NAME }}.zip ${{ ARTIFACT_NAME }}
+          mv src $ARTIFACT_NAME
+          zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
 
       - name: Create GitHub Release
         id: create-release
@@ -39,6 +43,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./${{ ARTIFACT_NAME }}.zip
-          asset_name: ${{ ARTIFACT_NAME }}.zip
+          asset_path: ./$ARTIFACT_NAME.zip
+          asset_name: $ARTIFACT_NAME.zip
           asset_content_type: application/zip
