@@ -31,7 +31,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          name: TimbrApp Extension ${{ github.ref_name }}
           body: |
             A new TimbrApp release is here! 
             **Version:** ${{ github.ref_name }}
