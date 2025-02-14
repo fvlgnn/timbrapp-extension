@@ -22,6 +22,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
       - [1a. Developer Mode](#1a-developer-mode)
       - [1b. Installation from Store (Coming Soon)](#1b-installation-from-store-coming-soon)
       - [2. Configure the Icon (Important!)](#2-configure-the-icon-important)
+      - [3. Updating the Extension (Developer Mode)](#3-updating-the-extension-developer-mode)
     - [Usage](#usage)
     - [Contributing](#contributing)
     - [Disclaimer](#disclaimer)
@@ -32,6 +33,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
       - [1a. Modalità sviluppatore](#1a-modalità-sviluppatore)
       - [1b. Installazione da Store (Prossimamente)](#1b-installazione-da-store-prossimamente)
       - [2. Configura l'icona (Importante!)](#2-configura-licona-importante)
+      - [3. Aggiornamento dell'estensione (Modalità Sviluppatore)](#3-aggiornamento-dellestensione-modalità-sviluppatore)
     - [Utilizzo](#utilizzo)
     - [Contribuisci](#contribuisci)
     - [Dichiarazione di non responsabilità](#dichiarazione-di-non-responsabilità)
@@ -55,7 +57,7 @@ TimbrApp Extension can be installed in two ways: in developer mode (for now) or 
 #### 1a. Developer Mode
 
 1.  **Download the extension:**
-    *   Download the latest version from the official [TimbrApp Extension](https://www.google.com/search?q=https://github.com/fvlgnn/timbrapp-extension/releases/latest) repository.
+    *   Download the latest version of [TimbrApp Extension](https://www.google.com/search?q=https://github.com/fvlgnn/timbrapp-extension/releases/latest) from the GitHub repository.
     *   Unzip the file to a folder that you will not delete or move later (e.g., `~/Documents/timbrapp-extension`).
 
 2.  **Enable developer mode:**
@@ -86,6 +88,32 @@ The TimbrApp Extension icon must always be visible in the browser toolbar to all
 *   Click on the extensions icon (usually a puzzle piece) in the address bar.
 *   Find TimbrApp Extension in the drop-down menu.
 *   **At this point, it is crucial to make the icon always visible:** Click on the pin icon next to TimbrApp Extension to "pin" it to the toolbar. This way, the icon will always be within reach and you can immediately view the reminders (indicated by a red badge).
+
+#### 3. Updating the Extension (Developer Mode)
+
+To update TimbrApp Extension to the latest version, follow these steps:
+
+1.  **Download the latest version:**
+    *   Visit the [releases page](https://www.google.com/search?q=https://github.com/fvlgnn/timbrapp-extension/releases/latest) on the GitHub repository.
+    *   Download the ZIP file of the latest available version.
+
+2.  **Replace the existing folder:**
+    *   Unzip the ZIP file.
+    *   Copy or move the unzipped files to the folder where you previously extracted the extension (e.g., `~/Documents/timbrapp-extension`).
+    *   Overwrite the existing files with those from the new version.
+
+3.  **Reload the extension:**
+    You have three ways to reload the updated extension:
+
+    *   **Restart the browser:** Completely close Google Chrome or Microsoft Edge and restart it.
+    *   **Reload from the extensions page:**
+        *   Type `chrome://extensions` in the address bar and press Enter.
+        *   Find TimbrApp Extension in the list.
+        *   Click the refresh icon (a circular arrow) next to the extension.
+    *   **Update all extensions (Chrome):**
+        *   On the `chrome://extensions` page, click the "Update" button in the upper right corner.
+
+This will update your TimbrApp Extension to the latest version.
 
 ### Usage
 
@@ -132,7 +160,7 @@ TimbrApp Extension può essere installata in due modi: in modalità sviluppatore
 #### 1a. Modalità sviluppatore
 
 1.  **Scarica l'estensione:**
-    *   Scarica l'ultima versione dal repository ufficiale [TimbrApp Extension](https://www.google.com/search?q=hhttps://github.com/fvlgnn/timbrapp-extension/releases/latest).
+    *   Scarica l'ultima versione di [TimbrApp Extension](https://www.google.com/search?q=hhttps://github.com/fvlgnn/timbrapp-extension/releases/latest) dal repository GitHub.
     *   Decomprimi il file zip in una cartella che non eliminerai o sposterai in seguito (ad esempio, `~/Documents/timbrapp-extension`).
 
 2.  **Abilita la modalità sviluppatore:**
@@ -163,6 +191,32 @@ L'icona di TimbrApp Extension deve essere sempre visibile nella barra degli stru
 *   Clicca sull'icona delle estensioni (solitamente un puzzle) nella barra degli indirizzi.
 *   Trova TimbrApp Extension nel menu a tendina.
 *   **A questo punto, è fondamentale rendere l'icona sempre visibile:** Clicca sull'icona a forma di spillo accanto a TimbrApp Extension per "fissarla" nella barra degli strumenti. In questo modo, l'icona sarà sempre a portata di click e potrai visualizzare immediatamente i promemoria (indicati con un badge rosso).
+
+#### 3. Aggiornamento dell'estensione (Modalità Sviluppatore)
+
+Per aggiornare TimbrApp Extension alla versione più recente, segui questi passaggi:
+
+1.  **Scarica l'ultima versione:**
+    *   Visita la pagina delle [release](https://www.google.com/search?q=https://github.com/fvlgnn/timbrapp-extension/releases/latest) sul repository di GitHub.
+    *   Scarica il file ZIP dell'ultima versione disponibile.
+
+2.  **Sostituisci la cartella esistente:**
+    *   Decomprimi il file ZIP.
+    *   Copia o sposta i file decompressi nella cartella in cui hai precedentemente estratto l'estensione (ad esempio, `~/Documents/timbrapp-extension`).
+    *   Sovrascrivi i file esistenti con quelli della nuova versione.
+
+3.  **Ricarica l'estensione:**
+    Hai tre modi per ricaricare l'estensione aggiornata:
+
+    *   **Riavvia il browser:** Chiudi completamente Google Chrome o Microsoft Edge e riavvialo.
+    *   **Ricarica dalla pagina delle estensioni:**
+        *   Digita `chrome://extensions` nella barra degli indirizzi e premi Invio.
+        *   Trova TimbrApp Extension nell'elenco.
+        *   Clicca sull'icona di aggiornamento (una freccia circolare) accanto all'estensione.
+    *   **Aggiorna tutte le estensioni (Chrome):**
+        *   Nella pagina `chrome://extensions`, clicca sul pulsante "Aggiorna" in alto a destra.
+
+In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima versione.
 
 ### Utilizzo
 
