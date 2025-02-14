@@ -19,12 +19,15 @@ jobs:
       - name: Package Extension (.zip)
         id: package-extension
         run: |
+          ls -la
           mv src $ARTIFACT_NAME
+          ls -la
           zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
+          ls -la
 
       - name: Create GitHub Release
         id: create-release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
@@ -35,6 +38,7 @@ jobs:
             **Version:** ${{ github.ref_name }}
 
       - name: Upload Zip to Release
+        id: upload-release-assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
