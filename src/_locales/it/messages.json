@@ -1,5 +1,6 @@
 {
   "app_name": { "message": "TimbrApp Extension" },
+  "description": { "message": "TimbrApp Extension è un'estensione per Chrome e Edge che ti aiuta a ricordare di timbrare la tua presenza al lavoro." },
   "title": { "message": "Promemoria Timbratura" },
   "clear_string": { "message": "Svuotare" },
   "disable_hint": { "message": "i campi e salvare, per disabilitare i promemoria." },

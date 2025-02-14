@@ -1,5 +1,6 @@
 {
   "app_name": { "message": "TimbrApp Extension" },
+  "description": { "message": "TimbrApp Extension is a Chrome and Edge extension that helps you remember to clock in and out at work." },
   "title": { "message": "Clock-in Reminder" },
   "clear_string": { "message": "Clear" },
   "disable_hint": { "message": "the fields and save to disable reminders." },
