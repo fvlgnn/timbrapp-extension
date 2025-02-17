@@ -4,8 +4,9 @@
   "version": "1.1.4",
   "description": "__MSG_description__",
   "author": {
-    "email": "fvlgnn+timbrapp@gmail.com"
+    "email": "fvlgnn@gmail.com"
   },
+  "homepage_url": "https://github.com/fvlgnn/timbrapp-extension",
   "default_locale": "en",
   "permissions": [
     "alarms",
