@@ -16,15 +16,11 @@ chrome.runtime.onStartup.addListener(() => {
             chrome.action.setBadgeText({ text: "▲" });
             chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
             console.log("Ripristino gli allarmi da onStartup"); // DEBUG
-            if (data.morningTime || data.afternoonTime) {
-                chrome.alarms.clearAll(() => {
-                    if (data.morningTime) {
-                        setAlarm(data.morningTime, "morningAlarm");
-                    }
-                    if (data.afternoonTime) {
-                        setAlarm(data.afternoonTime, "afternoonAlarm");
-                    }
-                });
+            if (data.morningTime) {
+                setAlarm(data.morningTime, "morningAlarm");
+            }
+            if (data.afternoonTime) {
+                setAlarm(data.afternoonTime, "afternoonAlarm");
             }
         }
     });
@@ -33,14 +29,12 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "setAlarms") {
         chrome.storage.sync.get(["morningTime", "afternoonTime"], (data) => {
-            chrome.alarms.clearAll(() => {
-                if (data.morningTime) {
-                    setAlarm(data.morningTime, "morningAlarm");
-                }
-                if (data.afternoonTime) {
-                    setAlarm(data.afternoonTime, "afternoonAlarm");
-                }
-            });
+            if (data.morningTime) {
+                setAlarm(data.morningTime, "morningAlarm");
+            }
+            if (data.afternoonTime) {
+                setAlarm(data.afternoonTime, "afternoonAlarm");
+            }
         });
     }
 });
@@ -114,6 +108,8 @@ function setAlarm(time, alarmName) {
         return alarmTime.getTime();
     };
     const setTime = getNextAlarmTime(time);
-    chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: 1440 }); // NOTE 24h * 60' = 1440'
-    console.log(`setAlarm ${alarmName} alle ${setTime}`); // DEBUG 
+    chrome.alarms.clear(alarmName, () => {
+        chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: 1440 }); // NOTE 24h * 60' = 1440'
+        console.log(`setAlarm ${alarmName} alle ${new Date(setTime).toLocaleString()}`); // DEBUG 
+    });
 }
