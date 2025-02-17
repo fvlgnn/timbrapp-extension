@@ -49,7 +49,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         const notificationMessage = chrome.i18n.getMessage(messageKey, [alarmLabel]);
         chrome.notifications.create({
             type: "basic",
-            iconUrl: "icon.png",
+            iconUrl: "icons/128.png",
             title: notificationTitle,
             message: notificationMessage,
             priority: 2,
