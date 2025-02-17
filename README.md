@@ -24,6 +24,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
       - [2. Configure the Icon (Important!)](#2-configure-the-icon-important)
       - [3. Updating the Extension (Developer Mode)](#3-updating-the-extension-developer-mode)
     - [Usage](#usage)
+    - [Privacy](#privacy)
     - [Contributing](#contributing)
     - [Disclaimer](#disclaimer)
   - [Italiano](#italiano)
@@ -35,6 +36,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
       - [2. Configura l'icona (Importante!)](#2-configura-licona-importante)
       - [3. Aggiornamento dell'estensione (Modalità Sviluppatore)](#3-aggiornamento-dellestensione-modalità-sviluppatore)
     - [Utilizzo](#utilizzo)
+    - [Privacy](#privacy-1)
     - [Contribuisci](#contribuisci)
     - [Dichiarazione di non responsabilità](#dichiarazione-di-non-responsabilità)
   - [MIT License](#mit-license)
@@ -131,6 +133,15 @@ This will update your TimbrApp Extension to the latest version.
     *   Click on the notification or the extension icon with the **red badge**.
         *   **If the URL of the HR portal has been set**, TimbrApp Extension will open it for you.
         *   **If the URL of the HR portal has NOT been set**, you will have to manually clock in on the device. **Important:** Remember to click on the notification or the icon after clocking in to reset the reminder.
+
+### Privacy
+
+Your privacy is a priority. TimbrApp Extension is designed with user privacy in mind:
+
+*   **No data collection:** The extension does not collect any personal data, nor information about your browsing activity.
+*   **No external services:** TimbrApp does not use remote services or scripts for its operation.
+*   **No data transmission:** The extension does not transmit any information to third parties.
+*   **Security guaranteed:** TimbrApp is a secure extension that does not compromise your privacy.
 
 ### Contributing
 
@@ -234,6 +245,15 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
     *   Clicca sulla notifica o sull'icona dell'estensione con il **badge rosso**.
         *   **Se è stato impostato l'URL del portale HR**, TimbrApp Extension lo aprirà per te.
         *   **Se NON è stato impostato l'URL del portale HR**, dovrai andare a timbrare manualmente sul dispositivo. **Importante:** Ricordati di cliccare sulla notifica o sull'icona dopo aver timbrato per resettare il promemoria.
+
+### Privacy
+
+La tua privacy è una priorità. TimbrApp Extension è stata progettata nel rispetto della privacy degli utenti:
+
+*   **Nessuna raccolta dati:** L'estensione non raccoglie alcun tipo di dato personale, né informazioni relative alla tua attività di navigazione.
+*   **Nessun servizio esterno:** TimbrApp Extension non utilizza servizi o script remoti per il suo funzionamento.
+*   **Nessuna trasmissione di dati:** L'estensione non trasmette alcuna informazione a terze parti.
+*   **Sicurezza garantita:** TimbrApp Extension è un'estensione sicura che non mette a rischio la tua privacy.
 
 ### Contribuisci
 
