@@ -8,25 +8,46 @@
 </head>
 
 <body>
+    
+    <h2><span data-i18n="subtitle"></span> <span id="appVersion"></span> <span id="statusNotification">OFF</span></h2>
     <div id="saved" class="hidden"></div>
-    <h2><span data-i18n="app_name"></span> <span id="appVersion"></span></h2>
-    <hr />
-    <h3><span data-i18n="title"></span> <span id="statusNotification">OFF</span></h3>
-    <p><span id="cleanSettings" data-i18n="clear_string"></span> <span data-i18n="disable_hint"></span></p>
-    <p><span data-i18n="empty_field_hint"></span></p>
+    <p><span id="cleanSettings" data-i18n="clear_string"></span> <span data-i18n="disable_hint"></span><br><span data-i18n="empty_field_hint"></span></p>
     <div class="form-container">
-
-        <label for="morningTime" data-i18n="morning_label"></label>
-        <input type="time" id="morningTime" />
-
-        <label for="afternoonTime" data-i18n="afternoon_label"></label>
-        <input type="time" id="afternoonTime" />
-
-        <label for="url" data-i18n="url_label"></label>
-        <input type="text" id="url" placeholder="https://hr.portal.tdl/" />
-
+        <fieldset class="section morning">
+            <legend><span data-i18n="morning_section"></span></legend>
+            <div class="grid">
+                <div>
+                    <label for="morningIn" data-i18n="in_label"></label>
+                    <input type="time" id="morningIn" />
+                </div>
+                <div>
+                    <label for="morningOut" data-i18n="out_label"></label>
+                    <input type="time" id="morningOut" />
+                </div>
+            </div>
+        </fieldset>
+    
+        <fieldset class="section afternoon">
+            <legend><span data-i18n="afternoon_section"></span></legend>
+            <div class="grid">
+                <div>
+                    <label for="afternoonIn" data-i18n="in_label"></label>
+                    <input type="time" id="afternoonIn" />
+                </div>
+                <div>
+                    <label for="afternoonOut" data-i18n="out_label"></label>
+                    <input type="time" id="afternoonOut" />
+                </div>
+            </div>
+        </fieldset>
+    
+        <fieldset class="section options">
+            <legend><span data-i18n="url_section"></span></legend>
+            <label for="url" data-i18n="url_label"></label>
+            <input type="text" id="siteUrl" placeholder="https://hr.portal.tdl/" />
+        </fieldset>
+    
         <button id="saveSettings" data-i18n="save_button"></button>
-
     </div>
     <script src="options.js"></script>
 </body>

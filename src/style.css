@@ -1,77 +1,128 @@
 body {
     font-family: Arial, sans-serif;
     margin: 10px;
-    background-color: #f9f9f9;
+    padding-bottom: 10px;
+    background-color: #eee;
 }
 
-span#appVersion {
-    font-size: 12px;
-    color: #444;
-}
-
-p {
-    font-size: 12px;
+h2 {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    background-color: #333;
+    color: #ddd;
+    border-radius: 6px;
     margin-bottom: 10px;
-}
-
-h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#statusNotification {
-    color: #ffffff;
-    font-size: 0.8em;
-    padding: 2px 6px;
+p {
+    font-size: 12px;
+    background-color: #fff;
+    padding: 6px 8px;
+    border-left: 3px solid #333;
     border-radius: 4px;
-    text-align: right;
-    display: inline-block;
-}
-
-#statusNotification.enabled {
-    color: #ffffff;
-    background-color: #4caf50;
-    border: 1px solid #388e3c;
-}
-
-#statusNotification.disabled {
-    background-color: #f44336;
-    border: 1px solid #d32f2f;
+    margin-bottom: 6px;
+    text-align: left;
+    line-height: 2em;
 }
 
 .form-container {
-    margin: 10px auto;
-    padding-bottom: 5px;
-}
-
-.form-container label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.form-container input[type="text"],
-.form-container input[type="time"],
-.form-container button {
+    max-width: 340px;
+    margin: 0 auto;
     padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #eee;
+}
+
+.morning {
+    background-color: #e3f2fd;
+}
+
+.afternoon {
+    background-color: #ffecb3;
+}
+
+legend {
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #333;
+}
+
+.morning legend {
+    background-color: #62b4f7;
+    color: #fff;
+}
+
+.afternoon legend {
+    background-color: #ffb74d;
+    color: #fff;
+}
+
+.options legend {
+    background-color: #ddd;
+}
+
+.grid {
+    display: flex;
+    gap: 8px;
+}
+
+.grid div {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    padding-left: 4px;
+}
+
+input[type="text"],
+input[type="time"],
+button {
+    padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 5px;
 }
 
-.form-container button {
-    margin-top: 10px;
+button {
+    font-size: 14px;
+    margin-top: 8px;
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
 }
 
-.form-container button:hover {
+button:hover {
     background-color: #0056b3;
+}
+
+#appVersion {
+    font-size: 12px;
+    color: #ddd;
 }
 
 #cleanSettings {
@@ -81,20 +132,38 @@ h3 {
     text-decoration: underline;
 }
 
+#cleanSettings:hover {
+    color: #0056b3;
+}
+
 #saved {
     position: fixed;
-    top: 5px;
+    top: 10px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-60%);
     background-color: #4caf50;
+    border: 1px solid #388e3c;
     color: white;
     padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    font-weight: bold;
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
+    transform: translateX(-50%) translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    white-space: nowrap;
+    text-align: center;
+}
+
+#saved::before {
+    content: "✔";
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #saved.visible {
@@ -104,5 +173,28 @@ h3 {
 
 #saved.hidden {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
+    transform: translateX(-50%) translateY(-10px);
 }
+
+
+#statusNotification {
+    color: #fff;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-align: right;
+    display: inline-block;
+}
+
+#statusNotification.enabled {
+    color: #fff;
+    background-color: #4caf50;
+    border: 1px solid #388e3c;
+}
+
+#statusNotification.disabled {
+    background-color: #f44336;
+    border: 1px solid #d32f2f;
+}
+
+
