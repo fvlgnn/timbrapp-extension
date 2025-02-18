@@ -31,9 +31,17 @@ chrome.runtime.onMessage.addListener((message) => {
         chrome.storage.sync.get(["morningTime", "afternoonTime"], (data) => {
             if (data.morningTime) {
                 setAlarm(data.morningTime, "morningAlarm");
+            } else {
+                chrome.alarms.clear("morningAlarm", (alarmClear) => {
+                    if (alarmClear) console.log("morningAlarm cancellato"); // DEBUG
+                });
             }
             if (data.afternoonTime) {
                 setAlarm(data.afternoonTime, "afternoonAlarm");
+            } else {
+                chrome.alarms.clear("afternoonAlarm", (alarmClear) => {
+                    if (alarmClear) console.log("afternoonAlarm cancellato"); // DEBUG
+                });
             }
         });
     }
