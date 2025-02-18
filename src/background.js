@@ -90,7 +90,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             console.log(`Notifica creata: ${notificationId}`); // DEBUG 
         });
         chrome.storage.sync.set({ alarmStatus: true });
-        chrome.action.setBadgeText({ text: "▲" });
+        chrome.action.setBadgeText({ text: "❕" });
         chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
     });
 });
