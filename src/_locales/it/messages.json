@@ -15,7 +15,7 @@
   "url_label": { "message": "URL portale HR da aprire (opzionale)" },
   "save_button": { "message": "Salva" },
   "settings_saved": { "message": "Impostazioni salvate!" },
-  "notification_title": { "message": "Timbra il cartellino!" },
+  "notification_title": { "message": "Timbra l'$1 $2!" },
   "notification_message_default": { "message": "Vai a timbrare l'$1 $2. Premi qui o sull'icona dell'estensione per rimuovere l'avviso." },
   "notification_message_with_url": { "message": "Premi qui o sull'icona dell'estensione per aprire l'URL ed eseguire la timbratura d'$1 $2." }
 }

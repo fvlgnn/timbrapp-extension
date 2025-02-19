@@ -15,7 +15,7 @@
   "url_label": { "message": "URL HR portal to open (optional)" },
   "save_button": { "message": "Save" },
   "settings_saved": { "message": "Settings saved!" },
-  "notification_title": { "message": "Clock in!" },
+  "notification_title": { "message": "$1 $2!" },
   "notification_message_default": { "message": "Go to $1 $2. Click here or on the extension icon to dismiss the alert." },
   "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and perform the $1 action for the $2." }
 }

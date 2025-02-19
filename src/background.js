@@ -84,7 +84,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
     const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
     chrome.storage.sync.get(["siteUrl"], (data) => {
-        const notificationTitle = chrome.i18n.getMessage("notification_title");
+        const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
         const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
         const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
         chrome.notifications.create({
