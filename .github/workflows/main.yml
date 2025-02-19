@@ -21,10 +21,10 @@ jobs:
       - name: Package
         id: package
         run: |
-          mv src ${{ env.ARTIFACT_NAME }}
-          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" ${{ env.ARTIFACT_NAME }}/background.js
-          cp LICENSE ${{ env.ARTIFACT_NAME }}
-          zip -r ${{ env.ARTIFACT_NAME }}.zip ${{ env.ARTIFACT_NAME }}
+          mv src $ARTIFACT_NAME
+          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
+          cp LICENSE $ARTIFACT_NAME
+          zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
 
       - name: Release
         id: release
