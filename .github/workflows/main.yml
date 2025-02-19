@@ -11,6 +11,7 @@ jobs:
 
     env:
       ARTIFACT_NAME: "timbrapp-extension"
+      DEBUG_MODE: "false"
 
     steps:
       - name: Checkout
@@ -21,6 +22,7 @@ jobs:
         id: package
         run: |
           mv src ${{ env.ARTIFACT_NAME }}
+          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" ${{ env.ARTIFACT_NAME }}/background.js
           cp LICENSE ${{ env.ARTIFACT_NAME }}
           zip -r ${{ env.ARTIFACT_NAME }}.zip ${{ env.ARTIFACT_NAME }}
 

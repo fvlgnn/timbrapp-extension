@@ -50,7 +50,7 @@ document.getElementById("cleanSettings").addEventListener("click", () => {
     document.getElementById("morningOut").value = "";
     document.getElementById("afternoonIn").value = "";
     document.getElementById("afternoonOut").value = "";
-    document.getElementById("siteUrl").value = "";
+    // document.getElementById("siteUrl").value = "";
 });
 
 function showSaved(message) {
