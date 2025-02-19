@@ -11,7 +11,7 @@ jobs:
 
     env:
       ARTIFACT_NAME: "timbrapp-extension"
-      DEBUG_MODE: ${{ startsWith(github.ref, 'refs/heads/main') && 'false' || 'true' }}
+      DEBUG_MODE: 'false'
 
     steps:
       - name: Checkout
