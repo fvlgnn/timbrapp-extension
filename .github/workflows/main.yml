@@ -29,7 +29,7 @@ jobs:
         id: package
         run: |
           mv src $ARTIFACT_NAME
-          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
+          sed -i "s/const DEBUG_MODE=.*;/const DEBUG_MODE=$DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
           cp LICENSE $ARTIFACT_NAME
           zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
 
