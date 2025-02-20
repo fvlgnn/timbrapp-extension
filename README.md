@@ -39,7 +39,7 @@ Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Pr
     - [Privacy](#privacy-1)
     - [Contribuisci](#contribuisci)
     - [Dichiarazione di non responsabilità](#dichiarazione-di-non-responsabilità)
-  - [MIT License](#mit-license)
+  - [License](#license)
 
 
 ## English
@@ -266,7 +266,7 @@ L'estensione TimbrApp Extension è fornita "così com'è", senza alcuna garanzia
 L'utente è l'unico responsabile della corretta timbratura della propria presenza al lavoro. TimbrApp Extension è uno strumento di supporto e non sostituisce in alcun modo le procedure di timbratura aziendali.
 
 
-## MIT License
+## License
 
-[MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/LICENSE) - Copyright (c) 2025 Gianni F. _fvlgnn_
+Released under the [MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/LICENSE) - Copyright (c) 2025 Gianni F. _fvlgnn_
 

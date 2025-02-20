@@ -30,6 +30,7 @@ jobs:
             tar -xzf minify_linux_amd64.tar.gz
             chmod +x ./minify
             ./minify -r -o $ARTIFACT_NAME/ $ARTIFACT_NAME/
+            # NOTE skip json # find $ARTIFACT_NAME/ -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" \) -exec ./minify -o {} {} \;
           else
             echo "Skipping minification..."
           fi
