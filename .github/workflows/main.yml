@@ -18,19 +18,30 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
 
-      - name: Minify
-        id: minify
-        uses: nizarmah/auto-minify@v3
-        with:
-          directory: src
-          output: src
+      # - name: Setup Debug Mode
+      #   id: debug-mode
+      #   if: env.DEBUG_MODE == 'false'
+      #   run: |
+      #     sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
+
+      # - name: Minify
+      #   id: minify
+      #   if: env.DEBUG_MODE == 'false'
+      #   uses: nizarmah/auto-minify@v3
+      #   with:
+      #     directory: src
+      #     output: src
+      #     overwrite: true
 
       - name: Package
         id: package
         run: |
           mv src $ARTIFACT_NAME
-          sed -i "s/const DEBUG_MODE=.*;/const DEBUG_MODE=$DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
+          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
           cp LICENSE $ARTIFACT_NAME
+          curl -sL https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64 -o /usr/local/bin/minify
+          chmod +x /usr/local/bin/minify
+          minify -r -o $ARTIFACT_NAME/ $ARTIFACT_NAME/
           zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
 
       - name: Release
