@@ -172,7 +172,7 @@ TimbrApp Extension può essere installata in due modi: in modalità sviluppatore
 
 1.  **Scarica l'estensione:**
     *   Scarica l'ultima versione di [TimbrApp Extension](hhttps://github.com/fvlgnn/timbrapp-extension/releases/latest) dal repository GitHub.
-    *   Decomprimi il file zip in una cartella che non eliminerai o sposterai in seguito (ad esempio, `~/Documents/timbrapp-extension`).
+    *   Decomprimi il file zip in una cartella che non eliminerai o sposterai in seguito (ad esempio, `~/Documenti/timbrapp-extension`).
 
 2.  **Abilita la modalità sviluppatore:**
     *   Apri Google Chrome o Microsoft Edge.

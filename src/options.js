@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const siteUrl = document.getElementById("siteUrl");
     const statusNotification = document.getElementById("statusNotification");
     const updateStatus = () => {
-        chrome.storage.sync.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "siteUrl"], (data) => {
+        chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "siteUrl"], (data) => {
             if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
                 statusNotification.textContent = "ON";
                 statusNotification.classList.add("enabled");
@@ -39,7 +39,7 @@ document.getElementById("saveSettings").addEventListener("click", () => {
     const afternoonIn = document.getElementById("afternoonIn").value;
     const afternoonOut = document.getElementById("afternoonOut").value;
     const siteUrl = document.getElementById("siteUrl").value;
-    chrome.storage.sync.set({ morningIn, morningOut, afternoonIn, afternoonOut, siteUrl }, () => {
+    chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, siteUrl }, () => {
         chrome.runtime.sendMessage({ action: "setAlarms" });
         showSaved(chrome.i18n.getMessage("settings_saved"));
     });
