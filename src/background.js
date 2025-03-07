@@ -88,6 +88,12 @@ chrome.runtime.onMessage.addListener((message) => {
             }
         });
     }
+    if (message.action === "clearAllAlerts") {
+        clearAllAlerts();
+    }
+    if (message.action === "closeAllOverlays") {
+        removeOverlays();
+    }
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -107,7 +113,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             iconUrl: "icons/128.png",
             title: notificationTitle,
             message: notificationMessage,
-            priority: 2,
             requireInteraction: true
         }, (notificationId) => {
             chrome.storage.local.get({ notificationIds: [] }, (data) => {
@@ -118,10 +123,21 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         });
         chrome.storage.local.set({ alarmActive: true });
         setNotificationBadge(true);
+        chrome.tabs.query({}, (tabs) => {
+            tabs.forEach((tab) => {
+                if (tab.id && tab.url && tab.url.startsWith("http")) {
+                    chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        files: ["overlay.js"]
+                    }, () => debugLog(`[onAlarm] Overlay iniettato in ${tab.url}`));
+                }
+            });
+        });
     });
 });
 
 chrome.action.onClicked.addListener((tab) => {
+    removeOverlays();
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.alarmActive) {
             setNotificationBadge(false);
@@ -146,6 +162,7 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 chrome.notifications.onClicked.addListener((notificationId) => {
+    removeOverlays();
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.siteUrl && data.alarmActive) {
             chrome.tabs.create({ url: data.siteUrl });
@@ -189,3 +206,46 @@ function setNotificationBadge(isVisible) {
         chrome.action.setBadgeText({ text: "" });
     }
 }
+
+function removeOverlays() {
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            if (tab.id && tab.url && tab.url.startsWith("http")) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    func: () => {
+                        const overlay = document.getElementById("timbrapp-overlay");
+                        if (overlay) overlay.remove();
+                    }
+                });
+            }
+        });
+    });
+}
+
+function clearAllAlerts() {
+    chrome.storage.local.get(["siteUrl"], (data) => {
+        if (data.siteUrl) {
+            chrome.tabs.create({ url: data.siteUrl });
+        }
+    });
+    removeOverlays();
+    chrome.storage.local.get("notificationIds", (data) => {
+        if (data.notificationIds && data.notificationIds.length > 0) {
+            data.notificationIds.forEach((notificationId) => {
+                chrome.notifications.clear(notificationId, () => {
+                    debugLog(`[clearAllAlerts] Notifica ${notificationId} chiusa da array.`);
+                });
+            });
+            chrome.storage.local.remove("notificationIds");
+        }
+    });
+    setNotificationBadge(false);
+    chrome.storage.local.set({ alarmActive: false });
+    debugLog("[clearAllAlerts] Pulite tutte le notifiche e gli allarmi");
+}
+
+
+
+
+

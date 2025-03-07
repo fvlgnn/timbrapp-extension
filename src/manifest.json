@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TimbrApp Extension",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "__MSG_description__",
   "author": {
     "email": "fvlgnn@gmail.com"
@@ -11,8 +11,11 @@
   "permissions": [
     "alarms",
     "notifications",
-    "storage"
+    "storage",
+    "scripting",
+    "tabs"
   ],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
     "service_worker": "background.js"
   },

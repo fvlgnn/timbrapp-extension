@@ -17,5 +17,9 @@
   "settings_saved": { "message": "Settings saved!" },
   "notification_title": { "message": "$1 $2!" },
   "notification_message_default": { "message": "Go to $1 $2. Click here or on the extension icon to dismiss the alert." },
-  "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and perform the $1 action for the $2." }
+  "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and perform the $1 action for the $2." },
+  "overlay_label": { "message": "Remember to clock-in/out" },
+  "overlay_go": { "message": "Go to site" },
+  "overlay_done": { "message": "Done" },
+  "overlay_close": { "message": "Close" }
 }
