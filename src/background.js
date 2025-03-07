@@ -32,18 +32,7 @@ chrome.runtime.onStartup.addListener(() => {
             }
         }
         debugLog("[onStartup] Ripristino gli allarmi da onStartup");
-        if (data.morningIn) {
-            setAlarm(data.morningIn, "morningIn");
-        }
-        if (data.morningOut) {
-            setAlarm(data.morningIn, "morningOut");
-        }
-        if (data.afternoonIn) {
-            setAlarm(data.afternoonIn, "afternoonIn");
-        }
-        if (data.afternoonOut) {
-            setAlarm(data.afternoonIn, "afternoonOut");
-        }
+        restoreAlarms(data);
         chrome.storage.local.set({ lastClosedTime: now.toISOString() });
         debugLog(`[onStartup] Imposto lastClosedTime alle ${data.lastClosedTime}`);
     });
@@ -58,34 +47,7 @@ chrome.runtime.onSuspend.addListener(() => {
 chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "setAlarms") {
         chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut"], (data) => {
-            if (data.morningIn) {
-                setAlarm(data.morningIn, "morningIn");
-            } else {
-                chrome.alarms.clear("morningIn", (alarmClear) => {
-                    if (alarmClear) debugLog("[onMessage] morningIn cancellato");
-                });
-            }
-            if (data.morningOut) {
-                setAlarm(data.morningOut, "morningOut");
-            } else {
-                chrome.alarms.clear("morningOut", (alarmClear) => {
-                    if (alarmClear) debugLog("[onMessage] morningOut cancellato");
-                });
-            }
-            if (data.afternoonIn) {
-                setAlarm(data.afternoonIn, "afternoonIn");
-            } else {
-                chrome.alarms.clear("afternoonIn", (alarmClear) => {
-                    if (alarmClear) debugLog("[onMessage] afternoonIn cancellato");
-                });
-            }
-            if (data.afternoonOut) {
-                setAlarm(data.afternoonOut, "afternoonOut");
-            } else {
-                chrome.alarms.clear("afternoonOut", (alarmClear) => {
-                    if (alarmClear) debugLog("[onMessage] afternoonOut cancellato");
-                });
-            }
+            setOrClearAlarms(data);
         });
     }
     if (message.action === "clearAllAlerts") {
@@ -108,31 +70,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
         const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
         const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
-        chrome.notifications.create({
-            type: "basic",
-            iconUrl: "icons/128.png",
-            title: notificationTitle,
-            message: notificationMessage,
-            requireInteraction: true
-        }, (notificationId) => {
-            chrome.storage.local.get({ notificationIds: [] }, (data) => {
-                const updatedIds = [...data.notificationIds, notificationId];
-                chrome.storage.local.set({ notificationIds: updatedIds });
-                debugLog(`[onAlarm] Notifica creata: ${notificationId}`);
-            });
-        });
+        createNotification(notificationTitle, notificationMessage);
         chrome.storage.local.set({ alarmActive: true });
         setNotificationBadge(true);
-        chrome.tabs.query({}, (tabs) => {
-            tabs.forEach((tab) => {
-                if (tab.id && tab.url && tab.url.startsWith("http")) {
-                    chrome.scripting.executeScript({
-                        target: { tabId: tab.id },
-                        files: ["overlay.js"]
-                    }, () => debugLog(`[onAlarm] Overlay iniettato in ${tab.url}`));
-                }
-            });
-        });
+        injectOverlayInTabs();
     });
 });
 
@@ -141,16 +82,7 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.alarmActive) {
             setNotificationBadge(false);
-            chrome.storage.local.get("notificationIds", (data) => {
-                if (data.notificationIds && data.notificationIds.length > 0) {
-                    data.notificationIds.forEach((notificationId) => {
-                        chrome.notifications.clear(notificationId, () => {
-                            debugLog(`[onClicked action] Notifica ${notificationId} chiusa da array.`);
-                        });
-                    });
-                    chrome.storage.local.remove("notificationIds");
-                }
-            });
+            clearNotifications();
             if (data.siteUrl) {
                 chrome.tabs.create({ url: data.siteUrl });
             }
@@ -230,22 +162,85 @@ function clearAllAlerts() {
         }
     });
     removeOverlays();
-    chrome.storage.local.get("notificationIds", (data) => {
-        if (data.notificationIds && data.notificationIds.length > 0) {
-            data.notificationIds.forEach((notificationId) => {
-                chrome.notifications.clear(notificationId, () => {
-                    debugLog(`[clearAllAlerts] Notifica ${notificationId} chiusa da array.`);
-                });
-            });
-            chrome.storage.local.remove("notificationIds");
-        }
-    });
+    clearNotifications();
     setNotificationBadge(false);
     chrome.storage.local.set({ alarmActive: false });
     debugLog("[clearAllAlerts] Pulite tutte le notifiche e gli allarmi");
 }
 
+function restoreAlarms(data) {
+    if (data.morningIn) {
+        setAlarm(data.morningIn, "morningIn");
+    }
+    if (data.morningOut) {
+        setAlarm(data.morningOut, "morningOut");
+    }
+    if (data.afternoonIn) {
+        setAlarm(data.afternoonIn, "afternoonIn");
+    }
+    if (data.afternoonOut) {
+        setAlarm(data.afternoonOut, "afternoonOut");
+    }
+}
 
+function setOrClearAlarms(data) {
+    ["morningIn", "morningOut", "afternoonIn", "afternoonOut"].forEach((alarmName) => {
+        if (data[alarmName]) {
+            setAlarm(data[alarmName], alarmName);
+        } else {
+            chrome.alarms.clear(alarmName, (alarmClear) => {
+                if (alarmClear) debugLog(`[onMessage] ${alarmName} cancellato`);
+            });
+        }
+    });
+}
 
+function createNotification(title, message) {
+    chrome.notifications.create({
+        type: "basic",
+        iconUrl: "icons/128.png",
+        title: title,
+        message: message,
+        requireInteraction: true
+    }, (notificationId) => {
+        chrome.storage.local.get({ notificationIds: [] }, (data) => {
+            const updatedIds = [...data.notificationIds, notificationId];
+            chrome.storage.local.set({ notificationIds: updatedIds });
+            debugLog(`[onAlarm] Notifica creata: ${notificationId}`);
+        });
+    });
+}
 
+function clearNotifications() {
+    chrome.storage.local.get("notificationIds", (data) => {
+        if (data.notificationIds && data.notificationIds.length > 0) {
+            data.notificationIds.forEach((notificationId) => {
+                chrome.notifications.clear(notificationId, () => {
+                    debugLog(`[clearNotifications] Notifica ${notificationId} chiusa da array.`);
+                });
+            });
+            chrome.storage.local.remove("notificationIds");
+        }
+    });
+}
 
+function injectOverlayInTabs() {
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            if (
+                tab.id && 
+                tab.url && 
+                tab.url.startsWith("http")
+            ) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    files: ["overlay.js"]
+                }).then(() => {
+                    debugLog(`[injectOverlayInTabs] Overlay iniettato in ${tab.url}`);
+                }).catch((error) => {
+                    debugLog(`[injectOverlayInTabs] Errore, non è possibile iniettare overlay in ${tab.url}: ${error.message}`);
+                });
+            }
+        });
+    });
+}

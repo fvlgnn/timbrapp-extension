@@ -7,7 +7,7 @@
     Object.assign(overlay.style, {
         position: "fixed",
         bottom: "20px",
-        right: "20px",
+        left: "20px",
         backgroundColor: "#ffcc00",
         padding: "15px",
         border: "2px solid #333",
