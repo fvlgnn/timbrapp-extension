@@ -77,7 +77,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     });
 });
 
-chrome.action.onClicked.addListener((tab) => {
+chrome.action.onClicked.addListener(() => {
     removeOverlays();
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.alarmActive) {

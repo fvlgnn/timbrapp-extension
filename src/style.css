@@ -36,7 +36,7 @@ p {
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .section {
@@ -120,19 +120,19 @@ button:hover {
     background-color: #0056b3;
 }
 
-#appVersion {
+#app-version {
     font-size: 12px;
     color: #ddd;
 }
 
-#cleanSettings {
+#clean-settings {
     color: #007bff;
     cursor: pointer;
     font-weight: bold;
     text-decoration: underline;
 }
 
-#cleanSettings:hover {
+#clean-settings:hover {
     color: #0056b3;
 }
 
@@ -140,13 +140,12 @@ button:hover {
     position: fixed;
     top: 10px;
     left: 50%;
-    transform: translateX(-60%);
     background-color: #4caf50;
     border: 1px solid #388e3c;
     color: white;
     padding: 10px 20px;
     border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
     font-size: 14px;
     font-weight: bold;
     z-index: 1000;
@@ -177,7 +176,7 @@ button:hover {
 }
 
 
-#statusNotification {
+#status-notification {
     color: #fff;
     font-size: 0.8em;
     padding: 2px 6px;
@@ -186,13 +185,13 @@ button:hover {
     display: inline-block;
 }
 
-#statusNotification.enabled {
+#status-notification.enabled {
     color: #fff;
     background-color: #4caf50;
     border: 1px solid #388e3c;
 }
 
-#statusNotification.disabled {
+#status-notification.disabled {
     background-color: #f44336;
     border: 1px solid #d32f2f;
 }

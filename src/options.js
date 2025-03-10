@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
         element.textContent = chrome.i18n.getMessage(key);
     });
     const manifestData = chrome.runtime.getManifest();
-    document.getElementById('appVersion').textContent = `v${manifestData.version}`;
-    const morningIn = document.getElementById("morningIn");
-    const morningOut = document.getElementById("morningOut");
-    const afternoonIn = document.getElementById("afternoonIn");
-    const afternoonOut = document.getElementById("afternoonOut");
-    const siteUrl = document.getElementById("siteUrl");
-    const statusNotification = document.getElementById("statusNotification");
+    document.getElementById('app-version').textContent = `v${manifestData.version}`;
+    const morningIn = document.getElementById("morning-in");
+    const morningOut = document.getElementById("morning-out");
+    const afternoonIn = document.getElementById("afternoon-in");
+    const afternoonOut = document.getElementById("afternoon-out");
+    const siteUrl = document.getElementById("site-url");
+    const statusNotification = document.getElementById("status-notification");
     const updateStatus = () => {
         chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "siteUrl"], (data) => {
             if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
@@ -30,27 +30,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
     updateStatus();
-    document.getElementById("saveSettings").addEventListener("click", updateStatus);
+    document.getElementById("save-settings").addEventListener("click", updateStatus);
 });
 
-document.getElementById("saveSettings").addEventListener("click", () => {
-    const morningIn = document.getElementById("morningIn").value;
-    const morningOut = document.getElementById("morningOut").value;
-    const afternoonIn = document.getElementById("afternoonIn").value;
-    const afternoonOut = document.getElementById("afternoonOut").value;
-    const siteUrl = document.getElementById("siteUrl").value;
+document.getElementById("save-settings").addEventListener("click", () => {
+    const morningIn = document.getElementById("morning-in").value;
+    const morningOut = document.getElementById("morning-out").value;
+    const afternoonIn = document.getElementById("afternoon-in").value;
+    const afternoonOut = document.getElementById("afternoon-out").value;
+    const siteUrl = document.getElementById("site-url").value;
     chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, siteUrl }, () => {
         chrome.runtime.sendMessage({ action: "setAlarms" });
         showSaved(chrome.i18n.getMessage("settings_saved"));
     });
 });
 
-document.getElementById("cleanSettings").addEventListener("click", () => {
-    document.getElementById("morningIn").value = "";
-    document.getElementById("morningOut").value = "";
-    document.getElementById("afternoonIn").value = "";
-    document.getElementById("afternoonOut").value = "";
-    // document.getElementById("siteUrl").value = "";
+document.getElementById("clean-settings").addEventListener("click", () => {
+    document.getElementById("morning-in").value = "";
+    document.getElementById("morning-out").value = "";
+    document.getElementById("afternoon-in").value = "";
+    document.getElementById("afternoon-out").value = "";
+    // document.getElementById("site-url").value = "";
 });
 
 function showSaved(message) {

@@ -1,0 +1,13 @@
+{
+    "env": {
+      "browser": true,
+      "webextensions": true,
+      "es6": true
+    },
+    "globals": {
+      "chrome": "readonly"
+    },
+    "rules": {
+      // Aggiungi qui altre regole ESLint personalizzate, se necessario
+    }
+  }

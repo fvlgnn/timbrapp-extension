@@ -3,30 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title data-i18n="app_name"></title>
+    <title data-i18n="app_name">TimbrApp Extension</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     
-    <h2><span data-i18n="subtitle"></span> <span id="appVersion"></span> <span id="statusNotification">OFF</span></h2>
+    <h2><span data-i18n="subtitle"></span> <span id="app-version"></span> <span id="status-notification">OFF</span></h2>
     <div id="saved" class="hidden"></div>
     <p>
         <span data-i18n="empty_field_hint"></span>
         <br />
-        <span id="cleanSettings" data-i18n="clear_string"></span> <span data-i18n="disable_hint"></span>
+        <span id="clean-settings" data-i18n="clear_string"></span> <span data-i18n="disable_hint"></span>
     </p>
     <div class="form-container">
         <fieldset class="section morning">
             <legend><span data-i18n="morning_section"></span></legend>
             <div class="grid">
                 <div>
-                    <label for="morningIn" data-i18n="in_label"></label>
-                    <input type="time" id="morningIn" />
+                    <label for="morning-in" data-i18n="in_label"></label>
+                    <input type="time" id="morning-in" />
                 </div>
                 <div>
-                    <label for="morningOut" data-i18n="out_label"></label>
-                    <input type="time" id="morningOut" />
+                    <label for="morning-out" data-i18n="out_label"></label>
+                    <input type="time" id="morning-out" />
                 </div>
             </div>
         </fieldset>
@@ -35,12 +35,12 @@
             <legend><span data-i18n="afternoon_section"></span></legend>
             <div class="grid">
                 <div>
-                    <label for="afternoonIn" data-i18n="in_label"></label>
-                    <input type="time" id="afternoonIn" />
+                    <label for="afternoon-in" data-i18n="in_label"></label>
+                    <input type="time" id="afternoon-in" />
                 </div>
                 <div>
-                    <label for="afternoonOut" data-i18n="out_label"></label>
-                    <input type="time" id="afternoonOut" />
+                    <label for="afternoon-out" data-i18n="out_label"></label>
+                    <input type="time" id="afternoon-out" />
                 </div>
             </div>
         </fieldset>
@@ -48,10 +48,10 @@
         <fieldset class="section options">
             <legend><span data-i18n="url_section"></span></legend>
             <label for="url" data-i18n="url_label"></label>
-            <input type="text" id="siteUrl" placeholder="https://hr.portal.tdl/" />
+            <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />
         </fieldset>
     
-        <button id="saveSettings" data-i18n="save_button"></button>
+        <button id="save-settings" data-i18n="save_button"></button>
     </div>
     <script src="options.js"></script>
 </body>
