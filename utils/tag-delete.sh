@@ -16,7 +16,7 @@ validate_version() {
 # Se non viene passato un argomento, chiede all'utente
 if [ -z "$1" ]; then
     echo "Inserisci la versione (es. v1.2.3):"
-    read VERSION
+    read -r VERSION
 else
     VERSION=$1
 fi
