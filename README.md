@@ -127,6 +127,7 @@ This will update your TimbrApp Extension to the latest version.
 
 2.  **Receive reminders:**
     *   When it is time to clock in, a red badge with a triangle will appear on the extension icon.
+    *   Additionally, for an even more noticeable reminder, a yellow banner may appear on the pages you are viewing. However, the appearance of this banner is not guaranteed on all pages.
     *   You may also receive a notification from your operating system (if enabled and supported by your operating system).
 
 3.  **Clock in:**
@@ -136,8 +137,9 @@ This will update your TimbrApp Extension to the latest version.
 
 ### Privacy
 
-Your privacy is a priority. TimbrApp Extension is designed with user privacy in mind:
+**Your privacy is a priority!** TimbrApp Extension is designed with user privacy in mind:
 
+*   **Local Data:** All settings and data necessary for TimbrApp Extension to function are saved locally within your browser. No information is transmitted or shared with anyone!
 *   **No data collection:** The extension does not collect any personal data, nor information about your browsing activity.
 *   **No external services:** TimbrApp does not use remote services or scripts for its operation.
 *   **No data transmission:** The extension does not transmit any information to third parties.
@@ -239,6 +241,7 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
 
 2.  **Ricevi i promemoria:**
     *   Quando è ora di timbrare, sull'icona dell'estensione comparirà un badge rosso con un triangolo.
+    *   Inoltre, per un promemoria ancora più evidente, potrebbe apparire un banner di colore giallo sulle pagine che stai visualizzando. Tuttavia la comparsa di questo banner non è garantita su tutte le pagine.
     *   Potresti anche ricevere una notifica dal tuo sistema operativo (se abilitata e se supportato dal tuo sistema operativo).
 
 3.  **Timbra:**
@@ -248,8 +251,9 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
 
 ### Privacy
 
-La tua privacy è una priorità. TimbrApp Extension è stata progettata nel rispetto della privacy degli utenti:
+**La tua privacy è una priorità!** TimbrApp Extension è stata progettata nel rispetto della privacy degli utenti:
 
+*   **Dati locali:** Tutte le impostazioni e i dati necessari per il funzionamento di TimbrApp Extension sono salvati localmente nel tuo browser. Nessuna informazione viene trasmessa o condivisa con nessuno!
 *   **Nessuna raccolta dati:** L'estensione non raccoglie alcun tipo di dato personale, né informazioni relative alla tua attività di navigazione.
 *   **Nessun servizio esterno:** TimbrApp Extension non utilizza servizi o script remoti per il suo funzionamento.
 *   **Nessuna trasmissione di dati:** L'estensione non trasmette alcuna informazione a terze parti.
