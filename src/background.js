@@ -142,13 +142,21 @@ function setNotificationBadge(isVisible) {
 function removeOverlays() {
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
-            if (tab.id && tab.url && tab.url.startsWith("http")) {
+            if (
+                tab.id && 
+                tab.url && 
+                tab.url.startsWith("http")
+            ) {
                 chrome.scripting.executeScript({
                     target: { tabId: tab.id },
                     func: () => {
                         const overlay = document.getElementById("timbrapp-overlay");
                         if (overlay) overlay.remove();
                     }
+                }).then(() => {
+                    debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
+                }).catch((error) => {
+                    debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
                 });
             }
         });
@@ -238,7 +246,7 @@ function injectOverlayInTabs() {
                 }).then(() => {
                     debugLog(`[injectOverlayInTabs] Overlay iniettato in ${tab.url}`);
                 }).catch((error) => {
-                    debugLog(`[injectOverlayInTabs] Errore, non è possibile iniettare overlay in ${tab.url}: ${error.message}`);
+                    debugLog(`[injectOverlayInTabs] Errore, impossibile iniettare overlay in ${tab.url}: ${error.message}`);
                 });
             }
         });
