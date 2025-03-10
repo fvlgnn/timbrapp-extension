@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
         element.textContent = chrome.i18n.getMessage(key);
     });
     const manifestData = chrome.runtime.getManifest();
-    document.getElementById('app-version').textContent = `v${manifestData.version}`;
+    document.getElementById("app-version").textContent = `v${manifestData.version}`;
     const morningIn = document.getElementById("morning-in");
     const morningOut = document.getElementById("morning-out");
     const afternoonIn = document.getElementById("afternoon-in");

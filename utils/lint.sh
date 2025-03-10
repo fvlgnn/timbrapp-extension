@@ -50,6 +50,6 @@ docker run --rm \
     -e VALIDATE_HTML=true \
     -e VALIDATE_CSS=true \
     -e VALIDATE_BASH=true \
-    -v "${SCAN_DIR}":/tmp/lint \
+    -v "$SCAN_DIR":/tmp/lint \
     ghcr.io/super-linter/super-linter:slim-v7.3.0
     

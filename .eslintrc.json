@@ -1,13 +1,14 @@
 {
-    "env": {
-      "browser": true,
-      "webextensions": true,
-      "es6": true
-    },
-    "globals": {
-      "chrome": "readonly"
-    },
-    "rules": {
-      // Aggiungi qui altre regole ESLint personalizzate, se necessario
-    }
+  "env": {
+    "browser": true,
+    "webextensions": true,
+    "es6": true
+  },
+  "globals": {
+    "chrome": "readonly"
+  },
+  "rules": {
+    "no-console": "off",
+    "quotes": ["error", "double"]
   }
+}
