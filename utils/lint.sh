@@ -43,8 +43,7 @@ docker run --rm \
     -e LOG_LEVEL=INFO \
     -e VALIDATE_ALL_CODEBASE=true \
     -e DEFAULT_BRANCH=main \
-    -e FILTER_REGEX_INCLUDE=".*\.(js|json|html|css|sh)$" \
-    -e FILTER_REGEX_EXCLUDE=".*(node_modules|dist|build)/.*|README\.html" \
+    -e FILTER_REGEX_EXCLUDE=".*(node_modules|dist|build|target)/.*|README\.html" \
     -e VALIDATE_JAVASCRIPT_ES=true \
     -e VALIDATE_JSON=true \
     -e VALIDATE_HTML=true \
