@@ -1,4 +1,4 @@
-name: Release and Deploy TimbrApp Extension
+name: Release
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-and-deploy:
+  release:
     runs-on: ubuntu-latest
 
     env:
