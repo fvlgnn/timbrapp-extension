@@ -2,7 +2,7 @@
 
 Developed by **Gianni F. _fvlgnn_**
 
-Work Time Clock-in Reminder - Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome & Edge
+Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome & Edge
 
 ![TimbrApp Extension](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/timbrapp-extension-logo.png "TimbrApp Extension Logo")
 
