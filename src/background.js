@@ -28,7 +28,8 @@ chrome.runtime.onStartup.addListener(() => {
             if (lastClosedTime && (now - lastClosedTime) > ONE_DAY_MS) {
                 debugLog("[onStartup] Il browser è stato chiuso per più di 24 ore. Abilito alarmActive e il badge.");
                 chrome.storage.local.set({ alarmActive: true });
-                setNotificationBadge(true);
+                chrome.action.setBadgeText({ text: "▲" });
+                chrome.action.setBadgeBackgroundColor({ color: "#FFFF00" });
             }
         }
         debugLog("[onStartup] Ripristino gli allarmi da onStartup");
