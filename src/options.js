@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostra il messaggio di conferma salvataggio
     function showSaved(message) {
         const savedElement = document.getElementById("saved");
-        savedElement.textContent = message;
+        savedElement.querySelector(".saved-message").textContent = message;
         savedElement.classList.remove("hidden");
         savedElement.classList.add("visible");
         setTimeout(() => {
@@ -94,10 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
         morningOut.value = "";
         afternoonIn.value = "";
         afternoonOut.value = "";
-        document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
-            cb.checked = false;
-        });
         // Non svuota URL e altre opzioni per comodità dell'utente
+        // document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
+        //     cb.checked = false;
+        // });
         // document.getElementById("overlay-scope").value = "";
         // document.getElementById("site-url").value = "";
     });

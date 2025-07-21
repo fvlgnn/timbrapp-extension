@@ -22,7 +22,6 @@ h2 {
 .form-container {
     max-width: 340px;
     margin: 0 auto;
-    /* Aggiunto padding in basso per non sovrapporre il pulsante flottante */
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 6px;
@@ -183,12 +182,6 @@ input[type="checkbox"] {
     text-align: center;
 }
 
-#saved::before {
-    content: "✔";
-    font-size: 16px;
-    font-weight: bold;
-}
-
 #saved.visible {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -197,6 +190,10 @@ input[type="checkbox"] {
 #saved.hidden {
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
+}
+
+.saved-icon {
+    fill: #fff;
 }
 
 
