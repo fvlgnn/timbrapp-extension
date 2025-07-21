@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title data-i18n="app_name">TimbrApp Extension</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
-    
+<body> 
     <h2><span data-i18n="subtitle"></span> <span id="app-version"></span> <span id="status-notification">OFF</span></h2>
-    <div id="saved" class="hidden"></div>
     <p>
         <span data-i18n="empty_field_hint"></span>
         <br />
@@ -45,12 +41,13 @@
             </div>
         </fieldset>
     
-        <fieldset class="section optional">
-            <legend><span data-i18n="optional_section"></span></legend>
-            <label for="site-url" data-i18n="url_label"></label>
+        <fieldset class="section url-section">
+            <legend><span data-i18n="url_section"></span></legend>
             <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />
-            <hr/>
-            <label for="dnd-days" data-i18n="dnd_label"></label>
+        </fieldset>
+
+        <fieldset class="section dnd-section">
+            <legend><span data-i18n="dnd_section"></span></legend>
             <div class="days-grid" id="dnd-days">
                 <div class="day-selector">
                     <label for="dnd-mon" data-i18n="dnd_mon"></label><input type="checkbox" id="dnd-mon" value="1">
@@ -74,17 +71,20 @@
                     <label for="dnd-sun" data-i18n="dnd_sun"></label><input type="checkbox" id="dnd-sun" value="0">
                 </div>
             </div>
-            <hr/>
-            <label for="overlay-scope" data-i18n="overlay_label"></label>
+        </fieldset>
+
+        <fieldset class="section overlay-section">
+            <legend><span data-i18n="overlay_section"></span></legend>
             <select id="overlay-scope" name="overlay-scope">
                 <option value="active" data-i18n="overlay_active_tab_label"></option>
                 <option value="all" data-i18n="overlay_all_tabs_label"></option>
             </select>
         </fieldset>
-    
-        <button id="save-settings" data-i18n="save_button"></button>
     </div>
+    <div id="save-settings" class="floating-save-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zM12 19c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+    </div>
+    <div id="saved" class="hidden"></div>
     <script src="options.js"></script>
 </body>
-
 </html>

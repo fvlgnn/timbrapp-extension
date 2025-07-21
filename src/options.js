@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const manifestData = chrome.runtime.getManifest();
     document.getElementById("app-version").textContent = `v${manifestData.version}`;
+
+    document.getElementById("save-settings").title = chrome.i18n.getMessage("save_button");
+
     const morningIn = document.getElementById("morning-in");
     const morningOut = document.getElementById("morning-out");
     const afternoonIn = document.getElementById("afternoon-in");
@@ -36,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
     updateStatus();
-    document.getElementById("save-settings").addEventListener("click", updateStatus);
 });
 
 document.getElementById("save-settings").addEventListener("click", () => {
