@@ -1,11 +1,14 @@
-const DEBUG_MODE = true;
+// ---- CONSTANTS AND CONFIGURATION ----
 
+const DEBUG_MODE = true;
 const ONE_DAY_MS = 86400000; // 24h * 60' * 60'' * 1000ms = 86400000ms
 const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
 };
+
+// ---- CHROME RUNTIME EVENTS (Lifecycle) ----
 
 chrome.runtime.onInstalled.addListener((detail) => {
     debugLog(`[onInstalled] ${detail.reason}`);
@@ -45,6 +48,8 @@ chrome.runtime.onSuspend.addListener(() => {
     debugLog(`[onSuspend] Browser chiuso alle ${now.toISOString()}`);
 });
 
+// ---- CHROME API EVENTS (User Actions & Alarms) ----
+
 chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "setAlarms") {
         chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut"], (data) => {
@@ -66,7 +71,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             debugLog(`[onAlarm] Allarme ${alarm.name} ignorato. Oggi (${dayOfWeek}) è un giorno "Non disturbare".`);
             return; // Skip notification
         }
-        // If not a DND day, proceed with notification
         triggerNotification(alarm);
     });
 });
@@ -92,6 +96,8 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
     // L'azione è chiudere l'avviso senza aprire l'URL, come per il pulsante "Chiudi" dell'overlay.
     clearAlerts("notificationButtonClose");
 });
+
+// ---- CORE LOGIC FUNCTIONS ----
 
 function triggerNotification(alarm) {
     debugLog(`[triggerNotification] Allarme: ${alarm.name}`);
@@ -134,6 +140,41 @@ function setAlarm(time, alarmName) {
     });
 }
 
+function clearAlerts(action) {
+    if (action === "clearAlerts") {
+        chrome.storage.local.get(["siteUrl"], (data) => {
+            if (data.siteUrl) {
+                chrome.tabs.create({ url: data.siteUrl });
+                debugLog(`[clearAlerts] (${action}) Tab aperto su URL: ${data.siteUrl}`);
+            }
+        });
+    }
+    removeOverlays();
+    clearNotifications();
+    setNotificationBadge(false);
+    chrome.storage.local.set({ alarmActive: false });
+    debugLog(`[clearAlerts] (${action}) Pulite tutte le notifiche e gli allarmi`);
+}
+
+function restoreAlarms(data) {
+    if (data.morningIn) setAlarm(data.morningIn, "morningIn");
+    if (data.morningOut) setAlarm(data.morningOut, "morningOut");
+    if (data.afternoonIn) setAlarm(data.afternoonIn, "afternoonIn");
+    if (data.afternoonOut) setAlarm(data.afternoonOut, "afternoonOut");
+}
+
+function setOrClearAlarms(data) {
+    ["morningIn", "morningOut", "afternoonIn", "afternoonOut"].forEach((alarmName) => {
+        if (data[alarmName]) {
+            setAlarm(data[alarmName], alarmName);
+        } else {
+            chrome.alarms.clear(alarmName, (wasCleared) => {
+                if (wasCleared) debugLog(`[setOrClearAlarms] ${alarmName} cancellato`);
+            });
+        }
+    });
+}
+
 function setNotificationBadge(isVisible) {
     if (isVisible) {
         chrome.action.setBadgeText({ text: "❕" });
@@ -142,6 +183,8 @@ function setNotificationBadge(isVisible) {
         chrome.action.setBadgeText({ text: "" });
     }
 }
+
+// ---- UI HELPER FUNCTIONS (Overlays & Notifications) ----
 
 function removeOverlays() {
     chrome.tabs.query({}, (tabs) => {
@@ -164,49 +207,6 @@ function removeOverlays() {
                 });
             }
         });
-    });
-}
-
-function clearAlerts(action) {
-    if (action === "clearAlerts") {
-        chrome.storage.local.get(["siteUrl"], (data) => {
-            if (data.siteUrl) {
-                chrome.tabs.create({ url: data.siteUrl });
-                debugLog(`[clearAlerts] (${action}) Tab aperto su URL: ${data.siteUrl}`);
-            }
-        });
-    }
-    removeOverlays();
-    clearNotifications();
-    setNotificationBadge(false);
-    chrome.storage.local.set({ alarmActive: false });
-    debugLog(`[clearAlerts] (${action}) Pulite tutte le notifiche e gli allarmi`);
-}
-
-function restoreAlarms(data) {
-    if (data.morningIn) {
-        setAlarm(data.morningIn, "morningIn");
-    }
-    if (data.morningOut) {
-        setAlarm(data.morningOut, "morningOut");
-    }
-    if (data.afternoonIn) {
-        setAlarm(data.afternoonIn, "afternoonIn");
-    }
-    if (data.afternoonOut) {
-        setAlarm(data.afternoonOut, "afternoonOut");
-    }
-}
-
-function setOrClearAlarms(data) {
-    ["morningIn", "morningOut", "afternoonIn", "afternoonOut"].forEach((alarmName) => {
-        if (data[alarmName]) {
-            setAlarm(data[alarmName], alarmName);
-        } else {
-            chrome.alarms.clear(alarmName, (alarmClear) => {
-                if (alarmClear) debugLog(`[onMessage] ${alarmName} cancellato`);
-            });
-        }
     });
 }
 

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- Inizializzazione: Traduzioni e Versione ---
+    // ---- Inizializzazione: Traduzioni e Versione ----
     document.querySelectorAll("[data-i18n]").forEach((element) => {
         const key = element.getAttribute("data-i18n");
         element.textContent = chrome.i18n.getMessage(key);
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         versionElement.textContent = `v${manifestData.version}`;
     }
 
-    // --- Riferimenti agli elementi del DOM ---
+    // ---- Riferimenti agli elementi del DOM ----
     const morningIn = document.getElementById("morning-in");
     const morningOut = document.getElementById("morning-out");
     const afternoonIn = document.getElementById("afternoon-in");
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
 
-    // --- Funzioni ---
+    // ---- Funzioni ----
 
     // Carica le impostazioni e aggiorna l'interfaccia
     const loadAndDisplaySettings = () => {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2400);
     }
 
-    // --- Event Listeners ---
+    // ---- Event Listeners ----
 
     // Pulsante Salva
     document.getElementById("save-settings").addEventListener("click", () => {
@@ -102,6 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // document.getElementById("site-url").value = "";
     });
 
-    // --- Esecuzione iniziale ---
+    // ---- Esecuzione iniziale ----
     loadAndDisplaySettings();
 });
