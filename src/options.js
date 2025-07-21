@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 overlayScope.value = data.overlayScope || "active";
                 siteUrl.value = data.siteUrl || "";
                 const dndDays = data.dndDays || [];
-                document.querySelectorAll('.days-grid input[type="checkbox"]').forEach(cb => {
+                document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
                     cb.checked = dndDays.includes(cb.value);
                 });
             } else {
@@ -45,7 +45,7 @@ document.getElementById("save-settings").addEventListener("click", () => {
     const afternoonIn = document.getElementById("afternoon-in").value;
     const afternoonOut = document.getElementById("afternoon-out").value;
     const overlayScope = document.getElementById("overlay-scope").value;
-    const dndDays = Array.from(document.querySelectorAll('.days-grid input[type="checkbox"]:checked')).map(cb => cb.value);
+    const dndDays = Array.from(document.querySelectorAll('#dnd-days input[type="checkbox"]:checked')).map(cb => cb.value);
     const siteUrl = document.getElementById("site-url").value;
     chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, overlayScope, siteUrl, dndDays }, () => {
         chrome.runtime.sendMessage({ action: "setAlarms" });
@@ -58,7 +58,7 @@ document.getElementById("clean-settings").addEventListener("click", () => {
     document.getElementById("morning-out").value = "";
     document.getElementById("afternoon-in").value = "";
     document.getElementById("afternoon-out").value = "";
-    document.querySelectorAll('.days-grid input[type="checkbox"]').forEach(cb => {
+    document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
     });
     // document.getElementById("overlay-scope").value = "";

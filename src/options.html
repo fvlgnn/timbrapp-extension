@@ -45,9 +45,13 @@
             </div>
         </fieldset>
     
-        <fieldset class="section dnd">
-            <legend><span data-i18n="dnd_section"></span></legend>
-            <div class="days-grid">
+        <fieldset class="section optional">
+            <legend><span data-i18n="optional_section"></span></legend>
+            <label for="site-url" data-i18n="url_label"></label>
+            <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />
+            <hr/>
+            <label for="dnd-days" data-i18n="dnd_label"></label>
+            <div class="days-grid" id="dnd-days">
                 <div class="day-selector">
                     <label for="dnd-mon" data-i18n="dnd_mon"></label><input type="checkbox" id="dnd-mon" value="1">
                 </div>
@@ -70,18 +74,12 @@
                     <label for="dnd-sun" data-i18n="dnd_sun"></label><input type="checkbox" id="dnd-sun" value="0">
                 </div>
             </div>
-        </fieldset>
-
-        <fieldset class="section options">
-            <legend><span data-i18n="optional_section"></span></legend>
+            <hr/>
             <label for="overlay-scope" data-i18n="overlay_label"></label>
             <select id="overlay-scope" name="overlay-scope">
                 <option value="active" data-i18n="overlay_active_tab_label"></option>
                 <option value="all" data-i18n="overlay_all_tabs_label"></option>
             </select>
-            <hr/>
-            <label for="site-url" data-i18n="url_label"></label>
-            <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />
         </fieldset>
     
         <button id="save-settings" data-i18n="save_button"></button>

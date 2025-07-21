@@ -72,15 +72,15 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.action.onClicked.addListener(() => {
-    removeOverlays();
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.alarmActive) {
-            setNotificationBadge(false);
-            clearNotifications();
-            if (data.siteUrl) {
-                chrome.tabs.create({ url: data.siteUrl });
-            }
-            chrome.storage.local.set({ alarmActive: false });
+            // setNotificationBadge(false);
+            // clearNotifications();
+            // if (data.siteUrl) {
+            //     chrome.tabs.create({ url: data.siteUrl });
+            // }
+            // chrome.storage.local.set({ alarmActive: false });
+            clearAlerts("clearAlerts");
         } else {
             chrome.runtime.openOptionsPage();
         }
@@ -178,6 +178,7 @@ function clearAlerts(action) {
         chrome.storage.local.get(["siteUrl"], (data) => {
             if (data.siteUrl) {
                 chrome.tabs.create({ url: data.siteUrl });
+                debugLog(`[clearAlerts] (${action}) Tab aperto su URL: ${data.siteUrl}`);
             }
         });
     }
