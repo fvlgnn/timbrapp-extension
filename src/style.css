@@ -139,7 +139,7 @@ button:hover {
 
 #saved {
     position: fixed;
-    top: 10px;
+    top: 40%;
     left: 50%;
     background-color: #4caf50;
     border: 1px solid #388e3c;
