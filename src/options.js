@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
     const updateStatus = () => {
-        chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl"], (data) => {
+        chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays"], (data) => {
             if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
                 statusNotification.textContent = "ON";
                 statusNotification.classList.add("enabled");
@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 afternoonOut.value = data.afternoonOut || "";
                 overlayScope.value = data.overlayScope || "active";
                 siteUrl.value = data.siteUrl || "";
+                const dndDays = data.dndDays || [];
+                document.querySelectorAll('.days-grid input[type="checkbox"]').forEach(cb => {
+                    cb.checked = dndDays.includes(cb.value);
+                });
             } else {
                 statusNotification.textContent = "OFF";
                 statusNotification.classList.add("disabled");
@@ -41,8 +45,9 @@ document.getElementById("save-settings").addEventListener("click", () => {
     const afternoonIn = document.getElementById("afternoon-in").value;
     const afternoonOut = document.getElementById("afternoon-out").value;
     const overlayScope = document.getElementById("overlay-scope").value;
+    const dndDays = Array.from(document.querySelectorAll('.days-grid input[type="checkbox"]:checked')).map(cb => cb.value);
     const siteUrl = document.getElementById("site-url").value;
-    chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, overlayScope, siteUrl }, () => {
+    chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, overlayScope, siteUrl, dndDays }, () => {
         chrome.runtime.sendMessage({ action: "setAlarms" });
         showSaved(chrome.i18n.getMessage("settings_saved"));
     });
@@ -53,6 +58,9 @@ document.getElementById("clean-settings").addEventListener("click", () => {
     document.getElementById("morning-out").value = "";
     document.getElementById("afternoon-in").value = "";
     document.getElementById("afternoon-out").value = "";
+    document.querySelectorAll('.days-grid input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+    });
     // document.getElementById("overlay-scope").value = "";
     // document.getElementById("site-url").value = "";
 });

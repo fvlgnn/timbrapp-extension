@@ -57,25 +57,17 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-    debugLog(`[onAlarm] Allarme: ${alarm.name}`);
-    const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
-    const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
-    debugLog(`[onAlarm] isEntry: ${isEntry}`);
-    debugLog(`[onAlarm] isMorning: ${isMorning}`);
-    const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
-    const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
-    chrome.storage.local.get(["siteUrl", "overlayScope"], (data) => {
-        const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
-        const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
-        const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
-        createNotification(notificationTitle, notificationMessage);
-        chrome.storage.local.set({ alarmActive: true });
-        setNotificationBadge(true);
-        if (data.overlayScope === 'all') {
-            injectOverlayInAllTabs();
-        } else {
-            injectOverlayInActiveTab();
+    const today = new Date();
+    const dayOfWeek = today.getDay().toString(); // 0=Sun, 1=Mon, ...
+
+    chrome.storage.local.get(["dndDays"], (data) => {
+        const dndDays = data.dndDays || [];
+        if (dndDays.includes(dayOfWeek)) {
+            debugLog(`[onAlarm] Allarme ${alarm.name} ignorato. Oggi (${dayOfWeek}) è un giorno "Non disturbare".`);
+            return; // Skip notification
         }
+        // If not a DND day, proceed with notification
+        triggerNotification(alarm);
     });
 });
 
@@ -106,6 +98,29 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
     // L'azione è chiudere l'avviso senza aprire l'URL, come per il pulsante "Chiudi" dell'overlay.
     clearAlerts("notificationButtonClose");
 });
+
+function triggerNotification(alarm) {
+    debugLog(`[triggerNotification] Allarme: ${alarm.name}`);
+    const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
+    const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
+    debugLog(`[triggerNotification] isEntry: ${isEntry}`);
+    debugLog(`[triggerNotification] isMorning: ${isMorning}`);
+    const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
+    const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
+    chrome.storage.local.get(["siteUrl", "overlayScope"], (data) => {
+        const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
+        const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
+        const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
+        createNotification(notificationTitle, notificationMessage);
+        chrome.storage.local.set({ alarmActive: true });
+        setNotificationBadge(true);
+        if (data.overlayScope === 'all') {
+            injectOverlayInAllTabs();
+        } else {
+            injectOverlayInActiveTab();
+        }
+    });
+}
 
 function setAlarm(time, alarmName) {
     const now = new Date();

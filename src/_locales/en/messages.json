@@ -25,5 +25,13 @@
   "overlay_title": { "message": "Remember to clock-in/out" },
   "overlay_go": { "message": "Go to site" },
   "overlay_done": { "message": "Done" },
-  "overlay_close": { "message": "Done" }
+  "overlay_close": { "message": "Done" },
+  "dnd_section": { "message": "Do Not Disturb" },
+  "dnd_sun": { "message": "Su" },
+  "dnd_mon": { "message": "Mo" },
+  "dnd_tue": { "message": "Tu" },
+  "dnd_wed": { "message": "We" },
+  "dnd_thu": { "message": "Th" },
+  "dnd_fri": { "message": "Fr" },
+  "dnd_sat": { "message": "Sa" }
 }

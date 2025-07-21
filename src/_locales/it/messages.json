@@ -25,5 +25,13 @@
   "overlay_title": { "message": "Ricorda di timbrare" },
   "overlay_go": { "message": "Vai al sito" },
   "overlay_done": { "message": "Fatto" },
-  "overlay_close": { "message": "Fatto" }
+  "overlay_close": { "message": "Fatto" },
+  "dnd_section": { "message": "Non disturbare" },
+  "dnd_sun": { "message": "Do" },
+  "dnd_mon": { "message": "Lu" },
+  "dnd_tue": { "message": "Ma" },
+  "dnd_wed": { "message": "Me" },
+  "dnd_thu": { "message": "Gi" },
+  "dnd_fri": { "message": "Ve" },
+  "dnd_sat": { "message": "Sa" }
 }
