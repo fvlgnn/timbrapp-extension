@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const morningOut = document.getElementById("morning-out");
     const afternoonIn = document.getElementById("afternoon-in");
     const afternoonOut = document.getElementById("afternoon-out");
+    const overlayScope = document.getElementById("overlay-scope");
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
     const updateStatus = () => {
-        chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "siteUrl"], (data) => {
+        chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl"], (data) => {
             if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
                 statusNotification.textContent = "ON";
                 statusNotification.classList.add("enabled");
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 morningOut.value = data.morningOut || "";
                 afternoonIn.value = data.afternoonIn || "";
                 afternoonOut.value = data.afternoonOut || "";
+                overlayScope.value = data.overlayScope || "active";
                 siteUrl.value = data.siteUrl || "";
             } else {
                 statusNotification.textContent = "OFF";
@@ -38,8 +40,9 @@ document.getElementById("save-settings").addEventListener("click", () => {
     const morningOut = document.getElementById("morning-out").value;
     const afternoonIn = document.getElementById("afternoon-in").value;
     const afternoonOut = document.getElementById("afternoon-out").value;
+    const overlayScope = document.getElementById("overlay-scope").value;
     const siteUrl = document.getElementById("site-url").value;
-    chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, siteUrl }, () => {
+    chrome.storage.local.set({ morningIn, morningOut, afternoonIn, afternoonOut, overlayScope, siteUrl }, () => {
         chrome.runtime.sendMessage({ action: "setAlarms" });
         showSaved(chrome.i18n.getMessage("settings_saved"));
     });
@@ -50,6 +53,7 @@ document.getElementById("clean-settings").addEventListener("click", () => {
     document.getElementById("morning-out").value = "";
     document.getElementById("afternoon-in").value = "";
     document.getElementById("afternoon-out").value = "";
+    // document.getElementById("overlay-scope").value = "";
     // document.getElementById("site-url").value = "";
 });
 

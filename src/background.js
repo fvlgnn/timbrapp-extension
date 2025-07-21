@@ -51,11 +51,8 @@ chrome.runtime.onMessage.addListener((message) => {
             setOrClearAlarms(data);
         });
     }
-    if (message.action === "clearAllAlerts") {
-        clearAllAlerts();
-    }
-    if (message.action === "closeAllOverlays") {
-        removeOverlays();
+    if (message.action === "clearAlerts" || message.action === "closeOverlays") {
+        clearAlerts(message.action);
     }
 });
 
@@ -67,14 +64,18 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     debugLog(`[onAlarm] isMorning: ${isMorning}`);
     const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
     const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
-    chrome.storage.local.get(["siteUrl"], (data) => {
+    chrome.storage.local.get(["siteUrl", "overlayScope"], (data) => {
         const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
         const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
         const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
         createNotification(notificationTitle, notificationMessage);
         chrome.storage.local.set({ alarmActive: true });
         setNotificationBadge(true);
-        injectOverlayInTabs();
+        if (data.overlayScope === 'all') {
+            injectOverlayInAllTabs();
+        } else {
+            injectOverlayInActiveTab();
+        }
     });
 });
 
@@ -95,22 +96,15 @@ chrome.action.onClicked.addListener(() => {
 });
 
 chrome.notifications.onClicked.addListener((notificationId) => {
-    removeOverlays();
-    chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
-        if (data.siteUrl && data.alarmActive) {
-            chrome.tabs.create({ url: data.siteUrl });
-        }
-    });
-    chrome.notifications.clear(notificationId, () => {
-        debugLog(`[onClicked notification] Notifica ${notificationId} chiusa singolarmente.`);
-    });
-    debugLog("[onClicked notification] Rimozione ID notifica dall'array in storage");
-    chrome.storage.local.get({ notificationIds: [] }, (data) => {
-        const updatedIds = data.notificationIds.filter(id => id !== notificationId);
-        chrome.storage.local.set({ notificationIds: updatedIds });
-    });
-    setNotificationBadge(false);
-    chrome.storage.local.set({ alarmActive: false });
+    debugLog(`[onClicked notification] Notifica ${notificationId} cliccata.`);
+    // L'azione principale della notifica è la stessa del pulsante "Vai al sito" dell'overlay.
+    clearAlerts("clearAlerts");
+});
+
+chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
+    debugLog(`[onButtonClicked] Pulsante ${buttonIndex} della notifica ${notificationId} cliccato.`);
+    // L'azione è chiudere l'avviso senza aprire l'URL, come per il pulsante "Chiudi" dell'overlay.
+    clearAlerts("notificationButtonClose");
 });
 
 function setAlarm(time, alarmName) {
@@ -151,7 +145,7 @@ function removeOverlays() {
                 chrome.scripting.executeScript({
                     target: { tabId: tab.id },
                     func: () => {
-                        const overlay = document.getElementById("timbrapp-overlay");
+                        const overlay = document.getElementById("timbrapp-extension-overlay");
                         if (overlay) overlay.remove();
                     }
                 }).then(() => {
@@ -164,17 +158,19 @@ function removeOverlays() {
     });
 }
 
-function clearAllAlerts() {
-    chrome.storage.local.get(["siteUrl"], (data) => {
-        if (data.siteUrl) {
-            chrome.tabs.create({ url: data.siteUrl });
-        }
-    });
+function clearAlerts(action) {
+    if (action === "clearAlerts") {
+        chrome.storage.local.get(["siteUrl"], (data) => {
+            if (data.siteUrl) {
+                chrome.tabs.create({ url: data.siteUrl });
+            }
+        });
+    }
     removeOverlays();
     clearNotifications();
     setNotificationBadge(false);
     chrome.storage.local.set({ alarmActive: false });
-    debugLog("[clearAllAlerts] Pulite tutte le notifiche e gli allarmi");
+    debugLog(`[clearAlerts] (${action}) Pulite tutte le notifiche e gli allarmi`);
 }
 
 function restoreAlarms(data) {
@@ -210,7 +206,10 @@ function createNotification(title, message) {
         iconUrl: "icons/128.png",
         title: title,
         message: message,
-        requireInteraction: true
+        requireInteraction: true,
+        buttons: [
+            { title: chrome.i18n.getMessage("notification_close_button") }
+        ]
     }, (notificationId) => {
         chrome.storage.local.get({ notificationIds: [] }, (data) => {
             const updatedIds = [...data.notificationIds, notificationId];
@@ -233,23 +232,41 @@ function clearNotifications() {
     });
 }
 
-function injectOverlayInTabs() {
+function injectOverlayInActiveTab() {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length === 0) {
+            debugLog("[injectOverlayInActiveTab] Nessun tab attivo trovato.");
+            return;
+        }
+        const activeTab = tabs[0];
+        if (activeTab.id && activeTab.url && activeTab.url.startsWith("http")) {
+            injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
+        }
+    });
+}
+
+function injectOverlayInAllTabs() {
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
-            if (
-                tab.id && 
-                tab.url && 
-                tab.url.startsWith("http")
-            ) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    files: ["overlay.js"]
-                }).then(() => {
-                    debugLog(`[injectOverlayInTabs] Overlay iniettato in ${tab.url}`);
-                }).catch((error) => {
-                    debugLog(`[injectOverlayInTabs] Errore, impossibile iniettare overlay in ${tab.url}: ${error.message}`);
-                });
+            if (tab.id && tab.url && tab.url.startsWith("http")) {
+                injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
             }
         });
     });
+}
+
+async function injectOverlay(tabId, tabUrl, source) {
+    try {
+        await chrome.scripting.insertCSS({
+            target: { tabId: tabId },
+            files: ["overlay.css"],
+        });
+        await chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            files: ["overlay.js"],
+        });
+        debugLog(`[${source}] Overlay iniettato in ${tabUrl}`);
+    } catch (error) {
+        debugLog(`[${source}] Errore, impossibile iniettare overlay in ${tabUrl}: ${error.message}`);
+    }
 }

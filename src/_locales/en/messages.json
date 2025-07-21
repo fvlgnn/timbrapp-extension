@@ -11,15 +11,19 @@
   "afternoon_label": { "message": "Afternoon" },
   "in_label": { "message": "Clock-in" },
   "out_label": { "message": "Clock-out" },
-  "url_section": { "message": "Optional" },
+  "optional_section": { "message": "Optional" },
   "url_label": { "message": "URL HR portal to open (optional)" },
   "save_button": { "message": "Save" },
   "settings_saved": { "message": "Settings saved!" },
   "notification_title": { "message": "$1 $2!" },
+  "notification_close_button": { "message": "Done" },
   "notification_message_default": { "message": "Go to $1 $2. Click here or on the extension icon to dismiss the alert." },
   "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and perform the $1 action for the $2." },
-  "overlay_label": { "message": "Remember to clock-in/out" },
+  "overlay_label": { "message": "On-page Alert Banner" },
+  "overlay_active_tab_label": { "message": "Show only on active tab" },
+  "overlay_all_tabs_label": { "message": "Show on all tabs" },
+  "overlay_title": { "message": "Remember to clock-in/out" },
   "overlay_go": { "message": "Go to site" },
   "overlay_done": { "message": "Done" },
-  "overlay_close": { "message": "Close" }
+  "overlay_close": { "message": "Done" }
 }

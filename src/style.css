@@ -96,6 +96,7 @@ label {
 
 input[type="text"],
 input[type="time"],
+select,
 button {
     padding: 8px;
     font-size: 14px;
@@ -195,5 +196,3 @@ button:hover {
     background-color: #f44336;
     border: 1px solid #d32f2f;
 }
-
-

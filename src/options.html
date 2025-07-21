@@ -46,8 +46,14 @@
         </fieldset>
     
         <fieldset class="section options">
-            <legend><span data-i18n="url_section"></span></legend>
-            <label for="url" data-i18n="url_label"></label>
+            <legend><span data-i18n="optional_section"></span></legend>
+            <label for="overlay-scope" data-i18n="overlay_label"></label>
+            <select id="overlay-scope" name="overlay-scope">
+                <option value="active" data-i18n="overlay_active_tab_label"></option>
+                <option value="all" data-i18n="overlay_all_tabs_label"></option>
+            </select>
+            <hr/>
+            <label for="site-url" data-i18n="url_label"></label>
             <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />
         </fieldset>
     
