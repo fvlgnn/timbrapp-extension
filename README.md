@@ -125,7 +125,7 @@ This will update your TimbrApp Extension to the latest version.
     *   Make sure that the TimbrApp Extension icon in the toolbar does not have a red badge.
     *   Click on the TimbrApp Extension icon to open the settings.
     *   Configure the times you want to receive the reminder.
-    *   If necessary, set the URL of the HR portal.
+    *   Customize additional options: set the HR portal URL to open when clicking, choose your "Do Not Disturb" days, and decide where to display the alert banner (on all pages or only the active one).
 
 2.  **Receive reminders:**
     *   When it is time to clock in, a red badge with a triangle will appear on the extension icon.
@@ -239,7 +239,7 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
     *   Assicurati che l'icona di TimbrApp Extension nella barra degli strumenti non abbia un badge rosso.
     *   Clicca sull'icona di TimbrApp Extension per aprire le impostazioni.
     *   Configura gli orari in cui vuoi ricevere il promemoria.
-    *   Se necessario, imposta l'URL del portale HR.
+    *   Personalizza le opzioni aggiuntive: imposta l'URL del portale HR da aprire al click, scegli i giorni per la modalità "Non Disturbare" e decidi dove visualizzare il banner di avviso (su tutte le pagine o solo su quella attiva).
 
 2.  **Ricevi i promemoria:**
     *   Quando è ora di timbrare, sull'icona dell'estensione comparirà un badge rosso con un triangolo.
@@ -275,4 +275,3 @@ L'utente è l'unico responsabile della corretta timbratura della propria presenz
 ## License
 
 Released under the [MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/LICENSE) - Copyright (c) 2025 Gianni F. _fvlgnn_
-
