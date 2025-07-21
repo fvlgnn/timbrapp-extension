@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 64px;
     background-color: #eee;
 }
 
@@ -19,20 +19,10 @@ h2 {
     align-items: center;
 }
 
-p {
-    font-size: 12px;
-    background-color: #fff;
-    padding: 6px 8px;
-    border-left: 3px solid #333;
-    border-radius: 4px;
-    margin-bottom: 6px;
-    text-align: left;
-    line-height: 2em;
-}
-
 .form-container {
     max-width: 340px;
     margin: 0 auto;
+    /* Aggiunto padding in basso per non sovrapporre il pulsante flottante */
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 6px;
@@ -146,21 +136,33 @@ input[type="checkbox"] {
     color: #ddd;
 }
 
-#clean-settings {
-    color: #007bff;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: underline;
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-#clean-settings:hover {
-    color: #0056b3;
+.header-icon {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.header-icon:hover {
+    opacity: 1;
+}
+
+.header-icon svg {
+    fill: #ddd;
 }
 
 #saved {
     position: fixed;
     /* top: 40%; */
-    bottom: 24px;
+    bottom: 18px;
     left: 50%;
     background-color: #4caf50;
     border: 1px solid #388e3c;
@@ -220,10 +222,10 @@ input[type="checkbox"] {
 
 .floating-save-btn {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
+    bottom: 14px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
     background-color: #007bff;
     border-radius: 50%;
     display: flex;
