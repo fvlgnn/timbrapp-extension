@@ -17,7 +17,7 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
 
 - [TimbrApp Extension](#timbrapp-extension)
   - [Menu](#menu)
-  - [English](#english)
+  - [English 🇬🇧](#english-)
     - [Description](#description)
     - [Features](#features)
     - [Installation](#installation)
@@ -29,7 +29,7 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
     - [Privacy](#privacy)
     - [Contributing](#contributing)
     - [Disclaimer](#disclaimer)
-  - [Italiano](#italiano)
+  - [Italiano 🇮🇹](#italiano-)
     - [Descrizione](#descrizione)
     - [Funzionalità](#funzionalità)
     - [Installazione](#installazione)
@@ -44,7 +44,7 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
   - [License](#license)
 
 
-## English
+## English 🇬🇧
 
 ### Description
 
@@ -158,7 +158,7 @@ The TimbrApp Extension extension is provided "as is", without any explicit or im
 The user is solely responsible for correctly clocking in and out at work. TimbrApp Extension is a support tool and does not in any way replace company clock-in procedures.
 
 
-## Italiano
+## Italiano 🇮🇹
 
 ### Descrizione
 
