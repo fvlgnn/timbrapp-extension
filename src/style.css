@@ -80,6 +80,18 @@ legend {
     gap: 8px;
 }
 
+.grid div {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    padding-left: 4px;
+}
+
 #dnd-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -98,18 +110,6 @@ legend {
 #dnd-days .day-selector label {
     padding-left: 0;
     margin-bottom: 0;
-}
-
-.grid div {
-    flex: 1;
-}
-
-label {
-    display: block;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    padding-left: 4px;
 }
 
 input[type="text"],
@@ -160,7 +160,6 @@ input[type="checkbox"] {
 
 #saved {
     position: fixed;
-    /* top: 40%; */
     bottom: 18px;
     left: 50%;
     background-color: #4caf50;
@@ -228,7 +227,7 @@ input[type="checkbox"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
     z-index: 100;

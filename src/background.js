@@ -114,7 +114,7 @@ function triggerNotification(alarm) {
         createNotification(notificationTitle, notificationMessage);
         chrome.storage.local.set({ alarmActive: true });
         setNotificationBadge(true);
-        if (data.overlayScope === 'all') {
+        if (data.overlayScope === "all") {
             injectOverlayInAllTabs();
         } else {
             injectOverlayInActiveTab();

@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             siteUrl.value = data.siteUrl || "";
             
             const dndDays = data.dndDays || [];
-            document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
+            document.querySelectorAll("#dnd-days input[type='checkbox']").forEach(cb => {
                 cb.checked = dndDays.includes(cb.value);
             });
 
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             afternoonIn: afternoonIn.value,
             afternoonOut: afternoonOut.value,
             overlayScope: overlayScope.value,
-            dndDays: Array.from(document.querySelectorAll('#dnd-days input[type="checkbox"]:checked')).map(cb => cb.value),
+            dndDays: Array.from(document.querySelectorAll("#dnd-days input[type='checkbox']:checked")).map(cb => cb.value),
             siteUrl: siteUrl.value
         };
 
