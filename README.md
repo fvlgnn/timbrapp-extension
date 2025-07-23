@@ -147,6 +147,8 @@ This will update your TimbrApp Extension to the latest version.
 *   **No data transmission:** The extension does not transmit any information to third parties.
 *   **Security guaranteed:** TimbrApp is a secure extension that does not compromise your privacy.
 
+This extension's single purpose is to help users remember to clock in and out for work. It provides configurable, time-based reminders to prevent missed time-tracking entries. All features directly support this unique core purpose.
+
 ### Contributing
 
 If you'd like to contribute to the development of TimbrApp Extension, please visit the repository on [GitHub](https://github.com/fvlgnn/timbrapp-extension).
@@ -260,6 +262,8 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
 *   **Nessun servizio esterno:** TimbrApp Extension non utilizza servizi o script remoti per il suo funzionamento.
 *   **Nessuna trasmissione di dati:** L'estensione non trasmette alcuna informazione a terze parti.
 *   **Sicurezza garantita:** TimbrApp Extension è un'estensione sicura che non mette a rischio la tua privacy.
+
+L'unico scopo di questa estensione è aiutare gli utenti a ricordare di timbrare l'entrata e l'uscita dal lavoro. Fornisce promemoria configurabili basati sull'orario per prevenire mancate registrazioni. Tutte le funzionalità supportano direttamente questo unico scopo principale.
 
 ### Contribuisci
 
