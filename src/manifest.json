@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "TimbrApp Extension",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "__MSG_description__",
   "author": {
-    "email": "fvlgnn@gmail.com"
+    "email": "fvlgnn+timbrapp-extension@gmail.com"
   },
   "homepage_url": "https://github.com/fvlgnn/timbrapp-extension",
   "default_locale": "en",
