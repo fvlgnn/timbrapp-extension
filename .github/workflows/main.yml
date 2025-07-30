@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  workflow_dispatch: # Aggiunge la possibilità di avviare il workflow manualmente
+  workflow_dispatch: # possibilità di avviare il workflow manualmente Actions / Release / Run workflow
   push:
     tags:
       - "v*.*.*"
