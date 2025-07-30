@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload on Chrome Web Store
         uses: mnao305/chrome-extension-upload@v5.0.0
-        # if: startsWith(github.ref, 'refs/tags/v') # Esegui solo se è un tag
+        if: startsWith(github.ref, 'refs/tags/v') # Esegui solo se è un tag
         with:
           file-path: ./${{ env.ARTIFACT_NAME }}.zip
           extension-id: ${{ env.CHROME_EXTENSION_ID }}
