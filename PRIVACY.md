@@ -1,6 +1,5 @@
 # 🔒 Privacy - TimbrApp Extension
 
-
 ## 🇬🇧 Privacy
 
 **Your privacy is a priority!** TimbrApp Extension is designed with user privacy in mind:
