@@ -20,7 +20,6 @@ The TimbrApp Extension extension is provided "as is", without any explicit or im
 The user is solely responsible for correctly clocking in and out at work. TimbrApp Extension is a support tool and does not in any way replace company clock-in procedures.
 
 ---
----
 
 ## 🇮🇹 Privacy
 
