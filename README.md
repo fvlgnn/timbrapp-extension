@@ -8,8 +8,10 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
 
 ![TimbrApp Extension Release and Deploy](https://github.com/fvlgnn/timbrapp-extension/actions/workflows/main.yml/badge.svg?event=push "TimbrApp Extension Release and Deploy Status")
 
-- [Releases/Versioni](https://github.com/fvlgnn/timbrapp-extension/releases) (developer mode / modalità sviluppatore)
-- [Chrome Web Store](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg)
+**📘 Read in / Leggi in:**
+
+- [English 🇬🇧](#english)
+- [Italiano 🇮🇹](#italiano)
 
 
 ## Menu
@@ -52,6 +54,9 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
 📄
 
 TimbrApp Extension is a Chrome and Edge extension that helps you remember to clock in and out at work.
+
+- [Releases](https://github.com/fvlgnn/timbrapp-extension/releases) (developer mode)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg) (official store)
 
 ### Features
 
@@ -198,6 +203,9 @@ The user is solely responsible for correctly clocking in and out at work. TimbrA
 📄
 
 TimbrApp Extension è un'estensione per Chrome e Edge che ti aiuta a ricordare di timbrare la tua presenza al lavoro.
+
+- [Versioni](https://github.com/fvlgnn/timbrapp-extension/releases) (modalità sviluppatore)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg) (store ufficiale)
 
 ### Funzionalità
 
