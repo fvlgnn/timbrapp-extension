@@ -23,19 +23,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
 
-    // ---- Funzioni ----
+    // ---- Funzioni per la gestione dei permessi ----
+    const HOST_PERMISSIONS = { origins: ["https://*/*", "http://*/*"] };
+
+    // Richiede i permessi per accedere a tutti i siti
+    async function requestHostPermission() {
+        try {
+            const granted = await chrome.permissions.request(HOST_PERMISSIONS);
+            return granted;
+        } catch (err) {
+            console.error("Errore durante la richiesta dei permessi:", err);
+            return false;
+        }
+    }
+
+    // Rimuove i permessi per accedere a tutti i siti
+    async function removeHostPermission() {
+        try {
+            const removed = await chrome.permissions.remove(HOST_PERMISSIONS);
+            return removed;
+        } catch (err) {
+            console.error("Errore durante la rimozione dei permessi:", err);
+            return false;
+        }
+    }
+
+    // ---- Funzioni principali ----
 
     // Carica le impostazioni e aggiorna l'interfaccia
-    const loadAndDisplaySettings = () => {
+    const loadAndDisplaySettings = async () => {
         const keys = ["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays"];
-        chrome.storage.local.get(keys, (data) => {
+        chrome.storage.local.get(keys, async (data) => {
             // Popola sempre tutti i campi
             morningIn.value = data.morningIn || "";
             morningOut.value = data.morningOut || "";
             afternoonIn.value = data.afternoonIn || "";
             afternoonOut.value = data.afternoonOut || "";
-            overlayScope.value = data.overlayScope || "active";
             siteUrl.value = data.siteUrl || "";
+
+            // Sincronizza lo stato del selettore overlay con i permessi reali
+            const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
+            const savedScope = data.overlayScope || "none";
+
+            if (hasPermissions) {
+                // Se abbiamo i permessi, l'opzione salvata (active o all) è valida.
+                overlayScope.value = savedScope === "none" ? "active" : savedScope; // Default a 'active' se lo stato è inconsistente
+            } else {
+                // Se non abbiamo i permessi, l'unica opzione valida è 'none'.
+                overlayScope.value = "none";
+            }
             
             const dndDays = data.dndDays || [];
             document.querySelectorAll("#dnd-days input[type='checkbox']").forEach(cb => {
@@ -100,6 +136,29 @@ document.addEventListener("DOMContentLoaded", () => {
         // });
         // document.getElementById("overlay-scope").value = "";
         // document.getElementById("site-url").value = "";
+    });
+
+    // Gestisce il cambio di selezione per l'overlay e i relativi permessi
+    overlayScope.addEventListener("change", async (event) => {
+        const selectedValue = event.target.value;
+
+        if (selectedValue === "active" || selectedValue === "all") {
+            // L'utente vuole attivare un overlay, richiedi il permesso se non già presente
+            const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
+            if (!hasPermissions) {
+                const granted = await requestHostPermission();
+                if (!granted) {
+                    // L'utente ha negato il permesso, reimposta il selettore su "none"
+                    overlayScope.value = "none";
+                }
+            }
+        } else { // selectedValue === "none"
+            // L'utente ha disabilitato l'overlay, revochiamo i permessi se presenti
+            const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
+            if (hasPermissions) {
+                await removeHostPermission();
+            }
+        }
     });
 
     // ---- Esecuzione iniziale ----

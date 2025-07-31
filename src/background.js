@@ -242,27 +242,37 @@ function clearNotifications() {
     });
 }
 
-function injectOverlayInActiveTab() {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length === 0) {
-            debugLog("[injectOverlayInActiveTab] Nessun tab attivo trovato.");
-            return;
-        }
-        const activeTab = tabs[0];
-        if (activeTab.id && activeTab.url && activeTab.url.startsWith("http")) {
-            injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
-        }
+async function injectOverlayInActiveTab() {
+    const hasPermissions = await chrome.permissions.contains({
+        origins: ["https://*/*", "http://*/*"],
     });
+    if (!hasPermissions) {
+        debugLog("[injectOverlayInActiveTab] Permessi host non concessi. Impossibile iniettare l'overlay.");
+        return;
+    }
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tabs.length === 0) {
+        debugLog("[injectOverlayInActiveTab] Nessun tab attivo trovato.");
+        return;
+    }
+    const activeTab = tabs[0];
+    if (activeTab.id && activeTab.url && activeTab.url.startsWith("http")) {
+        injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
+    }
 }
 
-function injectOverlayInAllTabs() {
-    chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-            if (tab.id && tab.url && tab.url.startsWith("http")) {
-                injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
-            }
-        });
+async function injectOverlayInAllTabs() {
+    const hasPermissions = await chrome.permissions.contains({
+        origins: ["https://*/*", "http://*/*"],
     });
+    if (!hasPermissions) {
+        debugLog("[injectOverlayInAllTabs] Permessi host non concessi. Impossibile iniettare l'overlay.");
+        return;
+    }
+    const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+    for (const tab of tabs) {
+        injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
+    }
 }
 
 async function injectOverlay(tabId, tabUrl, source) {

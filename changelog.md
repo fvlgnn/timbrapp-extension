@@ -1,3 +1,8 @@
+### 🔒 Security & Privacy
+- **Enhanced Security & User Control**: The extension no longer requests broad permissions upon installation. This removes the "not trusted" warning from Chrome's Enhanced Safe Browsing.
+- **On-Demand Permissions**: Permissions to display the alert banner are now requested only when you enable the feature in the options, giving you full control over what the extension can access.
+- **Increased Transparency**: The new permission model makes it clearer why and when the extension needs to access web pages, improving trust and security. Rest assured that no developer will ever know your data or transmit it to third parties.
+
 ### ✨ New Features
 - Now available on the Chrome Web Store! Install with a single click, no more developer mode needed.
 - Added a "Do Not Disturb" mode to disable notifications on specific days of the week.

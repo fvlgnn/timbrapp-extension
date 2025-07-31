@@ -19,6 +19,7 @@
   "notification_close_button": { "message": "Fatto" },
   "notification_message_default": { "message": "Vai a timbrare l'$1 $2. Premi qui o sull'icona dell'estensione per rimuovere l'avviso." },
   "notification_message_with_url": { "message": "Premi qui o sull'icona dell'estensione per aprire l'URL ed eseguire la timbratura d'$1 $2." },
+  "overlay_disabled_label": { "message": "Disabilitato (nessun banner)" },
   "overlay_active_tab_label": { "message": "Mostra solo sul tab attivo" },
   "overlay_all_tabs_label": { "message": "Mostra su tutti i tab" },
   "overlay_title": { "message": "Ricorda di timbrare" },

@@ -19,6 +19,7 @@
   "notification_close_button": { "message": "Done" },
   "notification_message_default": { "message": "Go to $1 $2. Click here or on the extension icon to dismiss the alert." },
   "notification_message_with_url": { "message": "Click here or on the extension icon to open the URL and perform the $1 action for the $2." },
+  "overlay_disabled_label": { "message": "Disabled (no banner)" },
   "overlay_active_tab_label": { "message": "Show only on active tab" },
   "overlay_all_tabs_label": { "message": "Show on all tabs" },
   "overlay_title": { "message": "Remember to clock-in/out" },
