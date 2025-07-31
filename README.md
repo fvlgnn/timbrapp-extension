@@ -74,7 +74,7 @@ TimbrApp Extension can be installed in two ways: directly from the **official Go
 
 The extension is available on the **Google Chrome Web Store**.
 
-*For Microsoft Edge users, please refer to section [1a. Developer Mode](#1a-developer-mode).*
+*For Microsoft Edge users, please refer to section [1b. Developer Mode](#1b-developer-mode).*
 
 1. Visit the [Chrome Web Store – TimbrApp Extension](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg), or search for `TimbrApp Extension` in the Chrome Web Store.
 2. Click **"Add to Chrome"** to install the extension.
@@ -223,7 +223,7 @@ TimbrApp Extension può essere installata in due modalità: direttamente dallo *
 
 L'estensione è disponibile sul **Google Chrome Web Store**.
 
-_Per gli utenti di Microsoft Edge, si prega di seguire la sezione [1a. Modalità sviluppatore](#1a-modalità-sviluppatore)._
+_Per gli utenti di Microsoft Edge, si prega di seguire la sezione [1b. Modalità sviluppatore](#1b-modalità-sviluppatore)._
 
 1. Visita il [Chrome Web Store – TimbrApp Extension](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg), oppure cerca `TimbrApp Extension` nel Chrome Web Store.
 2. Clicca su **"Aggiungi"** per installarla.
