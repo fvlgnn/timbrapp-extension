@@ -2,7 +2,19 @@
 
 Developed by **Gianni F. _fvlgnn_**
 
-Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratura Presenza sul Lavoro - Estensione per Chrome & Edge
+> 🇬🇧
+>
+> Chrome & Edge Extension - Work Time Clock-in/out Reminder
+>
+> Never forget to clock in again! TimbrApp Extension is your smart reminder for work.
+> 
+
+> 🇮🇹
+>
+> Estensione per Chrome & Edge - Promemoria Timbratura Presenza sul Lavoro
+>
+> Non dimenticare mai più di timbrare il cartellino! TimbrApp Extension è il tuo promemoria smart per il lavoro.
+> 
 
 ![TimbrApp Extension](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/timbrapp-extension-logo.png "TimbrApp Extension Logo")
 
@@ -54,6 +66,10 @@ Work Time Clock-in/out Reminder - Chrome & Edge Extension / Promemoria Timbratur
 📄
 
 TimbrApp Extension is a Chrome and Edge extension that helps you remember to clock in and out at work.
+
+Stressed about forgetting to clock in? Install TimbrApp Extension and turn your time-keeping routine into a simple, stress-free operation!
+
+This Chrome and Edge extension is designed to help you remember crucial moments and intelligently reminds you when it’s time to record your presence.
 
 - [Releases](https://github.com/fvlgnn/timbrapp-extension/releases) (developer mode)
 - [Chrome Web Store](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg) (official store)
@@ -204,6 +220,10 @@ The user is solely responsible for correctly clocking in and out at work. TimbrA
 
 TimbrApp Extension è un'estensione per Chrome e Edge che ti aiuta a ricordare di timbrare la tua presenza al lavoro.
 
+Stanco di dimenticare di timbrare il cartellino? Installa TimbrApp Extension e trasforma la tua routine di timbratura in un'operazione semplice e senza stress!
+
+Questa estensione per Chrome e Edge è progettata per aiutarti a ricordare i momenti cruciali e ti avvisa in modo intelligente quando è il momento di registrare la tua presenza.
+
 - [Versioni](https://github.com/fvlgnn/timbrapp-extension/releases) (modalità sviluppatore)
 - [Chrome Web Store](https://chromewebstore.google.com/detail/timbrapp-extension/dhpcliknphfdbocmcgfgepbkjmdklbgg) (store ufficiale)
 
@@ -240,7 +260,7 @@ _Per gli utenti di Microsoft Edge, si prega di seguire la sezione [1b. Modalità
 #### 1b. Modalità sviluppatore
 
 1.  **Scarica l'estensione:**
-    *   Scarica l'ultima versione di [TimbrApp Extension](hhttps://github.com/fvlgnn/timbrapp-extension/releases/latest) dal repository GitHub.
+    *   Scarica l'ultima versione di [TimbrApp Extension](https://github.com/fvlgnn/timbrapp-extension/releases/latest) dal repository GitHub.
     *   Decomprimi il file zip in una cartella che non eliminerai o sposterai in seguito (ad esempio, `~/Documenti/timbrapp-extension`).
 
 2.  **Abilita la modalità sviluppatore:**
