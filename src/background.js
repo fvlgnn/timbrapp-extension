@@ -20,25 +20,27 @@ chrome.runtime.onInstalled.addListener((detail) => {
 
 chrome.runtime.onStartup.addListener(() => {
     debugLog("[onStartup] Avvio l'estensione");
-    chrome.storage.local.get(["alarmActive", "lastClosedTime", "morningIn", "morningOut", "afternoonIn", "afternoonOut"], (data) => {
-        debugLog(`[onStartup] alarmActive: ${data.alarmActive} / lastClosedTime: ${data.lastClosedTime} / morningIn: ${data.morningIn} / morningOut: ${data.morningOut} / afternoonIn: ${data.afternoonIn} / afternoonOut: ${data.afternoonOut}`);
+    // Controlla se qualche allarme è stato mancato mentre il browser era chiuso
+    chrome.storage.local.get(["lastClosedTime", "alarmNextFireTimes"], (data) => {
         const lastClosedTime = data.lastClosedTime ? new Date(data.lastClosedTime) : null;
         const now = new Date();
-        if (data.alarmActive) {
-            debugLog("[onStartup] Con allarme attivo abilito il badge");
-            setNotificationBadge(true);
-        } else {
-            if (lastClosedTime && (now - lastClosedTime) > ONE_DAY_MS) {
-                debugLog("[onStartup] Il browser è stato chiuso per più di 24 ore. Abilito alarmActive e il badge.");
-                chrome.storage.local.set({ alarmActive: true });
-                chrome.action.setBadgeText({ text: "▲" });
-                chrome.action.setBadgeBackgroundColor({ color: "#FFFF00" });
+        const alarmNextFireTimes = data.alarmNextFireTimes || {};
+
+        if (lastClosedTime) {
+            debugLog(`[onStartup] Ultima chiusura: ${lastClosedTime.toLocaleString()}, Ora: ${now.toLocaleString()}`);
+            for (const alarmName in alarmNextFireTimes) {
+                const fireTime = new Date(alarmNextFireTimes[alarmName]);
+                if (fireTime > lastClosedTime && fireTime <= now) {
+                    debugLog(`[onStartup] Allarme "${alarmName}" mancato! Scadenza: ${fireTime.toLocaleString()}. Lo attivo ora.`);
+                    triggerNotification({ name: alarmName }); // Attiva la notifica per l'allarme mancato
+                    break; // Un solo avviso è sufficiente per attirare l'attenzione
+                }
             }
         }
-        debugLog("[onStartup] Ripristino gli allarmi da onStartup");
-        restoreAlarms(data);
+
+        // Ripristina sempre gli allarmi per le scadenze future
         chrome.storage.local.set({ lastClosedTime: now.toISOString() });
-        debugLog(`[onStartup] Imposto lastClosedTime alle ${data.lastClosedTime}`);
+        debugLog(`[onStartup] Imposto lastClosedTime a: ${now.toISOString()}`);
     });
 });
 
@@ -134,9 +136,13 @@ function setAlarm(time, alarmName) {
         return alarmTime.getTime();
     };
     const setTime = getNextAlarmTime(time);
-    chrome.alarms.clear(alarmName, () => {
-        chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: ONE_DAY_MIN });
-        debugLog(`[setAlarm function] setAlarm ${alarmName} alle ${new Date(setTime).toLocaleString()}`); 
+    chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: ONE_DAY_MIN });
+    debugLog(`[setAlarm function] setAlarm ${alarmName} alle ${new Date(setTime).toLocaleString()}`);
+
+    // Salva la prossima scadenza dell'allarme
+    chrome.storage.local.get({ alarmNextFireTimes: {} }, (data) => {
+        const updatedFireTimes = { ...data.alarmNextFireTimes, [alarmName]: setTime };
+        chrome.storage.local.set({ alarmNextFireTimes: updatedFireTimes });
     });
 }
 
@@ -156,20 +162,21 @@ function clearAlerts(action) {
     debugLog(`[clearAlerts] (${action}) Pulite tutte le notifiche e gli allarmi`);
 }
 
-function restoreAlarms(data) {
-    if (data.morningIn) setAlarm(data.morningIn, "morningIn");
-    if (data.morningOut) setAlarm(data.morningOut, "morningOut");
-    if (data.afternoonIn) setAlarm(data.afternoonIn, "afternoonIn");
-    if (data.afternoonOut) setAlarm(data.afternoonOut, "afternoonOut");
-}
-
 function setOrClearAlarms(data) {
     ["morningIn", "morningOut", "afternoonIn", "afternoonOut"].forEach((alarmName) => {
         if (data[alarmName]) {
             setAlarm(data[alarmName], alarmName);
         } else {
             chrome.alarms.clear(alarmName, (wasCleared) => {
-                if (wasCleared) debugLog(`[setOrClearAlarms] ${alarmName} cancellato`);
+                if (wasCleared) {
+                    debugLog(`[setOrClearAlarms] ${alarmName} cancellato`);
+                    // Rimuovi la scadenza salvata
+                    chrome.storage.local.get({ alarmNextFireTimes: {} }, (storageData) => {
+                        const updatedFireTimes = { ...storageData.alarmNextFireTimes };
+                        delete updatedFireTimes[alarmName];
+                        chrome.storage.local.set({ alarmNextFireTimes: updatedFireTimes });
+                    });
+                }
             });
         }
     });
