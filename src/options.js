@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // ---- Funzione di Debug ----
+    const DEBUG_MODE = true;
+
+    const debugLog = (...args) => {
+        if (DEBUG_MODE) console.log("[Options]", ...args);
+    };
+
     // ---- Inizializzazione: Traduzioni e Versione ----
     document.querySelectorAll("[data-i18n]").forEach((element) => {
         const key = element.getAttribute("data-i18n");
@@ -30,9 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
     async function requestHostPermission() {
         try {
             const granted = await chrome.permissions.request(HOST_PERMISSIONS);
+            debugLog("Richiesta permessi host. Concessi:", granted);
             return granted;
         } catch (err) {
-            console.error("Errore durante la richiesta dei permessi:", err);
+            debugLog("Errore durante la richiesta dei permessi:", err);
             return false;
         }
     }
@@ -41,9 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
     async function removeHostPermission() {
         try {
             const removed = await chrome.permissions.remove(HOST_PERMISSIONS);
+            debugLog("Rimozione permessi host. Rimossi:", removed);
             return removed;
         } catch (err) {
-            console.error("Errore durante la rimozione dei permessi:", err);
+            debugLog("Errore durante la rimozione dei permessi:", err);
             return false;
         }
     }
@@ -52,8 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Carica le impostazioni e aggiorna l'interfaccia
     const loadAndDisplaySettings = async () => {
+        debugLog("Avvio caricamento impostazioni...");
         const keys = ["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays"];
         chrome.storage.local.get(keys, async (data) => {
+            debugLog("Dati caricati da storage:", data);
             // Popola sempre tutti i campi
             morningIn.value = data.morningIn || "";
             morningOut.value = data.morningOut || "";
@@ -63,14 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Sincronizza lo stato del selettore overlay con i permessi reali
             const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
+            debugLog("Controllo permessi host:", hasPermissions);
             const savedScope = data.overlayScope || "none";
 
             if (hasPermissions) {
                 // Se abbiamo i permessi, l'opzione salvata (active o all) è valida.
                 overlayScope.value = savedScope === "none" ? "active" : savedScope; // Default a 'active' se lo stato è inconsistente
+                debugLog("Permessi presenti. Valore overlayScope impostato a:", overlayScope.value);
             } else {
                 // Se non abbiamo i permessi, l'unica opzione valida è 'none'.
                 overlayScope.value = "none";
+                debugLog("Permessi assenti. Valore overlayScope impostato a 'none'.");
             }
             
             const dndDays = data.dndDays || [];
@@ -80,10 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Aggiorna l'indicatore di stato in base agli orari
             if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
+                debugLog("Stato: ON");
                 statusNotification.textContent = "ON";
                 statusNotification.classList.add("enabled");
                 statusNotification.classList.remove("disabled");
             } else {
+                debugLog("Stato: OFF");
                 statusNotification.textContent = "OFF";
                 statusNotification.classList.add("disabled");
                 statusNotification.classList.remove("enabled");
@@ -107,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Pulsante Salva
     document.getElementById("save-settings").addEventListener("click", () => {
+        debugLog("Click su Salva.");
         const settings = {
             morningIn: morningIn.value,
             morningOut: morningOut.value,
@@ -117,8 +134,10 @@ document.addEventListener("DOMContentLoaded", () => {
             siteUrl: siteUrl.value
         };
 
+        debugLog("Salvataggio impostazioni:", settings);
         chrome.storage.local.set(settings, () => {
             chrome.runtime.sendMessage({ action: "setAlarms" });
+            debugLog("Messaggio 'setAlarms' inviato al background script.");
             showSaved(chrome.i18n.getMessage("settings_saved"));
             loadAndDisplaySettings(); // Aggiorna l'interfaccia dopo il salvataggio
         });
@@ -126,6 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Pulsante Svuota Campi
     document.getElementById("clean-settings").addEventListener("click", () => {
+        debugLog("Click su Svuota Campi.");
         morningIn.value = "";
         morningOut.value = "";
         afternoonIn.value = "";
@@ -141,11 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gestisce il cambio di selezione per l'overlay e i relativi permessi
     overlayScope.addEventListener("change", async (event) => {
         const selectedValue = event.target.value;
+        debugLog(`Selezione overlay cambiata a: '${selectedValue}'`);
 
         if (selectedValue === "active" || selectedValue === "all") {
             // L'utente vuole attivare un overlay, richiedi il permesso se non già presente
             const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
             if (!hasPermissions) {
+                debugLog("Permessi non presenti, avvio richiesta...");
                 const granted = await requestHostPermission();
                 if (!granted) {
                     // L'utente ha negato il permesso, reimposta il selettore su "none"
@@ -153,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         } else { // selectedValue === "none"
+            debugLog("Selezionato 'none', avvio revoca permessi...");
             // L'utente ha disabilitato l'overlay, revochiamo i permessi se presenti
             const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
             if (hasPermissions) {

@@ -53,6 +53,7 @@ chrome.runtime.onSuspend.addListener(() => {
 // ---- CHROME API EVENTS (User Actions & Alarms) ----
 
 chrome.runtime.onMessage.addListener((message) => {
+    debugLog(`[onMessage] Ricevuto messaggio:`, message);
     if (message.action === "setAlarms") {
         chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut"], (data) => {
             setOrClearAlarms(data);
@@ -73,6 +74,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             debugLog(`[onAlarm] Allarme ${alarm.name} ignorato. Oggi (${dayOfWeek}) è un giorno "Non disturbare".`);
             return; // Skip notification
         }
+        debugLog(`[onAlarm] Allarme ${alarm.name} ricevuto e processato.`);
         triggerNotification(alarm);
     });
 });
@@ -80,8 +82,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 chrome.action.onClicked.addListener(() => {
     chrome.storage.local.get(["siteUrl", "alarmActive"], (data) => {
         if (data.alarmActive) {
+            debugLog("[onClicked action] Allarme attivo, eseguo clearAlerts.");
             clearAlerts("clearAlerts");
         } else {
+            debugLog("[onClicked action] Nessun allarme attivo, apro la pagina delle opzioni.");
             chrome.runtime.openOptionsPage();
         }
     });
@@ -164,6 +168,7 @@ function clearAlerts(action) {
 
 function setOrClearAlarms(data) {
     ["morningIn", "morningOut", "afternoonIn", "afternoonOut"].forEach((alarmName) => {
+        debugLog(`[setOrClearAlarms] Controllo l'allarme: ${alarmName} con valore: ${data[alarmName]}`);
         if (data[alarmName]) {
             setAlarm(data[alarmName], alarmName);
         } else {
@@ -183,6 +188,7 @@ function setOrClearAlarms(data) {
 }
 
 function setNotificationBadge(isVisible) {
+    debugLog(`[setNotificationBadge] Imposto visibilità a: ${isVisible}`);
     if (isVisible) {
         chrome.action.setBadgeText({ text: "❕" });
         chrome.action.setBadgeBackgroundColor({ color: "#FF0000" });
@@ -239,12 +245,15 @@ function createNotification(title, message) {
 function clearNotifications() {
     chrome.storage.local.get("notificationIds", (data) => {
         if (data.notificationIds && data.notificationIds.length > 0) {
+            debugLog(`[clearNotifications] Trovate ${data.notificationIds.length} notifiche da chiudere.`);
             data.notificationIds.forEach((notificationId) => {
                 chrome.notifications.clear(notificationId, () => {
                     debugLog(`[clearNotifications] Notifica ${notificationId} chiusa da array.`);
                 });
             });
             chrome.storage.local.remove("notificationIds");
+        } else {
+            debugLog("[clearNotifications] Nessuna notifica da chiudere.");
         }
     });
 }

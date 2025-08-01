@@ -25,6 +25,7 @@ jobs:
         run: |
           mv src $ARTIFACT_NAME
           sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
+          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/options.js
           cp LICENSE $ARTIFACT_NAME
           if [ "$DEBUG_MODE" = "false" ]; then
             echo "Minifying files..."
