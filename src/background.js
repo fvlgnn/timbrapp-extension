@@ -4,7 +4,7 @@ const DEBUG_MODE = true;
 const ONE_DAY_MS = 86400000; // 24h * 60' * 60'' * 1000ms = 86400000ms
 const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
-const PROCESS_QUEUE_ALARM_NAME = "timbrapp-extension-alarm-queue-process";
+const PROCESS_QUEUE_ALARM_NAME = "timbrapp-extension-process-alarm-queue";
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
@@ -23,7 +23,6 @@ chrome.runtime.onInstalled.addListener((detail) => {
 chrome.runtime.onStartup.addListener(() => {
     debugLog("[onStartup] Avvio l'estensione.");
     // Controlla se un allarme era attivo prima della chiusura e ripristina il badge.
-    // Questo garantisce che lo stato di "allerta" persista tra le sessioni del browser.
     chrome.storage.local.get("alarmActive", (data) => {
         if (data.alarmActive) {
             debugLog("[onStartup] Trovato un allarme attivo. Ripristino il badge.");
@@ -50,8 +49,7 @@ let alarmHandlerPromise = Promise.resolve();
 
 // Listener principale per tutti gli allarmi.
 chrome.alarms.onAlarm.addListener((alarm) => {
-    // Accoda l'elaborazione dell'allarme per garantire che vengano gestiti uno alla volta,
-    // risolvendo la race condition durante la lettura/scrittura dello storage.
+    // Accoda l'elaborazione dell'allarme per garantire che vengano gestiti uno alla volta, race condition.
     alarmHandlerPromise = alarmHandlerPromise.then(async () => {
         // Se l'allarme che è scattato è quello per elaborare la coda, esegui la funzione e fermati qui.
         if (alarm.name === PROCESS_QUEUE_ALARM_NAME) {
@@ -239,10 +237,14 @@ function setNotificationBadge(isVisible) {
 //     const { notificationIds } = await chrome.storage.local.get("notificationIds");
 //     if (notificationIds && notificationIds.length > 0) {
 //         debugLog(`[clearNotifications] Trovate ${notificationIds.length} notifiche da chiudere.`);
-//         const clearPromises = notificationIds.map(id => chrome.notifications.clear(id));
-//         await Promise.all(clearPromises);
+//         await Promise.all(
+//             notificationIds.map(id =>
+//                 chrome.notifications.clear(id).then(() =>
+//                     debugLog(`[clearNotifications] Notifica ${id} chiusa da array.`)
+//                 )
+//             )
+//         );
 //         await chrome.storage.local.remove("notificationIds");
-//         debugLog(`[clearNotifications] Tutte le notifiche sono state chiuse.`);
 //     } else {
 //         debugLog("[clearNotifications] Nessuna notifica da chiudere.");
 //     }
@@ -264,30 +266,23 @@ function clearNotifications() {
 }
 
 // async function removeOverlays() {
-//     // Controlla i permessi prima di tentare di eseguire lo script per evitare errori.
-//     debugLog("[removeOverlays] Avvio rimozione overlay...");
-//     const hasPermissions = await chrome.permissions.contains({
-//         origins: ["https://*/*", "http://*/*"],
-//     });
-//     if (!hasPermissions) {
-//         debugLog("[removeOverlays] Permessi host non presenti. Salto la rimozione.");
-//         return;
-//     }
-//     const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
-//     const removalPromises = tabs.map(tab => {
-//         if (tab.id) {
-//             return chrome.scripting.executeScript({
-//                 target: { tabId: tab.id },
-//                 func: () => {
-//                     const overlay = document.getElementById("timbrapp-extension-overlay");
-//                     if (overlay) overlay.remove();
-//                 }
-//             }).catch(err => debugLog(`[removeOverlays] Errore non bloccante durante la rimozione dell'overlay da ${tab.url}:`, err));
+//     const tabs = await chrome.tabs.query({});
+//     for (const tab of tabs) {
+//         if (tab.id && tab.url && tab.url.startsWith("http")) {
+//             try {
+//                 await chrome.scripting.executeScript({
+//                     target: { tabId: tab.id },
+//                     func: () => {
+//                         const overlay = document.getElementById("timbrapp-extension-overlay");
+//                         if (overlay) overlay.remove();
+//                     }
+//                 });
+//                 debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
+//             } catch (error) {
+//                 debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
+//             }
 //         }
-//         return Promise.resolve();
-//     });
-//     await Promise.all(removalPromises);
-//     debugLog(`[removeOverlays] Tentativo di rimozione overlay completato per ${tabs.length} schede.`);
+//     }
 // }
 function removeOverlays() {
     chrome.tabs.query({}, (tabs) => {
