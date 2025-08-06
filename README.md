@@ -16,7 +16,7 @@ Developed by **Gianni F. _fvlgnn_**
 > Non dimenticare mai più di timbrare il cartellino! TimbrApp Extension è il tuo promemoria smart per il lavoro.
 > 
 
-![TimbrApp Extension](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/timbrapp-extension-logo.png "TimbrApp Extension Logo")
+![TimbrApp Extension](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/docs/images/timbrapp-extension-logo.png "TimbrApp Extension Logo")
 
 ![TimbrApp Extension Release and Deploy](https://github.com/fvlgnn/timbrapp-extension/actions/workflows/main.yml/badge.svg?event=push "TimbrApp Extension Release and Deploy Status")
 
