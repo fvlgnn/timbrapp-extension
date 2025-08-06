@@ -17,7 +17,7 @@
         // ---- Crea il pulsante primario ----
         const primaryButton = document.createElement("div");
         primaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--primary";
-        primaryButton.dataset.action = "clearAlerts";
+        primaryButton.dataset.action = "resolveAlert";
         primaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_go") : chrome.i18n.getMessage("overlay_done");
 
         // ---- Aggiunge gli elementi al contenitore e poi al body ----
@@ -27,8 +27,8 @@
         if (siteUrl) {
             const secondaryButton = document.createElement("div");
             secondaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--secondary";
-            secondaryButton.dataset.action = "closeOverlays";
-            secondaryButton.textContent = chrome.i18n.getMessage("overlay_close");
+            secondaryButton.dataset.action = "dismissAlert";
+            secondaryButton.textContent = chrome.i18n.getMessage("overlay_done");
             overlay.appendChild(secondaryButton);
         }
 
