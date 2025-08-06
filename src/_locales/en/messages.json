@@ -1,7 +1,6 @@
 {
   "app_name": { "message": "TimbrApp Extension" },
   "description": { "message": "Never forget to clock in again! TimbrApp Extension is your smart reminder for work." },
-  "subtitle": { "message": "Clock-in/Clock-out Reminder" },
   "help_tooltip": { "message": "Leave the time field empty to disable its reminder. Click the trash icon to clear all fields." },
   "clear_tooltip_title": { "message": "Clear all fields" },
   "morning_section": { "message": "Morning" },

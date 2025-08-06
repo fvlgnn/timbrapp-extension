@@ -1,4 +1,5 @@
 ### 🚀 Improvements
+- **Options Page UX**: The options page now opens in a dedicated new tab instead of within the `chrome://extensions` page, providing a cleaner and more spacious user interface for configuration.
 - **Alarm Handling Overhaul**: Completely redesigned the alarm processing system to be more robust and reliable. The new system uses a persistent queue and a dedicated processing alarm to correctly handle all scenarios, including browser restarts and service worker suspensions.
 - **Notification Replacement Logic**: Improved the user experience by ensuring that a new alarm notification will always replace any existing one. This guarantees the user always sees the most recent and relevant reminder.
 - **Code Refactoring**: Renamed internal actions to be more descriptive of user intent, improving code clarity and maintainability.

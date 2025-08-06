@@ -1,19 +1,28 @@
+html {
+    background-color: #f0f2f5;
+}
+
 body {
     font-family: Arial, sans-serif;
-    margin: 10px;
-    padding-bottom: 64px;
-    background-color: #eee;
+    background-color: #fff;
+    max-width: 520px;
+    margin: 40px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+    padding: 20px;
+    padding-bottom: 80px;
+    position: relative;
 }
 
 h2 {
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-    padding: 8px;
+    padding: 12px;
     background-color: #333;
     color: #ddd;
-    border-radius: 6px;
-    margin-bottom: 10px;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -20px 20px -20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,7 +30,7 @@ h2 {
 
 .form-container {
     max-width: 340px;
-    margin: 0 auto;
+    margin: 20px auto 0 auto;
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 6px;
@@ -159,10 +168,10 @@ input[type="checkbox"] {
 }
 
 #saved {
-    position: fixed;
-    bottom: 18px;
+    position: absolute;
+    bottom: 20px;
     left: 50%;
-    background-color: #4caf50;
+    background-color: #28a745;
     border: 1px solid #388e3c;
     color: white;
     padding: 10px 20px;
@@ -173,7 +182,7 @@ input[type="checkbox"] {
     z-index: 1000;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -217,9 +226,9 @@ input[type="checkbox"] {
 }
 
 .floating-save-btn {
-    position: fixed;
-    bottom: 14px;
-    right: 14px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
     width: 48px;
     height: 48px;
     background-color: #007bff;
@@ -229,7 +238,7 @@ input[type="checkbox"] {
     justify-content: center;
     box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
     z-index: 100;
 }
 

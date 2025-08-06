@@ -1,7 +1,6 @@
 {
   "app_name": { "message": "TimbrApp Extension" },
   "description": { "message": "Non dimenticare mai più di timbrare il cartellino! TimbrApp Extension è il tuo promemoria smart per il lavoro." },
-  "subtitle": { "message": "Promemoria Timbratura" },
   "help_tooltip": { "message": "Lascia il campo orario vuoto per disattivare il promemoria corrispondente. Clicca sull'icona del cestino per svuotare tutti i campi." },
   "clear_tooltip_title": { "message": "Svuota tutti i campi" },
   "morning_section": { "message": "Mattina" },
