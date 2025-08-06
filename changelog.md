@@ -1,13 +1,11 @@
 ### 🚀 Improvements
-- **Documentation**: Updated the `README.md` file to improve clarity and information structure.
-- **Manifest**: Updated the slogan in the `manifest.json` description for a more impactful presentation.
-- **Missed Alarms Logic**: Reworked the logic for handling missed alarms. The system now accurately detects if a specific alarm was missed while the browser was closed, providing a more precise and reliable user experience.
+- **Alarm Handling Overhaul**: Completely redesigned the alarm processing system to be more robust and reliable. The new system uses a persistent queue and a dedicated processing alarm to correctly handle all scenarios, including browser restarts and service worker suspensions.
 
 ### ✨ New Features
 - Nothing new.
 
 ### 🐛 Bug Fixes
-- Nothing new.
+- **Multiple Notification Bug**: Fixed a critical issue where multiple notifications would appear simultaneously if the browser was closed for an extended period. The extension now correctly displays only the single, most recent missed notification.
 
 ---
 

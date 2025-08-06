@@ -4,6 +4,9 @@ const DEBUG_MODE = true;
 const ONE_DAY_MS = 86400000; // 24h * 60' * 60'' * 1000ms = 86400000ms
 const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
+// Nome univoco per l'allarme che elabora la coda.
+const PROCESS_QUEUE_ALARM_NAME = "timbrapp-process-queue";
+
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
 };
@@ -20,33 +23,16 @@ chrome.runtime.onInstalled.addListener((detail) => {
 
 chrome.runtime.onStartup.addListener(() => {
     debugLog("[onStartup] Avvio l'estensione");
-    // Controlla se qualche allarme è stato mancato mentre il browser era chiuso
-    chrome.storage.local.get(["lastClosedTime", "alarmNextFireTimes"], (data) => {
-        const lastClosedTime = data.lastClosedTime ? new Date(data.lastClosedTime) : null;
-        const now = new Date();
-        const alarmNextFireTimes = data.alarmNextFireTimes || {};
-
-        if (lastClosedTime) {
-            debugLog(`[onStartup] Ultima chiusura: ${lastClosedTime.toLocaleString()}, Ora: ${now.toLocaleString()}`);
-            for (const alarmName in alarmNextFireTimes) {
-                const fireTime = new Date(alarmNextFireTimes[alarmName]);
-                if (fireTime > lastClosedTime && fireTime <= now) {
-                    debugLog(`[onStartup] Allarme "${alarmName}" mancato! Scadenza: ${fireTime.toLocaleString()}. Lo attivo ora.`);
-                    triggerNotification({ name: alarmName }); // Attiva la notifica per l'allarme mancato
-                    break; // Un solo avviso è sufficiente per attirare l'attenzione
-                }
-            }
-        }
-
-        // Ripristina sempre gli allarmi per le scadenze future
-        chrome.storage.local.set({ lastClosedTime: now.toISOString() });
-        debugLog(`[onStartup] Imposto lastClosedTime a: ${now.toISOString()}`);
-    });
+    // All'avvio, ci assicuriamo solo che il timestamp per la prossima sospensione sia aggiornato.
+    // La gestione degli allarmi mancati è ora centralizzata in onAlarm per evitare race conditions.
+    const now = new Date();
+    chrome.storage.local.set({ lastSuspendTime: now.toISOString() });
+    debugLog(`[onStartup] Impostato lastSuspendTime a: ${now.toISOString()}`);
 });
 
 chrome.runtime.onSuspend.addListener(() => {
     const now = new Date();
-    chrome.storage.local.set({ lastClosedTime: now.toISOString() });
+    chrome.storage.local.set({ lastSuspendTime: now.toISOString() });
     debugLog(`[onSuspend] Browser chiuso alle ${now.toISOString()}`);
 });
 
@@ -64,19 +50,28 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-    const today = new Date();
-    const dayOfWeek = today.getDay().toString(); // 0=Sun, 1=Mon, ...
+// Listener principale per tutti gli allarmi.
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+    // Se l'allarme che è scattato è quello per elaborare la coda,
+    // esegui la funzione e fermati qui.
+    if (alarm.name === PROCESS_QUEUE_ALARM_NAME) {
+        debugLog(`[onAlarm] Ricevuto allarme di elaborazione. Avvio processAlarmQueue.`);
+        await processAlarmQueue();
+        return;
+    }
 
-    chrome.storage.local.get(["dndDays"], (data) => {
-        const dndDays = data.dndDays || [];
-        if (dndDays.includes(dayOfWeek)) {
-            debugLog(`[onAlarm] Allarme ${alarm.name} ignorato. Oggi (${dayOfWeek}) è un giorno "Non disturbare".`);
-            return; // Skip notification
-        }
-        debugLog(`[onAlarm] Allarme ${alarm.name} ricevuto e processato.`);
-        triggerNotification(alarm);
-    });
+    // Altrimenti, è un allarme di notifica. Aggiungilo alla coda.
+    debugLog(`[onAlarm] Ricevuto allarme di notifica: ${alarm.name}. Aggiungo alla coda.`);
+
+    // Aggiungiamo l'allarme alla coda persistente
+    const data = await chrome.storage.local.get({ alarmQueue: [] });
+    const newQueue = [...data.alarmQueue, alarm];
+    await chrome.storage.local.set({ alarmQueue: newQueue });
+
+    // Crea (o aggiorna) l'allarme di elaborazione per eseguirlo tra 1 secondo.
+    // Questo raggruppa tutti gli allarmi che arrivano in rapida successione
+    // e garantisce l'esecuzione anche se il service worker viene sospeso.
+    chrome.alarms.create(PROCESS_QUEUE_ALARM_NAME, { delayInMinutes: 1 / 60 });
 });
 
 chrome.action.onClicked.addListener(() => {
@@ -105,18 +100,58 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 
 // ---- CORE LOGIC FUNCTIONS ----
 
+async function processAlarmQueue() {
+    // 1. Recupera e svuota la coda in un'unica operazione per evitare race conditions
+    const { alarmQueue } = await chrome.storage.local.get({ alarmQueue: [] });
+    if (alarmQueue.length === 0) {
+        debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
+        return;
+    }
+    await chrome.storage.local.set({ alarmQueue: [] }); // Svuota subito
+
+    debugLog(`[processAlarmQueue] Inizio elaborazione di ${alarmQueue.length} allarmi in coda.`);
+
+    // 2. Trova l'allarme più recente tra quelli in coda
+    const latestAlarm = alarmQueue.reduce((latest, current) => {
+        return current.scheduledTime > latest.scheduledTime ? current : latest;
+    });
+
+    debugLog(`[processAlarmQueue] L'allarme più recente è: ${latestAlarm.name} (scadenza: ${new Date(latestAlarm.scheduledTime).toLocaleString()})`);
+
+    // 3. Controlla le condizioni e, se superate, attiva la notifica
+    const dayOfWeek = new Date(latestAlarm.scheduledTime).getDay().toString();
+    const storageData = await chrome.storage.local.get(["dndDays", "alarmActive"]);
+
+    if (storageData.alarmActive) {
+        debugLog(`[processAlarmQueue] Allarmi ignorati perché una notifica è già attiva.`);
+        return;
+    }
+    const dndDays = storageData.dndDays || [];
+    if (dndDays.includes(dayOfWeek)) {
+        debugLog(`[processAlarmQueue] Allarme ${latestAlarm.name} ignorato. Il giorno ${dayOfWeek} è "Non disturbare".`);
+        return;
+    }
+
+    debugLog(`[processAlarmQueue] Processo l'allarme ${latestAlarm.name}.`);
+    triggerNotification(latestAlarm);
+}
+
 function triggerNotification(alarm) {
-    debugLog(`[triggerNotification] Allarme: ${alarm.name}`);
-    const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
-    const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
-    debugLog(`[triggerNotification] isEntry: ${isEntry}`);
-    debugLog(`[triggerNotification] isMorning: ${isMorning}`);
-    const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
-    const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
-    chrome.storage.local.get(["siteUrl", "overlayScope"], (data) => {
+    // Aggiungiamo un controllo per evitare race conditions.
+    chrome.storage.local.get(["siteUrl", "overlayScope", "alarmActive"], (data) => {
+        if (data.alarmActive) {
+            debugLog(`[triggerNotification] Notifica per ${alarm.name} bloccata, un'altra è già attiva.`);
+            return;
+        }
+        debugLog(`[triggerNotification] Allarme: ${alarm.name}`);
+        const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
+        const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
+        const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
+        const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");// 
         const notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
         const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
         const notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
+        debugLog(`[triggerNotification] notificationTitle: ${notificationTitle}, notificationMessage: ${notificationMessage}`);
         createNotification(notificationTitle, notificationMessage);
         chrome.storage.local.set({ alarmActive: true });
         setNotificationBadge(true);
@@ -142,7 +177,6 @@ function setAlarm(time, alarmName) {
     const setTime = getNextAlarmTime(time);
     chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: ONE_DAY_MIN });
     debugLog(`[setAlarm function] setAlarm ${alarmName} alle ${new Date(setTime).toLocaleString()}`);
-
     // Salva la prossima scadenza dell'allarme
     chrome.storage.local.get({ alarmNextFireTimes: {} }, (data) => {
         const updatedFireTimes = { ...data.alarmNextFireTimes, [alarmName]: setTime };
