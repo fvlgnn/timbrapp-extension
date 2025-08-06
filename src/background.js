@@ -93,39 +93,37 @@ chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIn
 // ---- CORE LOGIC FUNCTIONS ----
 
 async function processAlarmQueue() {
-    // 1. Recupera la coda dallo storage
-    const { alarmQueue } = await chrome.storage.local.get({ alarmQueue: [] });
-    if (alarmQueue.length === 0) {
+    // 1. Recupera la coda e le impostazioni DND. Svuota subito la coda per evitare riprocessamenti.
+    const { alarmQueue, dndDays = [] } = await chrome.storage.local.get(["alarmQueue", "dndDays"]);
+    await chrome.storage.local.set({ alarmQueue: [] });
+
+    if (!alarmQueue || alarmQueue.length === 0) {
         debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
         return;
     }
-    // Salva il numero di allarmi PRIMA di svuotare la coda per una decisione affidabile.
-    const alarmCount = alarmQueue.length;
-    debugLog(`[processAlarmQueue] Trovati ${alarmCount} allarmi in coda.`);
-    // Svuota subito la coda per evitare che venga riprocessata
-    await chrome.storage.local.set({ alarmQueue: [] });
+    debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio filtraggio DND.`);
 
-    debugLog(`[processAlarmQueue] Inizio elaborazione di ${alarmCount} allarmi in coda.`);
-
-    // 2. Trova l'allarme più recente tra quelli in coda
-    const latestAlarm = alarmQueue.reduce((latest, current) => {
-        return current.scheduledTime > latest.scheduledTime ? current : latest;
+    // 2. Filtra la coda per rimuovere gli allarmi che sono scattati in un giorno "Non disturbare".
+    const validAlarms = alarmQueue.filter(alarm => {
+        const dayOfWeek = new Date(alarm.scheduledTime).getDay().toString();
+        const isDnd = dndDays.includes(dayOfWeek);
+        if (isDnd) {
+            debugLog(`[processAlarmQueue] Scarto l'allarme ${alarm.name} perché il giorno ${dayOfWeek} è DND.`);
+        }
+        return !isDnd;
     });
 
-    debugLog(`[processAlarmQueue] L'allarme più recente è: ${latestAlarm.name} (scadenza: ${new Date(latestAlarm.scheduledTime).toLocaleString()})`);
-
-    // 3. Controlla le condizioni DND usando l'orario dell'ultimo allarme
-    const dayOfWeek = new Date(latestAlarm.scheduledTime).getDay().toString();
-    const storageData = await chrome.storage.local.get(["dndDays"]);
-
-    const dndDays = storageData.dndDays || [];
-    if (dndDays.includes(dayOfWeek)) {
-        debugLog(`[processAlarmQueue] Allarmi ignorati. Il giorno ${dayOfWeek} è "Non disturbare".`);
+    // 3. Se dopo il filtro non ci sono allarmi validi, fermati.
+    if (validAlarms.length === 0) {
+        debugLog(`[processAlarmQueue] Nessun allarme valido rimasto dopo il filtro DND.`);
         return;
     }
 
-    // 4. Decide se inviare una notifica generica o specifica
-    if (alarmCount > 1) {
+    // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
+    const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
+    debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
+
+    if (validAlarms.length > 1) {
         debugLog(`[processAlarmQueue] Rilevati allarmi multipli. Invio notifica generica.`);
         triggerNotification({ name: "generic" }); // Usa un nome speciale per la notifica generica
     } else {
