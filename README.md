@@ -168,7 +168,9 @@ This will update your TimbrApp Extension to the latest version.
 1.  **Set reminders:**
     *   Make sure that the TimbrApp Extension icon in the toolbar does not have a red badge.
     *   Click on the TimbrApp Extension icon to open the settings.
-    *   Configure the times you want to receive the reminder.
+    *   **Configure reminder times:**
+        *   To disable a single reminder, leave the corresponding time field empty.
+        *   To disable all reminders, and therefore the extension's main feature, click the trash icon to clear all time fields.
     *   Customize additional options: set the HR portal URL to open when clicking, choose your "Do Not Disturb" days, and decide where to display the alert banner (on all pages or only the active one).
 
 2.  **Receive reminders:**
@@ -321,7 +323,9 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
 1.  **Imposta i promemoria:**
     *   Assicurati che l'icona di TimbrApp Extension nella barra degli strumenti non abbia un badge rosso.
     *   Clicca sull'icona di TimbrApp Extension per aprire le impostazioni.
-    *   Configura gli orari in cui vuoi ricevere il promemoria.
+    *   **Configura gli orari dei promemoria:**
+        *   Per disabilitare un singolo promemoria, lascia vuoto il campo orario corrispondente.
+        *   Per disabilitare tutti i promemoria, e quindi la funzionalità principale dell'estensione, clicca sull'icona del cestino per svuotare tutti i campi orario.
     *   Personalizza le opzioni aggiuntive: imposta l'URL del portale HR da aprire al click, scegli i giorni per la modalità "Non Disturbare" e decidi dove visualizzare il banner di avviso (su tutte le pagine o solo su quella attiva).
 
 2.  **Ricevi i promemoria:**
