@@ -29,6 +29,7 @@
             secondaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--secondary";
             secondaryButton.dataset.action = "dismissAlert";
             secondaryButton.textContent = chrome.i18n.getMessage("overlay_done");
+            // secondaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_done") : chrome.i18n.getMessage("overlay_will_do");
             overlay.appendChild(secondaryButton);
         }
 
