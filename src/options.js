@@ -29,6 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlayScope = document.getElementById("overlay-scope");
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
+    const helpIcon = document.getElementById("help-icon");
+    const helpPanel = document.getElementById("help-panel");
+    const closeHelpButton = document.getElementById("close-help");
+    const helpBody = document.getElementById("help-body");
 
     // ---- Funzioni per la gestione dei permessi ----
     const HOST_PERMISSIONS = { origins: ["https://*/*", "http://*/*"] };
@@ -182,6 +186,72 @@ document.addEventListener("DOMContentLoaded", () => {
                 await removeHostPermission();
             }
         }
+    });
+
+    // ---- Gestione Pannello di Aiuto ----
+
+    const HELP_SECTION_IDS = {
+        it: 'utilizzo',
+        en: 'usage'
+        // Aggiungi altre lingue qui, es: de: 'anwendung'
+    };
+    const DEFAULT_HELP_LANG = 'en';
+
+    // Funzione per mostrare il pannello
+    const showHelpPanel = async () => {
+        debugLog("Apertura pannello di aiuto.");
+        // Carica il contenuto solo se non è già stato caricato
+        if (helpBody.textContent.trim() === "") {
+            debugLog("Caricamento contenuto della guida if...");
+            helpBody.innerHTML = `<p>${chrome.i18n.getMessage("help_loading")}</p>`;
+            try {
+                debugLog("Caricamento contenuto della guida try...");
+                const readmeUrl = chrome.runtime.getURL('README.html');
+                const response = await fetch(readmeUrl);
+                if (!response.ok) throw new Error(`Errore di rete: ${response.status} ${response.statusText}`);
+                const text = await response.text();
+                if (!text) throw new Error("Il file README.html è vuoto o non leggibile.");
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+
+                // Determina la sezione da mostrare in base alla lingua dell'interfaccia
+                const uiLang = chrome.i18n.getUILanguage().split('-')[0]; // Prende solo 'it' da 'it-IT'
+                const sectionId = HELP_SECTION_IDS[uiLang] || HELP_SECTION_IDS[DEFAULT_HELP_LANG];
+                debugLog(`Lingua UI: ${uiLang}. Cerco la sezione di aiuto con id: '${sectionId}'`);
+
+                const usageSection = doc.getElementById(sectionId);
+                if (usageSection) {
+                    let content = usageSection.outerHTML;
+                    let nextElement = usageSection.nextElementSibling;
+                    // Aggiungi gli elementi successivi fino alla prossima sezione H3
+                    while (nextElement && nextElement.tagName !== 'H3') {
+                        content += nextElement.outerHTML;
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                    helpBody.innerHTML = content;
+                } else {
+                    debugLog(`Sezione con id '${sectionId}' non trovata nel README.html.`);
+                    helpBody.textContent = chrome.i18n.getMessage("help_content_not_found");
+                }
+            } catch (error) {
+                debugLog("Errore nel caricamento della guida:", error);
+                helpBody.textContent = chrome.i18n.getMessage("help_load_error", [error.message]);
+            }
+        }
+        helpPanel.classList.remove("hidden");
+    };
+
+    // Funzione per nascondere il pannello
+    const hideHelpPanel = () => helpPanel.classList.add("hidden");
+
+    helpIcon.addEventListener("click", showHelpPanel);
+    closeHelpButton.addEventListener("click", hideHelpPanel);
+    helpPanel.addEventListener("click", (event) => {
+        if (event.target === helpPanel) hideHelpPanel(); // Chiudi cliccando sullo sfondo
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !helpPanel.classList.contains('hidden')) hideHelpPanel(); // Chiudi con 'Esc'
     });
 
     // ---- Esecuzione iniziale ----

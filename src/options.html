@@ -6,19 +6,19 @@
     <link rel="stylesheet" href="options.css">
 </head>
 <body> 
-    <h2>
+    <div class="app-header">
         <span data-i18n="app_name"></span>
         <div class="header-controls">
             <span id="app-version"></span>
             <span id="status-notification">OFF</span>
-            <span id="help-icon" class="header-icon" data-i18n-title="help_tooltip">
+            <button id="help-icon" class="header-icon" data-i18n-title="help_tooltip">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
-            </span>
-            <span id="clean-settings" class="header-icon" data-i18n-title="clear_tooltip_title">
+            </button>
+            <button id="clean-settings" class="header-icon" data-i18n-title="clear_tooltip_title">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-            </span>
+            </button>
         </div>
-    </h2>
+    </div>
     <div class="form-container">
         <fieldset class="section morning">
             <legend><span data-i18n="morning_section"></span></legend>
@@ -95,6 +95,14 @@
     <div id="saved" class="hidden">
         <svg class="saved-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         <span class="saved-message"></span>
+    </div>
+    <div id="help-panel" class="help-overlay hidden">
+        <div class="help-content">
+            <button id="close-help" class="close-button" data-i18n-title="close_button">&times;</button>
+            <div id="help-body">
+                <!-- Il contenuto della guida verrà caricato qui -->
+            </div>
+        </div>
     </div>
     <script src="options.js"></script>
 </body>
