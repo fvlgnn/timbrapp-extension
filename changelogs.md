@@ -5,6 +5,7 @@
 
 ### 🐛 Bug Fixes
 - **Improved Notification Stability**: Reworked the alarm notification system to be significantly more reliable. The new approach uses a stable notification ID to atomically update alerts, eliminating race conditions that could prevent notifications from being displayed.
+- **Enhanced Overlay Management for Stability and Performance**: Refactored the overlay removal process to be more efficient and reliable. It now tracks the specific tabs where overlays are active instead of querying all tabs, significantly improving performance.
 
 ### ✨ New Features
 - Nothing new.
