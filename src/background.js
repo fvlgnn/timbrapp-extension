@@ -246,14 +246,11 @@ async function removeOverlays() {
         debugLog("[removeOverlays] Permessi host non concessi. Impossibile rimuovere gli overlay.");
         return;
     }
-
     const { overlayTabIds } = await chrome.storage.local.get("overlayTabIds");
-
     if (!overlayTabIds || overlayTabIds.length === 0) {
         debugLog("[removeOverlays] Nessun overlay da rimuovere.");
         return;
     }
-
     for (const tabId of overlayTabIds) {
         try {
             // Tenta di rimuovere lo script. Se il tab è stato chiuso
@@ -269,7 +266,6 @@ async function removeOverlays() {
             debugLog(`[removeOverlays] Impossibile rimuovere l'overlay dal tab ${tabId} (potrebbe essere stato chiuso): ${error.message}`);
         }
     }
-
     // Una volta terminato, pulisce la lista dallo storage.
     await chrome.storage.local.remove("overlayTabIds");
 }
