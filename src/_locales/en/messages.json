@@ -5,6 +5,7 @@
   "help_loading": { "message": "Loading..." },
   "help_content_not_found": { "message": "Help content not found." },
   "help_load_error": { "message": "Could not load the guide." },
+  "help_close_button": { "message": "Close" },
   "clear_tooltip_title": { "message": "Clear all fields" },
   "morning_section": { "message": "Morning" },
   "afternoon_section": { "message": "Afternoon" },

@@ -5,6 +5,7 @@
   "help_loading": { "message": "Caricamento..." },
   "help_content_not_found": { "message": "Contenuto di aiuto non trovato." },
   "help_load_error": { "message": "Impossibile caricare la guida." },
+  "help_close_button": { "message": "Chiudi" },
   "clear_tooltip_title": { "message": "Svuota tutti i campi" },
   "morning_section": { "message": "Mattina" },
   "afternoon_section": { "message": "Pomeriggio" },

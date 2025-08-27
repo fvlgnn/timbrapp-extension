@@ -199,13 +199,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Funzione per mostrare il pannello
     const showHelpPanel = async () => {
-        debugLog("Apertura pannello di aiuto.");
         // Carica il contenuto solo se non è già stato caricato
         if (helpBody.textContent.trim() === "") {
-            debugLog("Caricamento contenuto della guida if...");
             helpBody.innerHTML = `<p>${chrome.i18n.getMessage("help_loading")}</p>`;
             try {
-                debugLog("Caricamento contenuto della guida try...");
                 const readmeUrl = chrome.runtime.getURL('README.html');
                 const response = await fetch(readmeUrl);
                 if (!response.ok) throw new Error(`Errore di rete: ${response.status} ${response.statusText}`);

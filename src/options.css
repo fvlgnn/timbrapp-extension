@@ -277,7 +277,7 @@ input[type="checkbox"] {
 .help-content {
     background-color: #fff;
     font-size: 1.2em;
-    padding: 20px 30px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     max-width: 90%;
@@ -293,10 +293,15 @@ input[type="checkbox"] {
     transform: scale(0.95);
 }
 
-.close-button {
+.help-content ol,
+.help-content ul {
+    padding-inline-start: 20px;
+}
+
+.close-help {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 20px;
     font-size: 28px;
     font-weight: bold;
     color: #888;
@@ -308,7 +313,7 @@ input[type="checkbox"] {
     width: auto;
 }
 
-.close-button:hover {
+.close-help:hover {
     color: #333;
 }
 
