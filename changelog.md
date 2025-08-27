@@ -4,7 +4,7 @@
 - **Documentation Clarity**: The "Usage" section in the documentation has been restructured for better readability, providing clearer instructions on how to configure and use the extension.
 
 ### 🐛 Bug Fixes
-- Nothing new.
+- **Improved Notification Stability**: Reworked the alarm notification system to be significantly more reliable. The new approach uses a stable notification ID to atomically update alerts, eliminating race conditions that could prevent notifications from being displayed.
 
 ### ✨ New Features
 - Nothing new.

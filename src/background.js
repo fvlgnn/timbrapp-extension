@@ -5,6 +5,7 @@ const ONE_DAY_MS = 86400000; // 24h * 60' * 60'' * 1000ms = 86400000ms
 const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
 const PROCESS_QUEUE_ALARM_NAME = "timbrapp-extension-process-alarm-queue";
+const NOTIFICATION_ID = "timbrapp-extension-main-notification";
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
@@ -119,6 +120,11 @@ async function processAlarmQueue() {
         return;
     }
 
+    // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente
+    // grazie all'ID stabile, quindi non è necessario pulirla manualmente qui.
+    await removeOverlays();
+    // await clearNotifications();
+
     // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
     const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
     debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
@@ -133,13 +139,6 @@ async function processAlarmQueue() {
 }
 
 async function triggerNotification(alarm) {
-    // Pulisce sempre qualsiasi stato di allarme precedente per garantire la sostituzione.
-    debugLog(`[triggerNotification] Pulizia dello stato di allarme precedente prima di attivare ${alarm.name}.`);
-    // await clearNotifications();
-    // await removeOverlays();
-    removeOverlays();
-    clearNotifications();
-
     debugLog(`[triggerNotification] Attivazione notifica per: ${alarm.name}`);
     const data = await chrome.storage.local.get(["siteUrl", "overlayScope"]);
     
@@ -160,6 +159,7 @@ async function triggerNotification(alarm) {
         notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
     }
 
+    // await clearNotifications();
     await createNotification(notificationTitle, notificationMessage);
     await chrome.storage.local.set({ alarmActive: true });
     setNotificationBadge(true);
@@ -197,13 +197,11 @@ async function handleAlertAction(action) {
             debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
         }
     }
-    // await clearNotifications();
-    // await removeOverlays();
-    clearNotifications();
-    removeOverlays();
+    await clearNotifications();
+    await removeOverlays();
     setNotificationBadge(false);
     await chrome.storage.local.set({ alarmActive: false });
-    debugLog(`[handleAlertAction] (${action}) Pulite tutte le notifiche e gli allarmi`);
+    debugLog(`[handleAlertAction] (${action}) Stato di allerta resettato.`);
 }
 
 async function setOrClearAlarms(data) {
@@ -231,83 +229,51 @@ function setNotificationBadge(isVisible) {
 
 // ---- UI HELPER FUNCTIONS (Overlays & Notifications) ----
 
-// async function clearNotifications() {
-//     const { notificationIds } = await chrome.storage.local.get("notificationIds");
-//     if (notificationIds && notificationIds.length > 0) {
-//         debugLog(`[clearNotifications] Trovate ${notificationIds.length} notifiche da chiudere.`);
-//         await Promise.all(
-//             notificationIds.map(id =>
-//                 chrome.notifications.clear(id).then(() =>
-//                     debugLog(`[clearNotifications] Notifica ${id} chiusa da array.`)
-//                 )
-//             )
-//         );
-//         await chrome.storage.local.remove("notificationIds");
-//     } else {
-//         debugLog("[clearNotifications] Nessuna notifica da chiudere.");
-//     }
-// }
-function clearNotifications() {
-    chrome.storage.local.get("notificationIds", (data) => {
-        if (data.notificationIds && data.notificationIds.length > 0) {
-            debugLog(`[clearNotifications] Trovate ${data.notificationIds.length} notifiche da chiudere.`);
-            data.notificationIds.forEach((notificationId) => {
-                chrome.notifications.clear(notificationId, () => {
-                    debugLog(`[clearNotifications] Notifica ${notificationId} chiusa da array.`);
-                });
-            });
-            chrome.storage.local.remove("notificationIds");
-        } else {
-            debugLog("[clearNotifications] Nessuna notifica da chiudere.");
-        }
-    });
+async function clearNotifications() {
+    // Cancella la notifica usando il suo ID stabile. L'API gestisce il caso in cui non esista.
+    await chrome.notifications.clear(NOTIFICATION_ID);
+    debugLog(`[clearNotifications] Tentativo di chiusura della notifica: ${NOTIFICATION_ID}`);
 }
 
-// async function removeOverlays() {
-//     const tabs = await chrome.tabs.query({});
-//     for (const tab of tabs) {
-//         if (tab.id && tab.url && tab.url.startsWith("http")) {
-//             try {
-//                 await chrome.scripting.executeScript({
-//                     target: { tabId: tab.id },
-//                     func: () => {
-//                         const overlay = document.getElementById("timbrapp-extension-overlay");
-//                         if (overlay) overlay.remove();
-//                     }
-//                 });
-//                 debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
-//             } catch (error) {
-//                 debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
-//             }
-//         }
-//     }
-// }
-function removeOverlays() {
-    chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => {
-            if (
-                tab.id && 
-                tab.url && 
-                tab.url.startsWith("http")
-            ) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    func: () => {
-                        const overlay = document.getElementById("timbrapp-extension-overlay");
-                        if (overlay) overlay.remove();
+async function removeOverlays() {
+    try {
+        // Query solo per i tab dove è possibile iniettare script
+        const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+        if (tabs.length === 0) return;
+
+        // Crea un array di promise per tutte le operazioni di rimozione
+        const removalPromises = tabs.map(tab =>
+            chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: () => {
+                    const overlay = document.getElementById("timbrapp-extension-overlay");
+                    if (overlay) {
+                        overlay.remove();
+                        return true; // Ritorna true se l'overlay è stato rimosso
                     }
-                }).then(() => {
+                    return false;
+                }
+            }).then(results => {
+                // Logga solo se l'overlay è stato effettivamente rimosso
+                if (results && results[0] && results[0].result) {
                     debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
-                }).catch((error) => {
-                    debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
-                });
-            }
-        });
-    });
+                }
+            }).catch(error => {
+                // Ignora gli errori per le pagine protette (es. chrome://, store, ecc.)
+                // dove l'iniezione di script non è permessa.
+            })
+        );
+        // Attende che tutte le operazioni di rimozione siano completate
+        await Promise.all(removalPromises);
+    } catch (error) {
+        debugLog(`[removeOverlays] Errore durante la query dei tab: ${error.message}`);
+    }
 }
 
 async function createNotification(title, message) {
-    const notificationId = await chrome.notifications.create({
+    // Usando un ID stabile, chrome.notifications.create aggiorna una notifica esistente o ne crea una nuova.
+    // Questo elimina la necessità di cancellare manualmente la notifica precedente e di salvarne gli ID.
+    await chrome.notifications.create(NOTIFICATION_ID, {
         type: "basic",
         iconUrl: "icons/128.png",
         title: title,
@@ -315,10 +281,7 @@ async function createNotification(title, message) {
         requireInteraction: true,
         buttons: [{ title: chrome.i18n.getMessage("notification_close_button") }]
     });
-    const { notificationIds = [] } = await chrome.storage.local.get("notificationIds");
-    const updatedIds = [...notificationIds, notificationId];
-    await chrome.storage.local.set({ notificationIds: updatedIds });
-    debugLog(`[createNotification] Notifica creata: ${notificationId}`);
+    debugLog(`[createNotification] Notifica creata/aggiornata con ID: ${NOTIFICATION_ID}`);
 }
 
 async function injectOverlayInActiveTab() {
