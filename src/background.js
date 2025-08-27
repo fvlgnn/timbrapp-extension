@@ -94,88 +94,80 @@ chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIn
 // ---- CORE LOGIC FUNCTIONS ----
 
 async function processAlarmQueue() {
-    try {
-        // 1. Recupera la coda e le impostazioni DND. Svuota subito la coda per evitare riprocessamenti.
-        const { alarmQueue, dndDays = [] } = await chrome.storage.local.get(["alarmQueue", "dndDays"]);
-        await chrome.storage.local.set({ alarmQueue: [] });
+    // 1. Recupera la coda e le impostazioni DND. Svuota subito la coda per evitare riprocessamenti.
+    const { alarmQueue, dndDays = [] } = await chrome.storage.local.get(["alarmQueue", "dndDays"]);
+    await chrome.storage.local.set({ alarmQueue: [] });
 
-        if (!alarmQueue || alarmQueue.length === 0) {
-            debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
-            return;
+    if (!alarmQueue || alarmQueue.length === 0) {
+        debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
+        return;
+    }
+    debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio filtraggio DND.`);
+
+    // 2. Filtra la coda per rimuovere gli allarmi che sono scattati in un giorno "Non disturbare".
+    const validAlarms = alarmQueue.filter(alarm => {
+        const dayOfWeek = new Date(alarm.scheduledTime).getDay().toString();
+        const isDnd = dndDays.includes(dayOfWeek);
+        if (isDnd) {
+            debugLog(`[processAlarmQueue] Scarto l'allarme ${alarm.name} perché il giorno ${dayOfWeek} è DND.`);
         }
-        debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio filtraggio DND.`);
+        return !isDnd;
+    });
 
-        // 2. Filtra la coda per rimuovere gli allarmi che sono scattati in un giorno "Non disturbare".
-        const validAlarms = alarmQueue.filter(alarm => {
-            const dayOfWeek = new Date(alarm.scheduledTime).getDay().toString();
-            const isDnd = dndDays.includes(dayOfWeek);
-            if (isDnd) {
-                debugLog(`[processAlarmQueue] Scarto l'allarme ${alarm.name} perché il giorno ${dayOfWeek} è DND.`);
-            }
-            return !isDnd;
-        });
+    // 3. Se dopo il filtro non ci sono allarmi validi, fermati.
+    if (validAlarms.length === 0) {
+        debugLog(`[processAlarmQueue] Nessun allarme valido rimasto dopo il filtro DND.`);
+        return;
+    }
 
-        // 3. Se dopo il filtro non ci sono allarmi validi, fermati.
-        if (validAlarms.length === 0) {
-            debugLog(`[processAlarmQueue] Nessun allarme valido rimasto dopo il filtro DND.`);
-            return;
-        }
+    // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente
+    // grazie all'ID stabile, quindi non è necessario pulirla manualmente qui.
+    removeOverlays();
 
-        // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente
-        // grazie all'ID stabile, quindi non è necessario pulirla manualmente qui.
-        await removeOverlays();
+    // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
+    const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
+    debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
 
-        // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
-        const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
-        debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
-
-        if (validAlarms.length > 1) {
-            debugLog(`[processAlarmQueue] Rilevati allarmi multipli. Invio notifica generica.`);
-            await triggerNotification({ name: "generic" }); // Usa un nome speciale per la notifica generica
-        } else {
-            debugLog(`[processAlarmQueue] Rilevato allarme singolo. Processo l'allarme ${latestAlarm.name}.`);
-            await triggerNotification(latestAlarm); // Usa l'allarme effettivo
-        }
-    } catch (error) {
-        debugLog(`[processAlarmQueue] Errore: ${error.message}`);
+    if (validAlarms.length > 1) {
+        debugLog(`[processAlarmQueue] Rilevati allarmi multipli. Invio notifica generica.`);
+        triggerNotification({ name: "generic" }); // Usa un nome speciale per la notifica generica
+    } else {
+        debugLog(`[processAlarmQueue] Rilevato allarme singolo. Processo l'allarme ${latestAlarm.name}.`);
+        triggerNotification(latestAlarm); // Usa l'allarme effettivo
     }
 }
 
 async function triggerNotification(alarm) {
-    try {
-        debugLog(`[triggerNotification] Attivazione notifica per: ${alarm.name}`);
-        const data = await chrome.storage.local.get(["siteUrl", "overlayScope"]);
+    debugLog(`[triggerNotification] Attivazione notifica per: ${alarm.name}`);
+    const data = await chrome.storage.local.get(["siteUrl", "overlayScope"]);
+    
+    let notificationTitle;
+    let notificationMessage;
 
-        let notificationTitle;
-        let notificationMessage;
+    if (alarm.name === "generic") {
+        notificationTitle = chrome.i18n.getMessage("notification_title_generic");
+        const messageTemplate = data.siteUrl ? "notification_message_generic_with_url" : "notification_message_generic_default";
+        notificationMessage = chrome.i18n.getMessage(messageTemplate);
+    } else {
+        const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
+        const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
+        const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
+        const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
+        notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
+        const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
+        notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
+    }
 
-        if (alarm.name === "generic") {
-            notificationTitle = chrome.i18n.getMessage("notification_title_generic");
-            const messageTemplate = data.siteUrl ? "notification_message_generic_with_url" : "notification_message_generic_default";
-            notificationMessage = chrome.i18n.getMessage(messageTemplate);
-        } else {
-            const isEntry = ["morningIn", "afternoonIn"].includes(alarm.name);
-            const isMorning = ["morningIn", "morningOut"].includes(alarm.name);
-            const shiftPhase = chrome.i18n.getMessage(isEntry ? "in_label" : "out_label");
-            const shiftPeriod = chrome.i18n.getMessage(isMorning ? "morning_label" : "afternoon_label");
-            notificationTitle = chrome.i18n.getMessage("notification_title", [shiftPhase, shiftPeriod]);
-            const messageTemplate = data.siteUrl ? "notification_message_with_url" : "notification_message_default";
-            notificationMessage = chrome.i18n.getMessage(messageTemplate, [shiftPhase, shiftPeriod]);
-        }
+    await createNotification(notificationTitle, notificationMessage);
+    await chrome.storage.local.set({ alarmActive: true });
+    setNotificationBadge(true);
 
-        await createNotification(notificationTitle, notificationMessage);
-        await chrome.storage.local.set({ alarmActive: true });
-        setNotificationBadge(true);
-
-        if (data.overlayScope === "all") {
-            await injectOverlayInAllTabs();
-        } else if (data.overlayScope === "active") {
-            await injectOverlayInActiveTab();
-        } else {
-            debugLog(`[triggerNotification] Nessun overlay iniettato. overlayScope: ${data.overlayScope}`);
-        }
-    } catch (error) {
-        debugLog(`[triggerNotification] Errore: ${error.message}`);
+    if (data.overlayScope === "all") {
+        await injectOverlayInAllTabs();
+    } else if (data.overlayScope === "active") {
+        await injectOverlayInActiveTab();
+    } else {
+        debugLog(`[triggerNotification] Nessun overlay iniettato. overlayScope: ${data.overlayScope}`);
     }
 }
 
@@ -186,7 +178,7 @@ function setAlarm(time, alarmName) {
         const alarmTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0, 0);
         if (alarmTime <= now) {
             alarmTime.setTime(alarmTime.getTime() + ONE_DAY_MS);
-            debugLog(`[setAlarm function] ${alarmName}, alarmTime è passato, aggiungo un giorno.`);
+            debugLog(`[setAlarm function] ${alarmName}, alarmTime è passato, aggiungo un giorno.`); 
         }
         return alarmTime.getTime();
     };
@@ -196,22 +188,18 @@ function setAlarm(time, alarmName) {
 }
 
 async function handleAlertAction(action) {
-    try {
-        if (action === "resolveAlert") {
-            const { siteUrl } = await chrome.storage.local.get("siteUrl");
-            if (siteUrl) {
-                chrome.tabs.create({ url: siteUrl });
-                debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
-            }
+    if (action === "resolveAlert") {
+        const { siteUrl } = await chrome.storage.local.get("siteUrl");
+        if (siteUrl) {
+            chrome.tabs.create({ url: siteUrl });
+            debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
         }
-        await clearNotifications();
-        await removeOverlays();
-        setNotificationBadge(false);
-        await chrome.storage.local.set({ alarmActive: false });
-        debugLog(`[handleAlertAction] (${action}) Stato di allerta resettato.`);
-    } catch (error) {
-        debugLog(`[handleAlertAction] (${action}) Errore: ${error.message}`);
     }
+    await clearNotifications();
+    removeOverlays();
+    setNotificationBadge(false);
+    await chrome.storage.local.set({ alarmActive: false });
+    debugLog(`[handleAlertAction] (${action}) Stato di allerta resettato.`);
 }
 
 async function setOrClearAlarms(data) {
@@ -240,53 +228,46 @@ function setNotificationBadge(isVisible) {
 // ---- UI HELPER FUNCTIONS (Overlays & Notifications) ----
 
 async function clearNotifications() {
-    try {
     // Cancella la notifica usando il suo ID stabile. L'API gestisce il caso in cui non esista.
     await chrome.notifications.clear(NOTIFICATION_ID);
     debugLog(`[clearNotifications] Tentativo di chiusura della notifica: ${NOTIFICATION_ID}`);
-    } catch (error) {
-        debugLog(`[clearNotifications] Errore: ${error.message}`);
-    }
 }
 
-async function removeOverlays() {
-    try {
-        // Query solo per i tab dove è possibile iniettare script
-        const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+function removeOverlays() {
+        const hasPermissions = chrome.permissions.contains({
+            origins: ["https://*/*", "http://*/*"],
+        });
+        if (!hasPermissions) {
+            debugLog("[removeOverlays] Permessi host non concessi. Impossibile rimuovere gli overlay.");
+            return;
+        }
+    chrome.tabs.query({}, (tabs) => {
         if (tabs.length === 0) return;
-
-        // Crea un array di promise per tutte le operazioni di rimozione
-        const removalPromises = tabs.map(tab =>
-            chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                func: () => {
-                    const overlay = document.getElementById("timbrapp-extension-overlay");
-                    if (overlay) {
-                        overlay.remove();
-                        return true; // Ritorna true se l'overlay è stato rimosso
+        tabs.forEach((tab) => {
+            if (
+                tab.id && 
+                tab.url && 
+                tab.url.startsWith("http")
+            ) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    func: () => {
+                        const overlay = document.getElementById("timbrapp-extension-overlay");
+                        if (overlay) overlay.remove();
                     }
-                    return false;
-                }
-            }).then(results => {
-                // Logga solo se l'overlay è stato effettivamente rimosso
-                if (results && results[0] && results[0].result) {
+                }).then(() => {
                     debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
-                }
-            }).catch(error => {
-                // Ignora gli errori per le pagine protette (es. chrome://, store, ecc.)
-                // dove l'iniezione di script non è permessa.
-            })
-        );
-        // Attende che tutte le operazioni di rimozione siano completate
-        await Promise.all(removalPromises);
-    } catch (error) {
-        debugLog(`[removeOverlays] Errore: ${error.message}`);
-    }
+                }).catch((error) => {
+                    debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
+                });
+            }
+        });
+    });
 }
 
 async function createNotification(title, message) {
-    try {
-    // Usando un ID stabile, chrome.notifications.create aggiorna una notifica esistente o ne crea una nuova. Questo elimina la necessità di cancellare manualmente la notifica precedente e di salvarne gli ID.
+    // Usando un ID stabile, chrome.notifications.create aggiorna una notifica esistente o ne crea una nuova.
+    // Questo elimina la necessità di cancellare manualmente la notifica precedente e di salvarne gli ID.
     await chrome.notifications.create(NOTIFICATION_ID, {
         type: "basic",
         iconUrl: "icons/128.png",
@@ -296,9 +277,6 @@ async function createNotification(title, message) {
         buttons: [{ title: chrome.i18n.getMessage("notification_close_button") }]
     });
     debugLog(`[createNotification] Notifica creata/aggiornata con ID: ${NOTIFICATION_ID}`);
-} catch (error) {
-    debugLog(`[createNotification] Errore: ${error.message}`);
-}
 }
 
 async function injectOverlayInActiveTab() {
@@ -316,7 +294,7 @@ async function injectOverlayInActiveTab() {
     }
     const activeTab = tabs[0];
     if (activeTab.id && activeTab.url && activeTab.url.startsWith("http")) {
-        await injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
+        injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
     }
 }
 
@@ -330,7 +308,7 @@ async function injectOverlayInAllTabs() {
     }
     const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
     for (const tab of tabs) {
-        await injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
+        injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
     }
 }
 
