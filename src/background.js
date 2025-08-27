@@ -58,13 +58,11 @@ chrome.alarms.onAlarm.addListener((alarm) => {
             await processAlarmQueue();
             return;
         }
-
         // Altrimenti, è un allarme di notifica. Aggiungilo alla coda.
         debugLog(`[onAlarm] Ricevuto allarme di notifica: ${alarm.name}. Aggiungo alla coda.`);
         const { alarmQueue = [] } = await chrome.storage.local.get("alarmQueue");
         const newQueue = [...alarmQueue, alarm];
         await chrome.storage.local.set({ alarmQueue: newQueue });
-
         // Usa un allarme di 1 secondo come "debounce" per processare la coda, garantendo l'esecuzione.
         chrome.alarms.create(PROCESS_QUEUE_ALARM_NAME, { delayInMinutes: 1 / 60 });
     });
@@ -89,6 +87,15 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
 chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIndex) => {
     debugLog(`[onButtonClicked] Pulsante ${buttonIndex} della notifica ${notificationId} cliccato.`);
     await handleAlertAction("dismissAlert");
+});
+
+chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+    const { overlayTabIds = [] } = await chrome.storage.local.get("overlayTabIds");
+    if (overlayTabIds.includes(tabId)) {
+        const newOverlayTabIds = overlayTabIds.filter(id => id !== tabId);
+        await chrome.storage.local.set({ overlayTabIds: newOverlayTabIds });
+        debugLog(`[tabs.onRemoved] Rimosso tab ${tabId} dalla lista degli overlay.`);
+    }
 });
 
 // ---- CORE LOGIC FUNCTIONS ----
@@ -120,9 +127,8 @@ async function processAlarmQueue() {
         return;
     }
 
-    // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente
-    // grazie all'ID stabile, quindi non è necessario pulirla manualmente qui.
-    removeOverlays();
+    // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente grazie all'ID stabile.
+    await removeOverlays();
 
     // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
     const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
@@ -140,7 +146,7 @@ async function processAlarmQueue() {
 async function triggerNotification(alarm) {
     debugLog(`[triggerNotification] Attivazione notifica per: ${alarm.name}`);
     const data = await chrome.storage.local.get(["siteUrl", "overlayScope"]);
-    
+
     let notificationTitle;
     let notificationMessage;
 
@@ -178,7 +184,7 @@ function setAlarm(time, alarmName) {
         const alarmTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0, 0);
         if (alarmTime <= now) {
             alarmTime.setTime(alarmTime.getTime() + ONE_DAY_MS);
-            debugLog(`[setAlarm function] ${alarmName}, alarmTime è passato, aggiungo un giorno.`); 
+            debugLog(`[setAlarm function] ${alarmName}, alarmTime è passato, aggiungo un giorno.`);
         }
         return alarmTime.getTime();
     };
@@ -196,7 +202,7 @@ async function handleAlertAction(action) {
         }
     }
     await clearNotifications();
-    removeOverlays();
+    await removeOverlays();
     setNotificationBadge(false);
     await chrome.storage.local.set({ alarmActive: false });
     debugLog(`[handleAlertAction] (${action}) Stato di allerta resettato.`);
@@ -228,46 +234,47 @@ function setNotificationBadge(isVisible) {
 // ---- UI HELPER FUNCTIONS (Overlays & Notifications) ----
 
 async function clearNotifications() {
-    // Cancella la notifica usando il suo ID stabile. L'API gestisce il caso in cui non esista.
     await chrome.notifications.clear(NOTIFICATION_ID);
-    debugLog(`[clearNotifications] Tentativo di chiusura della notifica: ${NOTIFICATION_ID}`);
+    debugLog(`[clearNotifications] Chiusura della notifica: ${NOTIFICATION_ID}`);
 }
 
-function removeOverlays() {
-        const hasPermissions = chrome.permissions.contains({
-            origins: ["https://*/*", "http://*/*"],
-        });
-        if (!hasPermissions) {
-            debugLog("[removeOverlays] Permessi host non concessi. Impossibile rimuovere gli overlay.");
-            return;
-        }
-    chrome.tabs.query({}, (tabs) => {
-        if (tabs.length === 0) return;
-        tabs.forEach((tab) => {
-            if (
-                tab.id && 
-                tab.url && 
-                tab.url.startsWith("http")
-            ) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tab.id },
-                    func: () => {
-                        const overlay = document.getElementById("timbrapp-extension-overlay");
-                        if (overlay) overlay.remove();
-                    }
-                }).then(() => {
-                    debugLog(`[removeOverlays] Overlay rimosso da ${tab.url}`);
-                }).catch((error) => {
-                    debugLog(`[removeOverlays] Errore, impossibile rimuovere overlay da ${tab.url}: ${error.message}`);
-                });
-            }
-        });
+async function removeOverlays() {
+    const hasPermissions = await chrome.permissions.contains({
+        origins: ["https://*/*", "http://*/*"],
     });
+    if (!hasPermissions) {
+        debugLog("[removeOverlays] Permessi host non concessi. Impossibile rimuovere gli overlay.");
+        return;
+    }
+
+    const { overlayTabIds } = await chrome.storage.local.get("overlayTabIds");
+
+    if (!overlayTabIds || overlayTabIds.length === 0) {
+        debugLog("[removeOverlays] Nessun overlay da rimuovere.");
+        return;
+    }
+
+    for (const tabId of overlayTabIds) {
+        try {
+            // Tenta di rimuovere lo script. Se il tab è stato chiuso
+            await chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                func: () => {
+                    const overlay = document.getElementById("timbrapp-extension-overlay");
+                    if (overlay) overlay.remove();
+                },
+            });
+            debugLog(`[removeOverlays] Overlay rimosso dal tab ${tabId}`);
+        } catch (error) {
+            debugLog(`[removeOverlays] Impossibile rimuovere l'overlay dal tab ${tabId} (potrebbe essere stato chiuso): ${error.message}`);
+        }
+    }
+
+    // Una volta terminato, pulisce la lista dallo storage.
+    await chrome.storage.local.remove("overlayTabIds");
 }
 
 async function createNotification(title, message) {
-    // Usando un ID stabile, chrome.notifications.create aggiorna una notifica esistente o ne crea una nuova.
-    // Questo elimina la necessità di cancellare manualmente la notifica precedente e di salvarne gli ID.
     await chrome.notifications.create(NOTIFICATION_ID, {
         type: "basic",
         iconUrl: "icons/128.png",
@@ -322,7 +329,12 @@ async function injectOverlay(tabId, tabUrl, source) {
             target: { tabId: tabId },
             files: ["overlay.js"],
         });
-        debugLog(`[${source}] Overlay iniettato in ${tabUrl}`);
+        // Salva l'ID del tab in cui l'overlay è stato iniettato con successo.
+        const { overlayTabIds = [] } = await chrome.storage.local.get("overlayTabIds");
+        if (!overlayTabIds.includes(tabId)) {
+            await chrome.storage.local.set({ overlayTabIds: [...overlayTabIds, tabId] });
+            debugLog(`[${source}] Overlay iniettato e registrato per il tabId ${tabId} (URL: ${tabUrl})`);
+        }
     } catch (error) {
         debugLog(`[${source}] Errore, impossibile iniettare overlay in ${tabUrl}: ${error.message}`);
     }
