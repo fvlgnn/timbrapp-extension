@@ -15,10 +15,14 @@ const debugLog = (...args) => {
 
 chrome.runtime.onInstalled.addListener((detail) => {
     debugLog(`[onInstalled] ${detail.reason}`);
-    if (detail.reason === "install") {
-        chrome.storage.local.set({ alarmActive: false });
-        chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
-    }
+    chrome.storage.local.get("alarmActive").then((data) => {
+        const alarmActive = typeof data.alarmActive === "undefined" ? false : data.alarmActive;
+        chrome.storage.local.set({ alarmActive });
+        setNotificationBadge(alarmActive);
+        if (detail.reason === "install") {
+            chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
+        }
+    });
 });
 
 chrome.runtime.onStartup.addListener(() => {
