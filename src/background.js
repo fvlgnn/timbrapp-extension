@@ -14,21 +14,21 @@ const debugLog = (...args) => {
 // ---- CHROME RUNTIME EVENTS (Lifecycle) ----
 
 chrome.runtime.onInstalled.addListener((detail) => {
-    debugLog(`[onInstalled] ${detail.reason}`);
+    debugLog(`[onInstalled] Tipo di installazione: ${detail.reason}`);
     chrome.storage.local.get("alarmActive").then((data) => {
         const alarmActive = typeof data.alarmActive === "undefined" ? false : data.alarmActive;
+        debugLog(`[onInstalled] Stato dell'allarme ${alarmActive}`);
         chrome.storage.local.set({ alarmActive });
         setNotificationBadge(alarmActive);
-        if (detail.reason === "install") {
-            chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
-        }
     });
+    if (detail.reason === "install") {
+        chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
+    }
 });
 
 chrome.runtime.onStartup.addListener(() => {
     debugLog("[onStartup] Avvio l'estensione.");
-    // Controlla se un allarme era attivo prima della chiusura e ripristina il badge.
-    chrome.storage.local.get("alarmActive", (data) => {
+    chrome.storage.local.get("alarmActive").then((data) => {
         if (data.alarmActive) {
             debugLog("[onStartup] Trovato un allarme attivo. Ripristino il badge.");
             setNotificationBadge(true);
