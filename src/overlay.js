@@ -20,19 +20,15 @@
         primaryButton.dataset.action = "resolveAlert";
         primaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_go") : chrome.i18n.getMessage("overlay_done");
 
+        // ---- Crea il pulsante secondario ----
+        const secondaryButton = document.createElement("div");
+        secondaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--secondary";
+        secondaryButton.dataset.action = siteUrl ? "dismissAlert" : "snoozeAlert";
+        secondaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_done") : chrome.i18n.getMessage("overlay_will_do");
+        
         // ---- Aggiunge gli elementi al contenitore e poi al body ----
         overlay.append(title, primaryButton);
-
-        // ---- Mostra il pulsante secondario solo se è stato impostato un URL. ----
-        if (siteUrl) {
-            const secondaryButton = document.createElement("div");
-            secondaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--secondary";
-            secondaryButton.dataset.action = "dismissAlert";
-            secondaryButton.textContent = chrome.i18n.getMessage("overlay_done");
-            // secondaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_done") : chrome.i18n.getMessage("overlay_will_do");
-            overlay.appendChild(secondaryButton);
-        }
-
+        overlay.appendChild(secondaryButton);
         document.body.appendChild(overlay);
 
         // ---- Gestisce i click sui pulsanti ----

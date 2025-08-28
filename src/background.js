@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
         const data = await chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut"]);
         await setOrClearAlarms(data);
     }
-    if (message.action === "resolveAlert" || message.action === "dismissAlert") {
+    if (message.action === "resolveAlert" || message.action === "dismissAlert" || message.action === "snoozeAlert") {
         await handleAlertAction(message.action);
     }
 });
@@ -194,18 +194,26 @@ function setAlarm(time, alarmName) {
 }
 
 async function handleAlertAction(action) {
-    if (action === "resolveAlert") {
-        const { siteUrl } = await chrome.storage.local.get("siteUrl");
-        if (siteUrl) {
-            chrome.tabs.create({ url: siteUrl });
-            debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
+    debugLog(`[handleAlertAction] Inizio gestione azione: ${action}`);
+    try {
+        if (action === "resolveAlert") {
+            const { siteUrl } = await chrome.storage.local.get("siteUrl");
+            if (siteUrl) {
+                chrome.tabs.create({ url: siteUrl });
+                debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
+            }
         }
+        await clearNotifications();
+        await removeOverlays();
+        if (action !== "snoozeAlert") {
+            setNotificationBadge(false);
+            await chrome.storage.local.set({ alarmActive: false });
+        }
+        debugLog(`[handleAlertAction] Stato di allerta resettato per ${action}.`);
+    } catch (error) {
+        debugLog(`[handleAlertAction] Errore: ${error && error.message ? error.message : error}`);
     }
-    await clearNotifications();
-    await removeOverlays();
-    setNotificationBadge(false);
-    await chrome.storage.local.set({ alarmActive: false });
-    debugLog(`[handleAlertAction] (${action}) Stato di allerta resettato.`);
+    debugLog(`[handleAlertAction] Fine gestione azione: ${action}`);
 }
 
 async function setOrClearAlarms(data) {
