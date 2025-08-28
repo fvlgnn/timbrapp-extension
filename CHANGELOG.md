@@ -8,7 +8,7 @@
 - **Enhanced Overlay Management for Stability and Performance**: Refactored the overlay removal process to be more efficient and reliable. It now tracks the specific tabs where overlays are active instead of querying all tabs, significantly improving performance.
 
 ### ✨ New Features
-- Nothing new.
+- **Snooze Action on Overlay**: Added support for a "Snooze" action on the secondary button of the notification overlay. In a future update, users will be able to actually postpone alerts directly from the overlay, further improving flexibility in managing notifications.
 
 ---
 
