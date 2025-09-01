@@ -105,7 +105,7 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 // ---- CORE LOGIC FUNCTIONS ----
 
 async function processAlarmQueue() {
-    // 1. Recupera la coda e le impostazioni DND. Svuota subito la coda per evitare riprocessamenti.
+    // 1. Recupera la coda e le impostazioni DND. Svuota la coda per evitare riprocessamenti.
     const { alarmQueue, dndDays = [] } = await chrome.storage.local.get(["alarmQueue", "dndDays"]);
     await chrome.storage.local.set({ alarmQueue: [] });
 
@@ -113,37 +113,39 @@ async function processAlarmQueue() {
         debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
         return;
     }
-    debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio filtraggio DND.`);
+    debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio controllo DND per OGGI.`);
 
-    // 2. Filtra la coda per rimuovere gli allarmi che sono scattati in un giorno "Non disturbare".
-    const validAlarms = alarmQueue.filter(alarm => {
-        const dayOfWeek = new Date(alarm.scheduledTime).getDay().toString();
-        const isDnd = dndDays.includes(dayOfWeek);
-        if (isDnd) {
-            debugLog(`[processAlarmQueue] Scarto l'allarme ${alarm.name} perché il giorno ${dayOfWeek} è DND.`);
-        }
-        return !isDnd;
-    });
+    // 2. Controlla se OGGI è un giorno "Non disturbare" o lavorativo.
+    // Questa logica risolve il problema degli allarmi persi dopo la sospensione del computer.
+    // Se oggi è un giorno lavorativo, qualsiasi allarme in coda (anche se schedulato in un giorno DND)
+    // deve generare una notifica, perché significa che una timbratura è stata saltata.
+    const today = new Date();
+    const dayOfWeek = today.getDay().toString();
+    const isDndToday = dndDays.includes(dayOfWeek);
 
-    // 3. Se dopo il filtro non ci sono allarmi validi, fermati.
-    if (validAlarms.length === 0) {
-        debugLog(`[processAlarmQueue] Nessun allarme valido rimasto dopo il filtro DND.`);
+    // 3. Se oggi è un giorno DND, ignora tutti gli allarmi in coda e fermati.
+    if (isDndToday) {
+        debugLog(`[processAlarmQueue] Oggi (${dayOfWeek}) è un giorno DND. Ignoro gli allarmi in coda.`);
         return;
     }
+
+    // 4. Se oggi NON è un giorno DND, tutti gli allarmi in coda sono considerati validi.
+    debugLog(`[processAlarmQueue] Oggi non è DND. Processo ${alarmQueue.length} allarmi.`);
+    const validAlarms = alarmQueue;
 
     // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente grazie all'ID stabile.
     await removeOverlays();
 
-    // 4. Decide se inviare una notifica generica o specifica in base agli allarmi *validi*.
+    // 5. Decide se inviare una notifica generica o specifica in base agli allarmi validi.
     const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
     debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
 
     if (validAlarms.length > 1) {
         debugLog(`[processAlarmQueue] Rilevati allarmi multipli. Invio notifica generica.`);
-        triggerNotification({ name: "generic" }); // Usa un nome speciale per la notifica generica
+        triggerNotification({ name: "generic" });
     } else {
         debugLog(`[processAlarmQueue] Rilevato allarme singolo. Processo l'allarme ${latestAlarm.name}.`);
-        triggerNotification(latestAlarm); // Usa l'allarme effettivo
+        triggerNotification(latestAlarm);
     }
 }
 
