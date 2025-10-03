@@ -1,9 +1,3 @@
-### ✨ New Features
-- No changes.
-
-### 🚀 Improvements
-- No changes.
-
 ### 🐛 Bug Fixes
 - Fixed an issue where alarms would not trigger if the computer was suspended or hibernated past the alarm time.
 
