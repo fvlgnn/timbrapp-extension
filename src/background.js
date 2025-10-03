@@ -6,6 +6,7 @@ const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
 const PROCESS_QUEUE_ALARM_NAME = "timbrapp-extension-process-alarm-queue";
 const NOTIFICATION_ID = "timbrapp-extension-main-notification";
+const CHECK_ALARMS_NAME = "timbrapp-extension-check-alarms";
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
@@ -20,6 +21,7 @@ chrome.runtime.onInstalled.addListener((detail) => {
         debugLog(`[onInstalled] Stato dell'allarme ${alarmActive}`);
         chrome.storage.local.set({ alarmActive });
         setNotificationBadge(alarmActive);
+        chrome.alarms.create(CHECK_ALARMS_NAME, { periodInMinutes: 1 });
     });
     if (detail.reason === "install") {
         chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
@@ -60,6 +62,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         if (alarm.name === PROCESS_QUEUE_ALARM_NAME) {
             debugLog(`[onAlarm] Ricevuto allarme di elaborazione. Avvio processAlarmQueue.`);
             await processAlarmQueue();
+            return;
+        }
+        // Se l'allarme è quello di controllo, verifica la coda e attiva l'elaborazione se necessario.
+        if (alarm.name === CHECK_ALARMS_NAME) {
+            const { alarmQueue = [] } = await chrome.storage.local.get("alarmQueue");
+            if (alarmQueue.length > 0) {
+                chrome.alarms.create(PROCESS_QUEUE_ALARM_NAME, { delayInMinutes: 1 / 60 });
+            }
             return;
         }
         // Altrimenti, è un allarme di notifica. Aggiungilo alla coda.

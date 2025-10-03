@@ -1,11 +1,11 @@
-### 🐛 Bug Fixes
-- Resolved an issue where reminders would not appear on a workday if the computer was suspended over a few  days or a "Do Not Disturb" day.
+### ✨ New Features
+- No changes.
 
 ### 🚀 Improvements
 - No changes.
 
-### ✨ New Features
-- No changes.
+### 🐛 Bug Fixes
+- Fixed an issue where alarms would not trigger if the computer was suspended or hibernated past the alarm time.
 
 ---
 
