@@ -1,7 +1,13 @@
 .archivio/
 archivio/
 .vscode/
+backup/
+bkp/
 log/
+*.bkp
+*.bkp.*
+*.bak
+*.bak.*
 *.log
 *.log.*
 TODO.md

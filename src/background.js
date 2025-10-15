@@ -1,12 +1,11 @@
 // ---- CONSTANTS AND CONFIGURATION ----
 
 const DEBUG_MODE = true;
-const ONE_DAY_MS = 86400000; // 24h * 60' * 60'' * 1000ms = 86400000ms
-const ONE_DAY_MIN = 1440; // 24h * 60' = 1440'
 
-const PROCESS_QUEUE_ALARM_NAME = "timbrapp-extension-process-alarm-queue";
-const NOTIFICATION_ID = "timbrapp-extension-main-notification";
-const CHECK_ALARMS_NAME = "timbrapp-extension-check-alarms";
+const NAME_PREFIX = "timbrapp-extension";
+const NOTIFICATION_ID = `${NAME_PREFIX}-main-notification`;
+const MAIN_ALARM_NAME = `${NAME_PREFIX}-main-alarm`;
+const HEALTH_CHECK_ALARM_NAME = `${NAME_PREFIX}-health-check`;
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
@@ -15,27 +14,17 @@ const debugLog = (...args) => {
 // ---- CHROME RUNTIME EVENTS (Lifecycle) ----
 
 chrome.runtime.onInstalled.addListener((detail) => {
-    debugLog(`[onInstalled] Tipo di installazione: ${detail.reason}`);
-    chrome.storage.local.get("alarmActive").then((data) => {
-        const alarmActive = typeof data.alarmActive === "undefined" ? false : data.alarmActive;
-        debugLog(`[onInstalled] Stato dell'allarme ${alarmActive}`);
-        chrome.storage.local.set({ alarmActive });
-        setNotificationBadge(alarmActive);
-        chrome.alarms.create(CHECK_ALARMS_NAME, { periodInMinutes: 1 });
-    });
+    debugLog(`[onInstalled] Evento: ${detail.reason}.`);
+    initializeExtensionState();
     if (detail.reason === "install") {
+        debugLog("[onInstalled] Prima installazione, apro la pagina README.");
         chrome.tabs.create({ url: chrome.runtime.getURL("README.html") });
     }
 });
 
 chrome.runtime.onStartup.addListener(() => {
     debugLog("[onStartup] Avvio l'estensione.");
-    chrome.storage.local.get("alarmActive").then((data) => {
-        if (data.alarmActive) {
-            debugLog("[onStartup] Trovato un allarme attivo. Ripristino il badge.");
-            setNotificationBadge(true);
-        }
-    });
+    initializeExtensionState();
 });
 
 // ---- CHROME API EVENTS (User Actions & Alarms) ----
@@ -43,8 +32,7 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onMessage.addListener(async (message) => {
     debugLog(`[onMessage] Ricevuto messaggio:`, message);
     if (message.action === "setAlarms") {
-        const data = await chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut"]);
-        await setOrClearAlarms(data);
+        await calculateAndSetNextAlarm();
     }
     if (message.action === "resolveAlert" || message.action === "dismissAlert" || message.action === "snoozeAlert") {
         await handleAlertAction(message.action);
@@ -56,30 +44,23 @@ let alarmHandlerPromise = Promise.resolve();
 
 // Listener principale per tutti gli allarmi.
 chrome.alarms.onAlarm.addListener((alarm) => {
-    // Accoda l'elaborazione dell'allarme per garantire che vengano gestiti uno alla volta, race condition.
-    alarmHandlerPromise = alarmHandlerPromise.then(async () => {
-        // Se l'allarme che è scattato è quello per elaborare la coda, esegui la funzione e fermati qui.
-        if (alarm.name === PROCESS_QUEUE_ALARM_NAME) {
-            debugLog(`[onAlarm] Ricevuto allarme di elaborazione. Avvio processAlarmQueue.`);
-            await processAlarmQueue();
-            return;
-        }
-        // Se l'allarme è quello di controllo, verifica la coda e attiva l'elaborazione se necessario.
-        if (alarm.name === CHECK_ALARMS_NAME) {
-            const { alarmQueue = [] } = await chrome.storage.local.get("alarmQueue");
-            if (alarmQueue.length > 0) {
-                chrome.alarms.create(PROCESS_QUEUE_ALARM_NAME, { delayInMinutes: 1 / 60 });
+    // Accoda l'elaborazione dell'allarme per garantire che vengano gestiti uno alla volta.
+    alarmHandlerPromise = alarmHandlerPromise
+        .then(async () => {
+            // Allarme principale
+            if (alarm.name === MAIN_ALARM_NAME) { 
+                debugLog(`[onAlarm] Allarme principale scattato.`);
+                // Il nome dell'allarme scattato è nel nostro storage
+                const { nextAlarm } = await chrome.storage.local.get("nextAlarm");
+                await triggerNotification(nextAlarm || { name: "generic" });
+                // Dopo aver gestito l'allarme, calcola il prossimo.
+                await calculateAndSetNextAlarm();
+            } else if (alarm.name === HEALTH_CHECK_ALARM_NAME) {
+                debugLog(`[onAlarm] Controllo periodico di stato.`);
+                await checkMissedAlarm();
             }
-            return;
-        }
-        // Altrimenti, è un allarme di notifica. Aggiungilo alla coda.
-        debugLog(`[onAlarm] Ricevuto allarme di notifica: ${alarm.name}. Aggiungo alla coda.`);
-        const { alarmQueue = [] } = await chrome.storage.local.get("alarmQueue");
-        const newQueue = [...alarmQueue, alarm];
-        await chrome.storage.local.set({ alarmQueue: newQueue });
-        // Usa un allarme di 1 secondo come "debounce" per processare la coda, garantendo l'esecuzione.
-        chrome.alarms.create(PROCESS_QUEUE_ALARM_NAME, { delayInMinutes: 1 / 60 });
-    });
+        })
+        .catch((err) => debugLog("[onAlarm] Errore nella catena di promise:", err));
 });
 
 chrome.action.onClicked.addListener(async () => {
@@ -114,48 +95,135 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 
 // ---- CORE LOGIC FUNCTIONS ----
 
-async function processAlarmQueue() {
-    // 1. Recupera la coda e le impostazioni DND. Svuota la coda per evitare riprocessamenti.
-    const { alarmQueue, dndDays = [] } = await chrome.storage.local.get(["alarmQueue", "dndDays"]);
-    await chrome.storage.local.set({ alarmQueue: [] });
+async function initializeExtensionState() {
+    debugLog("[initializeExtensionState] Inizializzazione stato estensione...");
+    const { alarmActive } = await chrome.storage.local.get("alarmActive");
+    const isActive = typeof alarmActive === "undefined" ? false : alarmActive;
+    await chrome.storage.local.set({ alarmActive: isActive });
+    setNotificationBadge(isActive);
+    debugLog(`[initializeExtensionState] Stato allarme ripristinato a: ${isActive}`);
 
-    if (!alarmQueue || alarmQueue.length === 0) {
-        debugLog(`[processAlarmQueue] Coda vuota, nessuna azione.`);
+    // Controlla se abbiamo perso un allarme durante l'inattività
+    await checkMissedAlarm();
+    // Assicura che il prossimo allarme sia correttamente impostato
+    await calculateAndSetNextAlarm();
+    // Imposta l'allarme di controllo periodico per gestire il risveglio dall'ibernazione
+    chrome.alarms.create(HEALTH_CHECK_ALARM_NAME, { periodInMinutes: 4 });
+    debugLog("[initializeExtensionState] Allarme di controllo periodico impostato.");
+}
+
+async function checkMissedAlarm() {
+    debugLog("[checkMissedAlarm] Controllo allarme perso...");
+    const data = await chrome.storage.local.get([
+        "nextAlarm",
+        "morningIn",
+        "morningOut",
+        "afternoonIn",
+        "afternoonOut",
+        "dndDays",
+    ]);
+    const { nextAlarm, dndDays = [] } = data;
+    const now = Date.now();
+
+    if (nextAlarm && nextAlarm.time < now) {
+        debugLog(`[checkMissedAlarm] Trovato allarme perso. Previsto per: ${new Date(nextAlarm.time).toLocaleString()}`);
+        const missedSince = nextAlarm.time;
+        let missedAlarmsCount = 0;
+
+        const alarmTimes = [
+            { name: "morningIn", time: data.morningIn },
+            { name: "morningOut", time: data.morningOut },
+            { name: "afternoonIn", time: data.afternoonIn },
+            { name: "afternoonOut", time: data.afternoonOut },
+        ].filter((a) => a.time);
+
+        // Itera sui giorni dall'allarme perso fino ad oggi
+        for (let d = new Date(missedSince); d.getTime() <= now; d.setDate(d.getDate() + 1)) {
+            const dayOfWeek = d.getDay().toString();
+            if (dndDays.includes(dayOfWeek)) continue; // Salta i giorni DND
+
+            // Controlla ogni allarme configurato per quel giorno
+            for (const alarm of alarmTimes) {
+                const [hours, minutes] = alarm.time.split(":").map(Number);
+                const candidateTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours, minutes).getTime();
+
+                if (candidateTime > missedSince && candidateTime < now) {
+                    missedAlarmsCount++;
+                }
+            }
+        }
+        // Aggiungiamo l'allarme originale che ha dato il via al controllo
+        missedAlarmsCount++; 
+        debugLog(`[checkMissedAlarm] Calcolati ${missedAlarmsCount} allarmi persi.`);
+
+        if (missedAlarmsCount > 1) {
+            debugLog("[checkMissedAlarm] Più di un allarme perso. Invio notifica generica.");
+            await triggerNotification({ name: "generic" });
+        } else {
+            debugLog(`[checkMissedAlarm] Trovato allarme perso recente: ${nextAlarm.name}. Scateno la notifica.`);
+            debugLog(`[checkMissedAlarm] Un solo allarme perso: ${nextAlarm.name}. Invio notifica specifica.`);
+            await triggerNotification(nextAlarm);
+        }
+    }
+}
+
+async function calculateAndSetNextAlarm() {
+    debugLog("[calculateAndSetNextAlarm] Calcolo del prossimo allarme...");
+    const { morningIn, morningOut, afternoonIn, afternoonOut, dndDays = [] } = await chrome.storage.local.get([
+        "morningIn",
+        "morningOut",
+        "afternoonIn",
+        "afternoonOut",
+        "dndDays",
+    ]);
+
+    const alarmTimes = [
+        { name: "morningIn", time: morningIn },
+        { name: "morningOut", time: morningOut },
+        { name: "afternoonIn", time: afternoonIn },
+        { name: "afternoonOut", time: afternoonOut },
+    ].filter((a) => a.time);
+
+    if (alarmTimes.length === 0) {
+        debugLog("[calculateAndSetNextAlarm] Nessun orario impostato. Cancello tutti gli allarmi.");
+        await chrome.alarms.clearAll();
+        await chrome.storage.local.remove("nextAlarm");
         return;
     }
-    debugLog(`[processAlarmQueue] Trovati ${alarmQueue.length} allarmi in coda. Inizio controllo DND per OGGI.`);
 
-    // 2. Controlla se OGGI è un giorno "Non disturbare" o lavorativo.
-    // Questa logica risolve il problema degli allarmi persi dopo la sospensione del computer.
-    // Se oggi è un giorno lavorativo, qualsiasi allarme in coda (anche se schedulato in un giorno DND)
-    // deve generare una notifica, perché significa che una timbratura è stata saltata.
-    const today = new Date();
-    const dayOfWeek = today.getDay().toString();
-    const isDndToday = dndDays.includes(dayOfWeek);
+    const now = new Date();
+    let nextAlarm = null;
 
-    // 3. Se oggi è un giorno DND, ignora tutti gli allarmi in coda e fermati.
-    if (isDndToday) {
-        debugLog(`[processAlarmQueue] Oggi (${dayOfWeek}) è un giorno DND. Ignoro gli allarmi in coda.`);
-        return;
+    for (const alarm of alarmTimes) {
+        const [hours, minutes] = alarm.time.split(":").map(Number);
+
+        // Cerca il prossimo giorno valido nei prossimi 7 giorni
+        for (let i = 0; i < 7; i++) {
+            const candidateDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hours, minutes, 0, 0);
+            const dayOfWeek = candidateDate.getDay().toString();
+
+            // Se il giorno non è DND e l'orario è nel futuro
+            if (!dndDays.includes(dayOfWeek) && candidateDate.getTime() > now.getTime()) {
+                // Se è il primo allarme valido trovato o se è precedente a quello già trovato
+                if (!nextAlarm || candidateDate.getTime() < nextAlarm.time) {
+                    nextAlarm = { name: alarm.name, time: candidateDate.getTime() };
+                }
+                // Trovato il primo giorno valido per questo orario, passa al prossimo tipo di allarme
+                break;
+            }
+        }
     }
 
-    // 4. Se oggi NON è un giorno DND, tutti gli allarmi in coda sono considerati validi.
-    debugLog(`[processAlarmQueue] Oggi non è DND. Processo ${alarmQueue.length} allarmi.`);
-    const validAlarms = alarmQueue;
+    // Pulisce l'allarme principale per sicurezza e tiene solo quello di health check
+    await chrome.alarms.clear(MAIN_ALARM_NAME);
 
-    // Pulisce gli overlay esistenti. La notifica verrà sostituita automaticamente grazie all'ID stabile.
-    await removeOverlays();
-
-    // 5. Decide se inviare una notifica generica o specifica in base agli allarmi validi.
-    const latestAlarm = validAlarms.reduce((latest, current) => (current.scheduledTime > latest.scheduledTime ? current : latest));
-    debugLog(`[processAlarmQueue] L'allarme più recente valido è: ${latestAlarm.name}`);
-
-    if (validAlarms.length > 1) {
-        debugLog(`[processAlarmQueue] Rilevati allarmi multipli. Invio notifica generica.`);
-        triggerNotification({ name: "generic" });
+    if (nextAlarm) {
+        debugLog(`[calculateAndSetNextAlarm] Prossimo allarme: ${nextAlarm.name} il ${new Date(nextAlarm.time).toLocaleString()}`);
+        await chrome.storage.local.set({ nextAlarm: nextAlarm });
+        chrome.alarms.create(MAIN_ALARM_NAME, { when: nextAlarm.time });
     } else {
-        debugLog(`[processAlarmQueue] Rilevato allarme singolo. Processo l'allarme ${latestAlarm.name}.`);
-        triggerNotification(latestAlarm);
+        debugLog("[calculateAndSetNextAlarm] Nessun allarme valido trovato nel futuro.");
+        await chrome.storage.local.remove("nextAlarm");
     }
 }
 
@@ -193,22 +261,6 @@ async function triggerNotification(alarm) {
     }
 }
 
-function setAlarm(time, alarmName) {
-    const now = new Date();
-    const getNextAlarmTime = (time) => {
-        const [hours, minutes] = time.split(":").map(Number);
-        const alarmTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0, 0);
-        if (alarmTime <= now) {
-            alarmTime.setTime(alarmTime.getTime() + ONE_DAY_MS);
-            debugLog(`[setAlarm function] ${alarmName}, alarmTime è passato, aggiungo un giorno.`);
-        }
-        return alarmTime.getTime();
-    };
-    const setTime = getNextAlarmTime(time);
-    chrome.alarms.create(alarmName, { when: setTime, periodInMinutes: ONE_DAY_MIN });
-    debugLog(`[setAlarm] Impostato allarme ${alarmName} per le ${new Date(setTime).toLocaleString()}`);
-}
-
 async function handleAlertAction(action) {
     debugLog(`[handleAlertAction] Inizio gestione azione: ${action}`);
     try {
@@ -224,24 +276,12 @@ async function handleAlertAction(action) {
         if (action !== "snoozeAlert") {
             setNotificationBadge(false);
             await chrome.storage.local.set({ alarmActive: false });
+            // Dopo aver gestito l'allarme, ricalcola il prossimo
+            await calculateAndSetNextAlarm();
         }
         debugLog(`[handleAlertAction] Stato di allerta resettato per ${action}.`);
     } catch (error) {
         debugLog(`[handleAlertAction] Errore: ${error && error.message ? error.message : error}`);
-    }
-    debugLog(`[handleAlertAction] Fine gestione azione: ${action}`);
-}
-
-async function setOrClearAlarms(data) {
-    const alarmNames = ["morningIn", "morningOut", "afternoonIn", "afternoonOut"];
-    for (const alarmName of alarmNames) {
-        debugLog(`[setOrClearAlarms] Controllo l'allarme: ${alarmName} con valore: ${data[alarmName]}`);
-        if (data[alarmName]) {
-            setAlarm(data[alarmName], alarmName);
-        } else {
-            await chrome.alarms.clear(alarmName);
-            debugLog(`[setOrClearAlarms] ${alarmName} cancellato`);
-        }
     }
 }
 
