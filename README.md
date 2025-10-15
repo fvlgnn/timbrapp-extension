@@ -183,6 +183,8 @@ This will update your TimbrApp Extension to the latest version.
         *   **If the URL of the HR portal has been set**, TimbrApp Extension will open it for you.
         *   **If the URL of the HR portal has NOT been set**, you will have to manually clock in on the device. **Important:** Remember to click on the notification or the icon after clocking in to reset the reminder.
 
+> **Please note:** Due to the power-saving policies of modern browsers (like Chrome and Edge), reminders may not be triggered at the exact minute. The browser might delay the alarm by a few minutes. To address this, the extension includes a check mechanism that periodically looks for missed alarms and triggers them as soon as possible, usually within about some minutes from the scheduled time.
+
 ### Privacy
 
 🔒
@@ -337,6 +339,8 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
     *   Clicca sulla notifica o sull'icona dell'estensione con il **badge rosso**.
         *   **Se è stato impostato l'URL del portale HR**, TimbrApp Extension lo aprirà per te.
         *   **Se NON è stato impostato l'URL del portale HR**, dovrai andare a timbrare manualmente sul dispositivo. **Importante:** Ricordati di cliccare sulla notifica o sull'icona dopo aver timbrato per resettare il promemoria.
+
+> **Nota bene:** A causa delle politiche di risparmio energetico dei browser moderni (come Chrome e Edge), i promemoria potrebbero non essere notificati al minuto esatto. Il browser potrebbe ritardare l'attivazione dell'allarme di alcuni minuti. Per ovviare a questo, l'estensione include un meccanismo di controllo che verifica periodicamente la presenza di allarmi mancati e li notifica non appena possibile, solitamente entro alcuni minuti dall'orario previsto.
 
 ### Privacy
 
