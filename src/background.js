@@ -7,6 +7,9 @@ const NAME_PREFIX = "timbrapp-extension";
 const NOTIFICATION_ID = `${NAME_PREFIX}-main-notification`;
 const MAIN_ALARM_NAME = `${NAME_PREFIX}-main-alarm`;
 const HEALTH_CHECK_ALARM_NAME = `${NAME_PREFIX}-health-check`;
+const SNOOZE_ALARM_NAME = `${NAME_PREFIX}-snooze-alarm`;
+const SNOOZE_DELAY_MINUTES = 5;
+const SNOOZE_MAX_DURATION_MS = 24 * 60 * 60 * 1000;
 
 const debugLog = (...args) => {
     if (DEBUG_MODE) console.log(...args);
@@ -49,13 +52,17 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     alarmHandlerPromise = alarmHandlerPromise
         .then(async () => {
             // Allarme principale
-            if (alarm.name === MAIN_ALARM_NAME) { 
+            if (alarm.name === MAIN_ALARM_NAME) {
                 debugLog(`[onAlarm] Allarme principale scattato.`);
                 // Il nome dell'allarme scattato è nel nostro storage
                 const { nextAlarm } = await chrome.storage.local.get("nextAlarm");
                 await triggerNotification(nextAlarm || { name: "generic" });
                 // Dopo aver gestito l'allarme, calcola il prossimo.
                 await calculateAndSetNextAlarm();
+            } else if (alarm.name === SNOOZE_ALARM_NAME) {
+                debugLog(`[onAlarm] Allarme di snooze scattato.`);
+                const { activeAlarm } = await chrome.storage.local.get("activeAlarm");
+                await triggerNotification(activeAlarm || { name: "generic" });
             } else if (alarm.name === HEALTH_CHECK_ALARM_NAME) {
                 debugLog(`[onAlarm] Controllo periodico di stato.`);
                 await checkMissedAlarm();
@@ -187,7 +194,8 @@ async function calculateAndSetNextAlarm() {
     if (alarmTimes.length === 0) {
         debugLog("[calculateAndSetNextAlarm] Nessun orario impostato. Cancello l'allarme principale.");
         await chrome.alarms.clear(MAIN_ALARM_NAME);
-        await chrome.storage.local.remove("nextAlarm");
+        await chrome.alarms.clear(SNOOZE_ALARM_NAME);
+        await chrome.storage.local.remove(["nextAlarm", "snoozeStartedAt"]);
         return;
     }
 
@@ -214,8 +222,12 @@ async function calculateAndSetNextAlarm() {
         }
     }
 
-    // Pulisce l'allarme principale per sicurezza e tiene solo quello di health check
+    // Pulisce l'allarme principale e un eventuale snooze pendente: il prossimo allarme "vero"
+    // sta per essere schedulato, quindi non deve restare in giro un promemoria di snooze
+    // di un ciclo precedente che potrebbe scattare a ridosso di questo.
     await chrome.alarms.clear(MAIN_ALARM_NAME);
+    await chrome.alarms.clear(SNOOZE_ALARM_NAME);
+    await chrome.storage.local.remove("snoozeStartedAt");
 
     if (nextAlarm) {
         debugLog(`[calculateAndSetNextAlarm] Prossimo allarme: ${nextAlarm.name} il ${new Date(nextAlarm.time).toLocaleString()}`);
@@ -229,6 +241,8 @@ async function calculateAndSetNextAlarm() {
 
 async function triggerNotification(alarm) {
     debugLog(`[triggerNotification] Attivazione notifica per: ${alarm.name}`);
+    // Ricordato per poter ri-mostrare la stessa notifica se l'utente fa snooze
+    await chrome.storage.local.set({ activeAlarm: alarm });
     const data = await chrome.storage.local.get(["siteUrl", "overlayScope"]);
 
     let notificationTitle;
@@ -275,7 +289,14 @@ async function handleAlertAction(action) {
         }
         await clearNotifications();
         await removeOverlays();
-        if (action !== "snoozeAlert") {
+
+        // Se l'utente ha fatto snooze, prova a riprogrammare un promemoria; se il limite di
+        // 24h dall'inizio dello snooze è superato, ricade nel comportamento di dismiss/resolve.
+        const snoozed = action === "snoozeAlert" && (await scheduleSnooze());
+
+        if (!snoozed) {
+            await chrome.alarms.clear(SNOOZE_ALARM_NAME);
+            await chrome.storage.local.remove("snoozeStartedAt");
             setNotificationBadge(false);
             await chrome.storage.local.set({ alarmActive: false });
             // Dopo aver gestito l'allarme, ricalcola il prossimo
@@ -285,6 +306,24 @@ async function handleAlertAction(action) {
     } catch (error) {
         debugLog(`[handleAlertAction] Errore: ${error && error.message ? error.message : error}`);
     }
+}
+
+// Programma un nuovo promemoria di snooze, a meno che non sia trascorso più di
+// SNOOZE_MAX_DURATION_MS dal primo snooze di questa catena. Ritorna true se schedulato.
+async function scheduleSnooze() {
+    const { snoozeStartedAt } = await chrome.storage.local.get("snoozeStartedAt");
+    const now = Date.now();
+    const startedAt = snoozeStartedAt || now;
+
+    if (now - startedAt >= SNOOZE_MAX_DURATION_MS) {
+        debugLog("[scheduleSnooze] Limite di 24h dall'inizio dello snooze superato. Tratto come dismiss.");
+        return false;
+    }
+
+    await chrome.storage.local.set({ snoozeStartedAt: startedAt });
+    chrome.alarms.create(SNOOZE_ALARM_NAME, { delayInMinutes: SNOOZE_DELAY_MINUTES });
+    debugLog(`[scheduleSnooze] Prossimo promemoria tra ${SNOOZE_DELAY_MINUTES} minuti.`);
+    return true;
 }
 
 function setNotificationBadge(isVisible) {
