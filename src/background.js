@@ -89,7 +89,8 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
 
 chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIndex) => {
     debugLog(`[onButtonClicked] Pulsante ${buttonIndex} della notifica ${notificationId} cliccato.`);
-    await handleAlertAction("dismissAlert");
+    // Indice 0 = Snooze, indice 1 = Chiudi (vedi ordine dei buttons in createNotification)
+    await handleAlertAction(buttonIndex === 0 ? "snoozeAlert" : "dismissAlert");
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
@@ -381,7 +382,10 @@ async function createNotification(title, message) {
         title: title,
         message: message,
         requireInteraction: true,
-        buttons: [{ title: chrome.i18n.getMessage("notification_close_button") }]
+        buttons: [
+            { title: chrome.i18n.getMessage("notification_snooze_button") },
+            { title: chrome.i18n.getMessage("notification_close_button") }
+        ]
     });
     debugLog(`[createNotification] Notifica creata/aggiornata con ID: ${NOTIFICATION_ID}`);
 }

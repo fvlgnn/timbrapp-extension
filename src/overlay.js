@@ -21,10 +21,12 @@
         primaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_go") : chrome.i18n.getMessage("overlay_done");
 
         // ---- Crea il pulsante secondario ----
+        // Sempre snooze: il vero "dismiss" resta comunque raggiungibile dal pulsante
+        // della notifica di sistema, quindi qui non serve scegliere tra i due in base a siteUrl.
         const secondaryButton = document.createElement("div");
         secondaryButton.className = "timbrapp-extension-overlay__button timbrapp-extension-overlay__button--secondary";
-        secondaryButton.dataset.action = siteUrl ? "dismissAlert" : "snoozeAlert";
-        secondaryButton.textContent = siteUrl ? chrome.i18n.getMessage("overlay_done") : chrome.i18n.getMessage("overlay_will_do");
+        secondaryButton.dataset.action = "snoozeAlert";
+        secondaryButton.textContent = chrome.i18n.getMessage("overlay_snooze");
         
         // ---- Aggiunge gli elementi al contenitore e poi al body ----
         overlay.append(title, primaryButton);
