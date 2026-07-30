@@ -34,5 +34,9 @@ git tag "$VERSION"
 echo "Push del tag su origin..."
 git push origin "$VERSION"
 
+<<<<<<< HEAD
+echo "Tag $VERSION creato e inviato con successo!"
+=======
 echo "Tag $VERSION creato e inviato con successo! 🚀"
+>>>>>>> origin/main
     

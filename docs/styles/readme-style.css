@@ -1,0 +1,158 @@
+/* Minimal GitHub-like stylesheet for `pandoc --css`. No syntax-highlight colors here
+   (Pandoc injects its own via --highlight-style); this file covers layout/typography only. */
+
+:root {
+    color-scheme: light dark;
+    --fg: #1f2328;
+    --bg: #ffffff;
+    --muted: #656d76;
+    --border: #d1d9e0;
+    --code-bg: #f6f8fa;
+    --link: #0969da;
+    --blockquote-border: #d1d9e0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --fg: #e6edf3;
+        --bg: #0d1117;
+        --muted: #8d96a0;
+        --border: #30363d;
+        --code-bg: #161b22;
+        --link: #4493f8;
+        --blockquote-border: #30363d;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+    color: var(--fg);
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+h1, h2 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border);
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+p, ul, ol, table, pre, blockquote {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+ul, ol {
+    padding-left: 2em;
+}
+
+li + li {
+    margin-top: 0.25em;
+}
+
+a {
+    color: var(--link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    box-sizing: content-box;
+}
+
+hr {
+    height: 1px;
+    padding: 0;
+    margin: 24px 0;
+    background-color: var(--border);
+    border: 0;
+}
+
+blockquote {
+    padding: 0 1em;
+    color: var(--muted);
+    border-left: 0.25em solid var(--blockquote-border);
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+code, kbd, samp {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.875em;
+    background-color: var(--code-bg);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+}
+
+pre {
+    padding: 16px;
+    overflow-x: auto;
+    background-color: var(--code-bg);
+    border-radius: 6px;
+    line-height: 1.45;
+}
+
+pre code {
+    padding: 0;
+    background: none;
+    font-size: 0.875em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
+th, td {
+    padding: 6px 13px;
+    border: 1px solid var(--border);
+}
+
+tr:nth-child(2n) {
+    background-color: var(--code-bg);
+}
+
+details {
+    margin-bottom: 16px;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+}
