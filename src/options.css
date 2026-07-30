@@ -5,12 +5,11 @@ html {
 body {
     font-family: Arial, sans-serif;
     background-color: #fff;
-    max-width: 520px;
-    margin: 40px auto;
+    max-width: 640px;
+    margin: 20px auto;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     padding: 20px;
-    padding-bottom: 80px;
     position: relative;
 }
 
@@ -29,7 +28,7 @@ body {
 }
 
 .form-container {
-    max-width: 340px;
+    max-width: 580px;
     margin: 20px auto 0 auto;
     padding: 10px;
     background-color: #f9f9f9;
@@ -43,6 +42,18 @@ body {
     border-radius: 6px;
     border: 1px solid #ccc;
     background-color: #eee;
+}
+
+.schedule-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.schedule-row .section {
+    flex: 1;
+    margin-bottom: 0;
+    min-width: 0;
 }
 
 .morning {
@@ -154,6 +165,18 @@ input[type="checkbox"] {
     gap: 12px;
 }
 
+.header-info,
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-actions {
+    padding-left: 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
 .header-icon {
     cursor: pointer;
     display: flex;
@@ -174,10 +197,23 @@ input[type="checkbox"] {
     fill: #fff;
 }
 
+/* Stessa forma/sfondo degli altri header-icon a riposo: solo l'icona è tinta di rosso
+   (segnala "azione distruttiva" senza far risaltare l'intero pulsante). Hover in rosso
+   scuro, più sobrio del rosso pieno usato per lo stato "OFF" altrove nella pagina. */
+.clean-icon svg {
+    fill: #ffcdd2;
+}
+
+.clean-icon:hover {
+    background-color: #c62828;
+}
+
 #saved {
+    /* Ancorato vicino al pulsante Salva flottante (stessa area, stesso angolo del viewport)
+       invece che centrato sullo schermo: la conferma appare accanto all'azione che l'ha generata. */
     position: fixed;
-    bottom: 20px;
-    left: 50%;
+    bottom: 80px;
+    right: 20px;
     background-color: #28a745;
     border: 1px solid #388e3c;
     color: white;
@@ -191,7 +227,7 @@ input[type="checkbox"] {
     align-items: center;
     gap: 10px;
     opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateY(10px);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
     white-space: nowrap;
     text-align: center;
@@ -199,12 +235,12 @@ input[type="checkbox"] {
 
 #saved.visible {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
 }
 
 #saved.hidden {
     opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateY(10px);
 }
 
 .saved-icon {
@@ -227,8 +263,6 @@ input[type="checkbox"] {
 }
 
 #status-notification {
-    font-size: 14px;
-    line-height: 1;
     cursor: default;
 }
 
@@ -240,6 +274,19 @@ input[type="checkbox"] {
 #status-notification.disabled {
     background-color: #f44336;
     border-color: #d32f2f;
+}
+
+/* Icona a campana normale di default; quella barrata compare solo quando disabilitato esplicitamente */
+#status-notification .bell-off-icon {
+    display: none;
+}
+
+#status-notification.disabled .bell-icon {
+    display: none;
+}
+
+#status-notification.disabled .bell-off-icon {
+    display: block;
 }
 
 #status-notification.clickable {

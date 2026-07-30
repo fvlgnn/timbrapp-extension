@@ -9,46 +9,58 @@
     <div class="app-header">
         <span data-i18n="app_name"></span>
         <div class="header-controls">
-            <span id="app-version"></span>
-            <span id="dev-badge" class="dev-badge hidden">DEV</span>
-            <button id="status-notification" class="header-icon" data-i18n-title="status_toggle_tooltip"></button>
-            <button id="help-icon" class="header-icon" data-i18n-title="help_tooltip">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
-            </button>
-            <button id="clean-settings" class="header-icon" data-i18n-title="clear_tooltip_title">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-            </button>
+            <span class="header-info">
+                <span id="app-version"></span>
+                <span id="dev-badge" class="dev-badge hidden">DEV</span>
+            </span>
+            <span class="header-actions">
+                <button id="status-notification" class="header-icon">
+                    <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                    <svg class="bell-off-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                        <line x1="3" y1="21" x2="21" y2="3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button id="help-icon" class="header-icon" data-i18n-title="help_tooltip">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                </button>
+                <button id="clean-settings" class="header-icon clean-icon" data-i18n-title="clear_tooltip_title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+            </span>
         </div>
     </div>
     <div class="form-container">
-        <fieldset class="section morning">
-            <legend><span data-i18n="morning_section"></span></legend>
-            <div class="grid">
-                <div>
-                    <label for="morning-in" data-i18n="in_label"></label>
-                    <input type="time" id="morning-in" />
+        <div class="schedule-row">
+            <fieldset class="section morning">
+                <legend><span data-i18n="morning_section"></span></legend>
+                <div class="grid">
+                    <div>
+                        <label for="morning-in" data-i18n="in_label"></label>
+                        <input type="time" id="morning-in" />
+                    </div>
+                    <div>
+                        <label for="morning-out" data-i18n="out_label"></label>
+                        <input type="time" id="morning-out" />
+                    </div>
                 </div>
-                <div>
-                    <label for="morning-out" data-i18n="out_label"></label>
-                    <input type="time" id="morning-out" />
+            </fieldset>
+
+            <fieldset class="section afternoon">
+                <legend><span data-i18n="afternoon_section"></span></legend>
+                <div class="grid">
+                    <div>
+                        <label for="afternoon-in" data-i18n="in_label"></label>
+                        <input type="time" id="afternoon-in" />
+                    </div>
+                    <div>
+                        <label for="afternoon-out" data-i18n="out_label"></label>
+                        <input type="time" id="afternoon-out" />
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-    
-        <fieldset class="section afternoon">
-            <legend><span data-i18n="afternoon_section"></span></legend>
-            <div class="grid">
-                <div>
-                    <label for="afternoon-in" data-i18n="in_label"></label>
-                    <input type="time" id="afternoon-in" />
-                </div>
-                <div>
-                    <label for="afternoon-out" data-i18n="out_label"></label>
-                    <input type="time" id="afternoon-out" />
-                </div>
-            </div>
-        </fieldset>
-    
+            </fieldset>
+        </div>
+
         <fieldset class="section url-section">
             <legend><span data-i18n="url_section"></span></legend>
             <input type="text" id="site-url" placeholder="https://hr.portal.tdl/" />

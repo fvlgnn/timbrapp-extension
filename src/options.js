@@ -109,15 +109,22 @@ document.addEventListener("DOMContentLoaded", () => {
         updateStatusIndicator(hasTimes, data.notificationsEnabled !== false);
     };
 
-    // Aggiorna testo/classi dell'indicatore di stato. Cliccabile solo se ci sono orari
-    // impostati: altrimenti non c'è nulla da abilitare/disabilitare.
+    // Aggiorna le classi dell'indicatore di stato (icona fissa, il colore di sfondo comunica
+    // lo stato). Cliccabile solo se ci sono orari impostati: altrimenti non c'è nulla da
+    // abilitare/disabilitare.
     function updateStatusIndicator(hasTimes, notificationsEnabled) {
         const isOn = hasTimes && notificationsEnabled;
         debugLog(`Stato: ${isOn ? "ON" : "OFF"} (orari impostati: ${hasTimes}, notifiche abilitate: ${notificationsEnabled})`);
-        statusNotification.textContent = isOn ? "🔔" : "🔕";
         statusNotification.classList.toggle("enabled", isOn);
         statusNotification.classList.toggle("disabled", hasTimes && !isOn);
         statusNotification.classList.toggle("clickable", hasTimes);
+
+        const tooltipKey = !hasTimes
+            ? "status_toggle_tooltip_no_times"
+            : isOn
+                ? "status_toggle_tooltip_disable"
+                : "status_toggle_tooltip_enable";
+        statusNotification.title = chrome.i18n.getMessage(tooltipKey);
     }
 
     // Mostra il messaggio di conferma salvataggio
