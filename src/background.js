@@ -186,8 +186,8 @@ async function calculateAndSetNextAlarm() {
     ].filter((a) => a.time);
 
     if (alarmTimes.length === 0) {
-        debugLog("[calculateAndSetNextAlarm] Nessun orario impostato. Cancello tutti gli allarmi.");
-        await chrome.alarms.clearAll();
+        debugLog("[calculateAndSetNextAlarm] Nessun orario impostato. Cancello l'allarme principale.");
+        await chrome.alarms.clear(MAIN_ALARM_NAME);
         await chrome.storage.local.remove("nextAlarm");
         return;
     }
