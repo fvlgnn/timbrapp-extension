@@ -8,7 +8,7 @@ const NOTIFICATION_ID = `${NAME_PREFIX}-main-notification`;
 const MAIN_ALARM_NAME = `${NAME_PREFIX}-main-alarm`;
 const HEALTH_CHECK_ALARM_NAME = `${NAME_PREFIX}-health-check`;
 const SNOOZE_ALARM_NAME = `${NAME_PREFIX}-snooze-alarm`;
-const SNOOZE_DELAY_MINUTES = 5;
+const DEFAULT_SNOOZE_DELAY_MINUTES = 5;
 const SNOOZE_MAX_DURATION_MS = 24 * 60 * 60 * 1000;
 
 const debugLog = (...args) => {
@@ -177,12 +177,13 @@ async function checkMissedAlarm() {
 
 async function calculateAndSetNextAlarm() {
     debugLog("[calculateAndSetNextAlarm] Calcolo del prossimo allarme...");
-    const { morningIn, morningOut, afternoonIn, afternoonOut, dndDays = [] } = await chrome.storage.local.get([
+    const { morningIn, morningOut, afternoonIn, afternoonOut, dndDays = [], notificationsEnabled } = await chrome.storage.local.get([
         "morningIn",
         "morningOut",
         "afternoonIn",
         "afternoonOut",
         "dndDays",
+        "notificationsEnabled",
     ]);
 
     const alarmTimes = [
@@ -192,8 +193,8 @@ async function calculateAndSetNextAlarm() {
         { name: "afternoonOut", time: afternoonOut },
     ].filter((a) => a.time);
 
-    if (alarmTimes.length === 0) {
-        debugLog("[calculateAndSetNextAlarm] Nessun orario impostato. Cancello l'allarme principale.");
+    if (alarmTimes.length === 0 || notificationsEnabled === false) {
+        debugLog("[calculateAndSetNextAlarm] Nessun orario impostato o notifiche disabilitate. Cancello l'allarme principale.");
         await chrome.alarms.clear(MAIN_ALARM_NAME);
         await chrome.alarms.clear(SNOOZE_ALARM_NAME);
         await chrome.storage.local.remove(["nextAlarm", "snoozeStartedAt"]);
@@ -312,7 +313,7 @@ async function handleAlertAction(action) {
 // Programma un nuovo promemoria di snooze, a meno che non sia trascorso più di
 // SNOOZE_MAX_DURATION_MS dal primo snooze di questa catena. Ritorna true se schedulato.
 async function scheduleSnooze() {
-    const { snoozeStartedAt } = await chrome.storage.local.get("snoozeStartedAt");
+    const { snoozeStartedAt, snoozeDelayMinutes } = await chrome.storage.local.get(["snoozeStartedAt", "snoozeDelayMinutes"]);
     const now = Date.now();
     const startedAt = snoozeStartedAt || now;
 
@@ -321,9 +322,10 @@ async function scheduleSnooze() {
         return false;
     }
 
+    const delayMinutes = snoozeDelayMinutes || DEFAULT_SNOOZE_DELAY_MINUTES;
     await chrome.storage.local.set({ snoozeStartedAt: startedAt });
-    chrome.alarms.create(SNOOZE_ALARM_NAME, { delayInMinutes: SNOOZE_DELAY_MINUTES });
-    debugLog(`[scheduleSnooze] Prossimo promemoria tra ${SNOOZE_DELAY_MINUTES} minuti.`);
+    chrome.alarms.create(SNOOZE_ALARM_NAME, { delayInMinutes: delayMinutes });
+    debugLog(`[scheduleSnooze] Prossimo promemoria tra ${delayMinutes} minuti.`);
     return true;
 }
 

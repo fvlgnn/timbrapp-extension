@@ -11,7 +11,7 @@
         <div class="header-controls">
             <span id="app-version"></span>
             <span id="dev-badge" class="dev-badge hidden">DEV</span>
-            <span id="status-notification">OFF</span>
+            <button id="status-notification" class="header-icon" data-i18n-title="status_toggle_tooltip"></button>
             <button id="help-icon" class="header-icon" data-i18n-title="help_tooltip">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </button>
@@ -87,6 +87,13 @@
                 <option value="none" data-i18n="overlay_disabled_label"></option>
                 <option value="active" data-i18n="overlay_active_tab_label"></option>
                 <option value="all" data-i18n="overlay_all_tabs_label"></option>
+            </select>
+            <label for="snooze-delay" data-i18n="snooze_delay_label"></label>
+            <select id="snooze-delay" name="snooze-delay">
+                <option value="5" data-i18n="snooze_delay_5"></option>
+                <option value="10" data-i18n="snooze_delay_10"></option>
+                <option value="15" data-i18n="snooze_delay_15"></option>
+                <option value="30" data-i18n="snooze_delay_30"></option>
             </select>
         </fieldset>
     </div>

@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const afternoonIn = document.getElementById("afternoon-in");
     const afternoonOut = document.getElementById("afternoon-out");
     const overlayScope = document.getElementById("overlay-scope");
+    const snoozeDelay = document.getElementById("snooze-delay");
     const siteUrl = document.getElementById("site-url");
     const statusNotification = document.getElementById("status-notification");
     const helpIcon = document.getElementById("help-icon");
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Carica le impostazioni e aggiorna l'interfaccia
     const loadAndDisplaySettings = async () => {
         debugLog("Avvio caricamento impostazioni...");
-        const keys = ["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays"];
+        const keys = ["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays", "notificationsEnabled", "snoozeDelayMinutes"];
         const data = await chrome.storage.local.get(keys);
         debugLog("Dati caricati da storage:", data);
         // Popola sempre tutti i campi
@@ -81,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         afternoonIn.value = data.afternoonIn || "";
         afternoonOut.value = data.afternoonOut || "";
         siteUrl.value = data.siteUrl || "";
+        snoozeDelay.value = String(data.snoozeDelayMinutes || 5);
 
         // Sincronizza lo stato del selettore overlay con i permessi reali
         const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
@@ -102,19 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
             cb.checked = dndDays.includes(cb.value);
         });
 
-        // Aggiorna l'indicatore di stato in base agli orari
-        if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
-            debugLog("Stato: ON");
-            statusNotification.textContent = "ON";
-            statusNotification.classList.add("enabled");
-            statusNotification.classList.remove("disabled");
-        } else {
-            debugLog("Stato: OFF");
-            statusNotification.textContent = "OFF";
-            statusNotification.classList.add("disabled");
-            statusNotification.classList.remove("enabled");
-        }
+        // Aggiorna l'indicatore di stato (anche cliccabile, se ci sono orari impostati)
+        const hasTimes = !!(data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut);
+        updateStatusIndicator(hasTimes, data.notificationsEnabled !== false);
     };
+
+    // Aggiorna testo/classi dell'indicatore di stato. Cliccabile solo se ci sono orari
+    // impostati: altrimenti non c'è nulla da abilitare/disabilitare.
+    function updateStatusIndicator(hasTimes, notificationsEnabled) {
+        const isOn = hasTimes && notificationsEnabled;
+        debugLog(`Stato: ${isOn ? "ON" : "OFF"} (orari impostati: ${hasTimes}, notifiche abilitate: ${notificationsEnabled})`);
+        statusNotification.textContent = isOn ? "🔔" : "🔕";
+        statusNotification.classList.toggle("enabled", isOn);
+        statusNotification.classList.toggle("disabled", hasTimes && !isOn);
+        statusNotification.classList.toggle("clickable", hasTimes);
+    }
 
     // Mostra il messaggio di conferma salvataggio
     function showSaved(message) {
@@ -139,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
             afternoonIn: afternoonIn.value,
             afternoonOut: afternoonOut.value,
             overlayScope: overlayScope.value,
+            snoozeDelayMinutes: parseInt(snoozeDelay.value, 10),
             dndDays: Array.from(document.querySelectorAll("#dnd-days input[type='checkbox']:checked")).map(cb => cb.value),
             siteUrl: siteUrl.value
         };
@@ -152,6 +157,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Indicatore di stato: cliccabile per abilitare/disabilitare i promemoria senza toccare gli orari salvati
+    statusNotification.addEventListener("click", async () => {
+        const data = await chrome.storage.local.get(["morningIn", "morningOut", "afternoonIn", "afternoonOut", "notificationsEnabled"]);
+        const hasTimes = !!(data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut);
+        if (!hasTimes) return; // Niente da abilitare/disabilitare
+
+        const newEnabled = data.notificationsEnabled === false;
+        debugLog(`Click su indicatore di stato. Notifiche: ${newEnabled ? "abilitate" : "disabilitate"}.`);
+        await chrome.storage.local.set({ notificationsEnabled: newEnabled });
+        updateStatusIndicator(hasTimes, newEnabled);
+        chrome.runtime.sendMessage({ action: "setAlarms" });
+    });
+
     // Pulsante Svuota Campi
     document.getElementById("clean-settings").addEventListener("click", () => {
         debugLog("Click su Svuota Campi.");
@@ -159,7 +177,12 @@ document.addEventListener("DOMContentLoaded", () => {
         morningOut.value = "";
         afternoonIn.value = "";
         afternoonOut.value = "";
-        // Non svuota URL e altre opzioni per comodità dell'utente
+        siteUrl.value = "";
+        overlayScope.value = "none";
+        snoozeDelay.value = "5";
+        document.querySelectorAll("#dnd-days input[type='checkbox']").forEach(cb => {
+            cb.checked = false;
+        });
     });
 
     // Gestisce il cambio di selezione per l'overlay e i relativi permessi
