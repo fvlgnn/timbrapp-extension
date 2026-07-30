@@ -165,6 +165,8 @@ This will update your TimbrApp Extension to the latest version.
 
 🚀
 
+📸 See it in action: [screenshots guide](https://github.com/fvlgnn/timbrapp-extension/blob/main/docs/USER_GUIDE.md).
+
 1.  **Set reminders:**
     *   Make sure that the TimbrApp Extension icon in the toolbar does not have a red badge.
     *   Click on the TimbrApp Extension icon to open the settings.
@@ -323,6 +325,8 @@ In questo modo, la tua estensione TimbrApp Extension sarà aggiornata all'ultima
 ### Utilizzo
 
 🚀
+
+📸 Guardala in azione: [guida illustrata](https://github.com/fvlgnn/timbrapp-extension/blob/main/docs/USER_GUIDE.md).
 
 1.  **Imposta i promemoria:**
     *   Assicurati che l'icona di TimbrApp Extension nella barra degli strumenti non abbia un badge rosso.
