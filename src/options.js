@@ -160,11 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
         afternoonIn.value = "";
         afternoonOut.value = "";
         // Non svuota URL e altre opzioni per comodità dell'utente
-        // document.querySelectorAll('#dnd-days input[type="checkbox"]').forEach(cb => {
-        //     cb.checked = false;
-        // });
-        // document.getElementById("overlay-scope").value = "";
-        // document.getElementById("site-url").value = "";
     });
 
     // Gestisce il cambio di selezione per l'overlay e i relativi permessi
