@@ -73,48 +73,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadAndDisplaySettings = async () => {
         debugLog("Avvio caricamento impostazioni...");
         const keys = ["morningIn", "morningOut", "afternoonIn", "afternoonOut", "overlayScope", "siteUrl", "dndDays"];
-        chrome.storage.local.get(keys, async (data) => {
-            debugLog("Dati caricati da storage:", data);
-            // Popola sempre tutti i campi
-            morningIn.value = data.morningIn || "";
-            morningOut.value = data.morningOut || "";
-            afternoonIn.value = data.afternoonIn || "";
-            afternoonOut.value = data.afternoonOut || "";
-            siteUrl.value = data.siteUrl || "";
+        const data = await chrome.storage.local.get(keys);
+        debugLog("Dati caricati da storage:", data);
+        // Popola sempre tutti i campi
+        morningIn.value = data.morningIn || "";
+        morningOut.value = data.morningOut || "";
+        afternoonIn.value = data.afternoonIn || "";
+        afternoonOut.value = data.afternoonOut || "";
+        siteUrl.value = data.siteUrl || "";
 
-            // Sincronizza lo stato del selettore overlay con i permessi reali
-            const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
-            debugLog("Controllo permessi host:", hasPermissions);
-            const savedScope = data.overlayScope || "none";
+        // Sincronizza lo stato del selettore overlay con i permessi reali
+        const hasPermissions = await chrome.permissions.contains(HOST_PERMISSIONS);
+        debugLog("Controllo permessi host:", hasPermissions);
+        const savedScope = data.overlayScope || "none";
 
-            if (hasPermissions) {
-                // Se abbiamo i permessi, l'opzione salvata (active o all) è valida.
-                overlayScope.value = savedScope === "none" ? "active" : savedScope; // Default a 'active' se lo stato è inconsistente
-                debugLog("Permessi presenti. Valore overlayScope impostato a:", overlayScope.value);
-            } else {
-                // Se non abbiamo i permessi, l'unica opzione valida è 'none'.
-                overlayScope.value = "none";
-                debugLog("Permessi assenti. Valore overlayScope impostato a 'none'.");
-            }
-            
-            const dndDays = data.dndDays || [];
-            document.querySelectorAll("#dnd-days input[type='checkbox']").forEach(cb => {
-                cb.checked = dndDays.includes(cb.value);
-            });
+        if (hasPermissions) {
+            // Se abbiamo i permessi, l'opzione salvata (active o all) è valida.
+            overlayScope.value = savedScope === "none" ? "active" : savedScope; // Default a 'active' se lo stato è inconsistente
+            debugLog("Permessi presenti. Valore overlayScope impostato a:", overlayScope.value);
+        } else {
+            // Se non abbiamo i permessi, l'unica opzione valida è 'none'.
+            overlayScope.value = "none";
+            debugLog("Permessi assenti. Valore overlayScope impostato a 'none'.");
+        }
 
-            // Aggiorna l'indicatore di stato in base agli orari
-            if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
-                debugLog("Stato: ON");
-                statusNotification.textContent = "ON";
-                statusNotification.classList.add("enabled");
-                statusNotification.classList.remove("disabled");
-            } else {
-                debugLog("Stato: OFF");
-                statusNotification.textContent = "OFF";
-                statusNotification.classList.add("disabled");
-                statusNotification.classList.remove("enabled");
-            }
+        const dndDays = data.dndDays || [];
+        document.querySelectorAll("#dnd-days input[type='checkbox']").forEach(cb => {
+            cb.checked = dndDays.includes(cb.value);
         });
+
+        // Aggiorna l'indicatore di stato in base agli orari
+        if (data.morningIn || data.morningOut || data.afternoonIn || data.afternoonOut) {
+            debugLog("Stato: ON");
+            statusNotification.textContent = "ON";
+            statusNotification.classList.add("enabled");
+            statusNotification.classList.remove("disabled");
+        } else {
+            debugLog("Stato: OFF");
+            statusNotification.textContent = "OFF";
+            statusNotification.classList.add("disabled");
+            statusNotification.classList.remove("enabled");
+        }
     };
 
     // Mostra il messaggio di conferma salvataggio
