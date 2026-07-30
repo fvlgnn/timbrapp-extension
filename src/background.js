@@ -161,7 +161,6 @@ async function checkMissedAlarm() {
             debugLog("[checkMissedAlarm] Più di un allarme perso. Invio notifica generica.");
             await triggerNotification({ name: "generic" });
         } else {
-            debugLog(`[checkMissedAlarm] Trovato allarme perso recente: ${nextAlarm.name}. Scateno la notifica.`);
             debugLog(`[checkMissedAlarm] Un solo allarme perso: ${nextAlarm.name}. Invio notifica specifica.`);
             await triggerNotification(nextAlarm);
         }
@@ -267,9 +266,11 @@ async function handleAlertAction(action) {
     try {
         if (action === "resolveAlert") {
             const { siteUrl } = await chrome.storage.local.get("siteUrl");
-            if (siteUrl) {
+            if (siteUrl && /^https?:\/\//i.test(siteUrl)) {
                 chrome.tabs.create({ url: siteUrl });
                 debugLog(`[handleAlertAction] (${action}) Tab aperto su URL: ${siteUrl}.`);
+            } else if (siteUrl) {
+                debugLog(`[handleAlertAction] (${action}) siteUrl non valido (protocollo mancante o non supportato): ${siteUrl}.`);
             }
         }
         await clearNotifications();
@@ -318,7 +319,6 @@ async function removeOverlays() {
     }
     for (const tabId of overlayTabIds) {
         try {
-            // Tenta di rimuovere lo script. Se il tab è stato chiuso
             await chrome.scripting.executeScript({
                 target: { tabId: tabId },
                 func: () => {
@@ -362,7 +362,7 @@ async function injectOverlayInActiveTab() {
     }
     const activeTab = tabs[0];
     if (activeTab.id && activeTab.url && activeTab.url.startsWith("http")) {
-        injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
+        await injectOverlay(activeTab.id, activeTab.url, "injectOverlayInActiveTab");
     }
 }
 
@@ -376,7 +376,7 @@ async function injectOverlayInAllTabs() {
     }
     const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
     for (const tab of tabs) {
-        injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
+        await injectOverlay(tab.id, tab.url, "injectOverlayInAllTabs");
     }
 }
 
