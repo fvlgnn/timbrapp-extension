@@ -13,6 +13,9 @@ jobs:
     env:
       ARTIFACT_NAME: "timbrapp-extension"
       CHROME_EXTENSION_ID: "dhpcliknphfdbocmcgfgepbkjmdklbgg"
+      MINIFY_VERSION: "v2.21.3"
+      # Da ricalcolare (es. via checksums.txt pubblicato dal progetto) ogni volta che si alza MINIFY_VERSION
+      MINIFY_SHA256: "a5ee60de8d3e2b98d20c6fad047bb3e2c162e1d0b56a5f474f773a651a23494e"
 
     steps:
       - name: Checkout
@@ -40,7 +43,8 @@ jobs:
           cp LICENSE NOTICE $ARTIFACT_NAME
           if [ "${{ github.ref_type }}" = "tag" ]; then
             echo "Minifying files..."
-            curl -sLO https://github.com/tdewolff/minify/releases/download/v2.21.3/minify_linux_amd64.tar.gz
+            curl -sLO "https://github.com/tdewolff/minify/releases/download/${MINIFY_VERSION}/minify_linux_amd64.tar.gz"
+            echo "${MINIFY_SHA256}  minify_linux_amd64.tar.gz" | sha256sum -c -
             tar -xzf minify_linux_amd64.tar.gz
             chmod +x ./minify
             ./minify -r -o $ARTIFACT_NAME/ $ARTIFACT_NAME/

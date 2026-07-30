@@ -34,7 +34,7 @@ chrome.runtime.onStartup.addListener(() => {
 // ---- CHROME API EVENTS (User Actions & Alarms) ----
 
 chrome.runtime.onMessage.addListener(async (message) => {
-    debugLog(`[onMessage] Ricevuto messaggio:`, message);
+    debugLog("[onMessage] Ricevuto messaggio:", message);
     if (message.action === "setAlarms") {
         await calculateAndSetNextAlarm();
     }
@@ -53,18 +53,18 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         .then(async () => {
             // Allarme principale
             if (alarm.name === MAIN_ALARM_NAME) {
-                debugLog(`[onAlarm] Allarme principale scattato.`);
+                debugLog("[onAlarm] Allarme principale scattato.");
                 // Il nome dell'allarme scattato è nel nostro storage
                 const { nextAlarm } = await chrome.storage.local.get("nextAlarm");
                 await triggerNotification(nextAlarm || { name: "generic" });
                 // Dopo aver gestito l'allarme, calcola il prossimo.
                 await calculateAndSetNextAlarm();
             } else if (alarm.name === SNOOZE_ALARM_NAME) {
-                debugLog(`[onAlarm] Allarme di snooze scattato.`);
+                debugLog("[onAlarm] Allarme di snooze scattato.");
                 const { activeAlarm } = await chrome.storage.local.get("activeAlarm");
                 await triggerNotification(activeAlarm || { name: "generic" });
             } else if (alarm.name === HEALTH_CHECK_ALARM_NAME) {
-                debugLog(`[onAlarm] Controllo periodico di stato.`);
+                debugLog("[onAlarm] Controllo periodico di stato.");
                 await checkMissedAlarm();
             }
         })

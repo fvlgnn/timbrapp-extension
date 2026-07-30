@@ -191,11 +191,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // ---- Gestione Pannello di Aiuto ----
 
     const HELP_SECTION_IDS = {
-        it: 'utilizzo',
-        en: 'usage'
+        it: "utilizzo",
+        en: "usage"
         // Aggiungi altre lingue qui, es: de: 'anwendung'
     };
-    const DEFAULT_HELP_LANG = 'en';
+    const DEFAULT_HELP_LANG = "en";
 
     // Funzione per mostrare il pannello
     const showHelpPanel = async () => {
@@ -203,17 +203,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (helpBody.textContent.trim() === "") {
             helpBody.innerHTML = `<p>${chrome.i18n.getMessage("help_loading")}</p>`;
             try {
-                const readmeUrl = chrome.runtime.getURL('README.html');
+                const readmeUrl = chrome.runtime.getURL("README.html");
                 const response = await fetch(readmeUrl);
                 if (!response.ok) throw new Error(`Errore di rete: ${response.status} ${response.statusText}`);
                 const text = await response.text();
                 if (!text) throw new Error("Il file README.html è vuoto o non leggibile.");
 
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'text/html');
+                const doc = parser.parseFromString(text, "text/html");
 
                 // Determina la sezione da mostrare in base alla lingua dell'interfaccia
-                const uiLang = chrome.i18n.getUILanguage().split('-')[0]; // Prende solo 'it' da 'it-IT'
+                const uiLang = chrome.i18n.getUILanguage().split("-")[0]; // Prende solo 'it' da 'it-IT'
                 const sectionId = HELP_SECTION_IDS[uiLang] || HELP_SECTION_IDS[DEFAULT_HELP_LANG];
                 debugLog(`Lingua UI: ${uiLang}. Cerco la sezione di aiuto con id: '${sectionId}'`);
 
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     let content = usageSection.outerHTML;
                     let nextElement = usageSection.nextElementSibling;
                     // Aggiungi gli elementi successivi fino alla prossima sezione H3
-                    while (nextElement && nextElement.tagName !== 'H3') {
+                    while (nextElement && nextElement.tagName !== "H3") {
                         content += nextElement.outerHTML;
                         nextElement = nextElement.nextElementSibling;
                     }
@@ -247,8 +247,8 @@ document.addEventListener("DOMContentLoaded", () => {
     helpPanel.addEventListener("click", (event) => {
         if (event.target === helpPanel) hideHelpPanel(); // Chiudi cliccando sullo sfondo
     });
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && !helpPanel.classList.contains('hidden')) hideHelpPanel(); // Chiudi con 'Esc'
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !helpPanel.classList.contains("hidden")) hideHelpPanel(); // Chiudi con 'Esc'
     });
 
     // ---- Esecuzione iniziale ----
