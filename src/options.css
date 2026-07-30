@@ -208,6 +208,20 @@ input[type="checkbox"] {
 }
 
 
+.dev-badge {
+    color: #fff;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #ff9800;
+    border: 1px solid #f57c00;
+    display: inline-block;
+}
+
+.dev-badge.hidden {
+    display: none;
+}
+
 #status-notification {
     color: #fff;
     font-size: 0.8em;

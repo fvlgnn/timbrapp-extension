@@ -438,6 +438,17 @@ unique core purpose.</p>
 <p>🤝</p>
 <p>If you&#39;d like to contribute to the development of TimbrApp Extension,
 please visit the repository on <a href="https://github.com/fvlgnn/timbrapp-extension">GitHub</a>.</p>
+<blockquote>
+<p><strong>Note on <code>manifest.json</code> version</strong>: in the
+source repository, <code>version</code> is always <code>&quot;0.0.0&quot;</code>
+with <code>&quot;version_name&quot;: &quot;dev&quot;</code>. These are placeholders that let
+the extension detect at runtime whether it&#39;s running from source
+(<code>DEBUG_MODE</code>) versus a published release, and show a &quot;DEV&quot;
+badge on the options page. The CI release pipeline overwrites
+<code>version</code> with the real value from the Git tag and removes
+<code>version_name</code> before packaging — the published Chrome Web
+Store build never shows <code>0.0.0</code>.</p>
+</blockquote>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>⚠️</p>
 <p>The TimbrApp Extension extension is provided &quot;as is&quot;, without any
@@ -675,6 +686,18 @@ principale.</p>
 <p>🤝</p>
 <p>Se vuoi contribuire allo sviluppo di TimbrApp Extension, visita il
 repository su <a href="https://github.com/fvlgnn/timbrapp-extension">GitHub</a>.</p>
+<blockquote>
+<p><strong>Nota sulla versione in <code>manifest.json</code></strong>:
+nel repository sorgente, <code>version</code> è sempre
+<code>&quot;0.0.0&quot;</code> con <code>&quot;version_name&quot;: &quot;dev&quot;</code>. Sono
+placeholder che permettono all&#39;estensione di capire a runtime se sta
+girando dai sorgenti (<code>DEBUG_MODE</code>) oppure da una release
+pubblicata, e di mostrare un badge &quot;DEV&quot; nella pagina opzioni. La
+pipeline CI di release sovrascrive <code>version</code> con il valore
+reale preso dal tag Git e rimuove <code>version_name</code> prima di
+pacchettizzare — la build pubblicata sul Chrome Web Store non mostra mai
+<code>0.0.0</code>.</p>
+</blockquote>
 <h3 id="dichiarazione-di-non-responsabilità">Dichiarazione di non
 responsabilità</h3>
 <p>⚠️</p>

@@ -1,6 +1,7 @@
 // ---- CONSTANTS AND CONFIGURATION ----
 
-const DEBUG_MODE = true;
+// In release, la CI scrive la versione reale in manifest.json e rimuove version_name (vedi .github/workflows/main.yml)
+const DEBUG_MODE = chrome.runtime.getManifest().version === "0.0.0";
 
 const NAME_PREFIX = "timbrapp-extension";
 const NOTIFICATION_ID = `${NAME_PREFIX}-main-notification`;

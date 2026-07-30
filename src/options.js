@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     // ---- Funzione di Debug ----
-    const DEBUG_MODE = true;
+    // In release, la CI scrive la versione reale in manifest.json e rimuove version_name (vedi .github/workflows/main.yml)
+    const manifestData = chrome.runtime.getManifest();
+    const DEBUG_MODE = manifestData.version === "0.0.0";
 
     const debugLog = (...args) => {
         if (DEBUG_MODE) console.log("[Options]", ...args);
@@ -15,10 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const key = element.getAttribute("data-i18n-title");
         element.title = chrome.i18n.getMessage(key);
     });
-    const manifestData = chrome.runtime.getManifest();
     const versionElement = document.getElementById("app-version");
     if (versionElement) {
         versionElement.textContent = `v${manifestData.version}`;
+    }
+    const devBadge = document.getElementById("dev-badge");
+    if (devBadge && manifestData.version_name) {
+        devBadge.textContent = manifestData.version_name.toUpperCase();
+        devBadge.classList.remove("hidden");
     }
 
     // ---- Riferimenti agli elementi del DOM ----

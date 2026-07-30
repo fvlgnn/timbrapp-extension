@@ -13,7 +13,6 @@ jobs:
     env:
       ARTIFACT_NAME: "timbrapp-extension"
       CHROME_EXTENSION_ID: "dhpcliknphfdbocmcgfgepbkjmdklbgg"
-      DEBUG_MODE: ${{ github.ref_type == 'tag' && 'false' || 'true' }}
 
     steps:
       - name: Checkout
@@ -24,10 +23,14 @@ jobs:
         id: package
         run: |
           mv src $ARTIFACT_NAME
-          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/background.js
-          sed -i "s/const DEBUG_MODE = .*/const DEBUG_MODE = $DEBUG_MODE;/g" $ARTIFACT_NAME/options.js
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            # Scrive la versione reale (dal tag) in manifest.json e rimuove il placeholder "version_name": "dev"
+            VERSION="${GITHUB_REF_NAME#v}"
+            jq --arg v "$VERSION" '.version = $v | del(.version_name)' $ARTIFACT_NAME/manifest.json > /tmp/manifest.json
+            mv /tmp/manifest.json $ARTIFACT_NAME/manifest.json
+          fi
           cp LICENSE $ARTIFACT_NAME
-          if [ "$DEBUG_MODE" = "false" ]; then
+          if [ "${{ github.ref_type }}" = "tag" ]; then
             echo "Minifying files..."
             curl -sLO https://github.com/tdewolff/minify/releases/download/v2.21.3/minify_linux_amd64.tar.gz
             tar -xzf minify_linux_amd64.tar.gz

@@ -205,6 +205,8 @@ This extension's single purpose is to help users remember to clock in and out fo
 
 If you'd like to contribute to the development of TimbrApp Extension, please visit the repository on [GitHub](https://github.com/fvlgnn/timbrapp-extension).
 
+> **Note on `manifest.json` version**: in the source repository, `version` is always `"0.0.0"` with `"version_name": "dev"`. These are placeholders that let the extension detect at runtime whether it's running from source (`DEBUG_MODE`) versus a published release, and show a "DEV" badge on the options page. The CI release pipeline overwrites `version` with the real value from the Git tag and removes `version_name` before packaging — the published Chrome Web Store build never shows `0.0.0`.
+
 ### Disclaimer
 
 ⚠️
@@ -361,6 +363,8 @@ L'unico scopo di questa estensione è aiutare gli utenti a ricordare di timbrare
 🤝
 
 Se vuoi contribuire allo sviluppo di TimbrApp Extension, visita il repository su [GitHub](https://github.com/fvlgnn/timbrapp-extension).
+
+> **Nota sulla versione in `manifest.json`**: nel repository sorgente, `version` è sempre `"0.0.0"` con `"version_name": "dev"`. Sono placeholder che permettono all'estensione di capire a runtime se sta girando dai sorgenti (`DEBUG_MODE`) oppure da una release pubblicata, e di mostrare un badge "DEV" nella pagina opzioni. La pipeline CI di release sovrascrive `version` con il valore reale preso dal tag Git e rimuove `version_name` prima di pacchettizzare — la build pubblicata sul Chrome Web Store non mostra mai `0.0.0`.
 
 ### Dichiarazione di non responsabilità
 
