@@ -34,9 +34,5 @@ git tag -d "$VERSION"
 echo "Cancellazione remota del tag origin..."
 git push origin --delete "$VERSION"
 
-<<<<<<< HEAD
 echo "Tag $VERSION cancellato. Se collegata una release ricorda di cancellarla sul repository GitHub!"
-=======
-echo "Tag $VERSION cancellato. Se collegata una release ricorda di cancellarla sul repository GitHub! 🚀"
->>>>>>> origin/main
     

@@ -15,11 +15,7 @@ if [ -d "$(pwd)/src" ]; then
 elif [ -d "$(pwd)/../src" ]; then
     SOURCE_DIR="$(pwd)/../"
 else
-<<<<<<< HEAD
     echo "Errore: Nessuna cartella 'src' trovata nella directory corrente o superiore."
-=======
-    echo "❌ Errore: Nessuna cartella 'src' trovata nella directory corrente o superiore."
->>>>>>> origin/main
     exit 1
 fi
 
@@ -34,20 +30,12 @@ case "$OS_NAME" in
         SCAN_DIR=$(echo "$SOURCE_DIR" | sed -e 's|/c/|C:/|' -e 's|/d/|D:/|' -e 's|/e/|E:/|' -e 's|/f/|F:/|' -e 's|/g/|G:/|' -e 's|/h/|H:/|' -e 's|/|\\|g')
         ;;
     *)
-<<<<<<< HEAD
         echo "Errore: Sistema operativo non supportato."
-=======
-        echo "❌ Errore: Sistema operativo non supportato."
->>>>>>> origin/main
         exit 1
         ;;
 esac
 
-<<<<<<< HEAD
 echo "Eseguo Super-Linter in: $SCAN_DIR"
-=======
-echo "✅ Eseguo Super-Linter in: $SCAN_DIR"
->>>>>>> origin/main
 
 # Esegui il linter con i parametri desiderati
 docker run --rm \
