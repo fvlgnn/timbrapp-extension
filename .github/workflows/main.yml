@@ -48,7 +48,15 @@ jobs:
           else
             echo "Skipping minification..."
           fi
-          zip -r $ARTIFACT_NAME.zip $ARTIFACT_NAME
+          # Il nome del file zip include il tag in release, ma la cartella al suo interno resta
+          # sempre "timbrapp-extension" (non cambia nulla per chi lo estrae e carica in Chrome).
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            ZIP_NAME="$ARTIFACT_NAME-${{ github.ref_name }}"
+          else
+            ZIP_NAME="$ARTIFACT_NAME"
+          fi
+          zip -r "$ZIP_NAME.zip" "$ARTIFACT_NAME"
+          echo "zip_name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Release
         id: release
@@ -59,17 +67,17 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: TimbrApp Extension ${{ github.ref_name }}
-          body_path: CHANGELOG.md
+          body_path: .github/RELEASE_NOTES.md
           draft: false
           prerelease: false
           files: |
-            ./${{ env.ARTIFACT_NAME }}.zip
+            ./${{ steps.package.outputs.zip_name }}.zip
 
       - name: Upload on Chrome Web Store
         uses: mnao305/chrome-extension-upload@v5.0.0
         if: startsWith(github.ref, 'refs/tags/v') # Esegui solo se è un tag
         with:
-          file-path: ./${{ env.ARTIFACT_NAME }}.zip
+          file-path: ./${{ steps.package.outputs.zip_name }}.zip
           extension-id: ${{ env.CHROME_EXTENSION_ID }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
