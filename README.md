@@ -379,4 +379,4 @@ L'utente è l'unico responsabile della corretta timbratura della propria presenz
 
 📜
 
-Released under the [MIT License](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/LICENSE) - Copyright (c) 2025 Gianni F. _fvlgnn_
+Released under the [GNU General Public License v3.0](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/LICENSE) - Copyright (C) 2025-2026 Gianni F. _fvlgnn_. See also [NOTICE](https://raw.githubusercontent.com/fvlgnn/timbrapp-extension/main/NOTICE).

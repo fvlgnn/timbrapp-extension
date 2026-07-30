@@ -1,0 +1,29 @@
+TimbrApp Extension
+Copyright (C) 2025-2026 Gianni F. (fvlgnn) <fvlgnn@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program (see the LICENSE file). If not, see
+<https://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------------
+Third-Party Notices
+-------------------------------------------------------------------------------
+
+As of this release, TimbrApp Extension does not bundle any third-party
+source code, libraries, or stylesheets in the published package: it has
+no npm/JavaScript dependencies, and the welcome page (src/README.html) is
+generated locally from README.md with all styling embedded, without
+relying on any externally hosted CSS or fonts.
+
+If third-party code or assets are bundled in a future release, their
+attributions and license terms will be listed in this file.

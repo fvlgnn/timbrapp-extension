@@ -29,7 +29,7 @@ jobs:
             jq --arg v "$VERSION" '.version = $v | del(.version_name)' $ARTIFACT_NAME/manifest.json > /tmp/manifest.json
             mv /tmp/manifest.json $ARTIFACT_NAME/manifest.json
           fi
-          cp LICENSE $ARTIFACT_NAME
+          cp LICENSE NOTICE $ARTIFACT_NAME
           if [ "${{ github.ref_type }}" = "tag" ]; then
             echo "Minifying files..."
             curl -sLO https://github.com/tdewolff/minify/releases/download/v2.21.3/minify_linux_amd64.tar.gz
