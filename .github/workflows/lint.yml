@@ -2,6 +2,8 @@ name: Lint
 
 on:
   push:
+    tags-ignore:
+      - "**" # non eseguire il lint sui tag
   pull_request:
 
 jobs:
