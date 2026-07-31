@@ -2,8 +2,12 @@ name: Lint
 
 on:
   push:
+    # branches: ['**'] per mantenere tutti i branch, escludendo solo i tag.
+    # tags-ignore: ['**'] ignora le push sui tag, ma è necessario dichiarare tutti i branch
+    branches:
+      - "**"
     tags-ignore:
-      - "**" # non eseguire il lint sui tag
+      - "**"
   pull_request:
 
 jobs:
