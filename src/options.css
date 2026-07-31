@@ -1,3 +1,7 @@
+:root {
+    --body-max-width: 640px;
+}
+
 html {
     background-color: #f0f2f5;
 }
@@ -5,11 +9,15 @@ html {
 body {
     font-family: Arial, sans-serif;
     background-color: #fff;
-    max-width: 640px;
+    max-width: var(--body-max-width);
     margin: 20px auto;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     padding: 20px;
+    /* Spazio extra in basso per fare posto al pulsante Salva e al toast di conferma,
+       che sono figli diretti di body (position: absolute rispetto a questo), non del
+       .form-container. */
+    padding-bottom: 60px;
     position: relative;
 }
 
@@ -29,7 +37,7 @@ body {
 
 .form-container {
     max-width: 580px;
-    margin: 20px auto 0 auto;
+    margin: 20px auto 20px auto;
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 6px;
@@ -209,11 +217,12 @@ input[type="checkbox"] {
 }
 
 #saved {
-    /* Ancorato vicino al pulsante Salva flottante (stessa area, stesso angolo del viewport)
-       invece che centrato sullo schermo: la conferma appare accanto all'azione che l'ha generata. */
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
+    /* Stessa altezza del pulsante Salva (bottom: 20px), ma centrato orizzontalmente rispetto
+       a body (non sul pulsante) — left: 50% + translateX(-50%), tecnica standard di centratura
+       indipendente dalla larghezza variabile del testo. */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
     background-color: #28a745;
     border: 1px solid #388e3c;
     color: white;
@@ -227,7 +236,7 @@ input[type="checkbox"] {
     align-items: center;
     gap: 10px;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-50%) translateY(10px);
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
     white-space: nowrap;
     text-align: center;
@@ -235,12 +244,12 @@ input[type="checkbox"] {
 
 #saved.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
 #saved.hidden {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-50%) translateY(10px);
 }
 
 .saved-icon {
@@ -298,7 +307,10 @@ input[type="checkbox"] {
 }
 
 .floating-save-btn {
-    position: fixed;
+    /* Figlio diretto di body (che ha position: relative), tra .app-header e .form-container
+       nel markup, non dentro il form: resta ancorato al contenuto invece che al viewport,
+       ma senza essere annidato dentro il contenitore del form. */
+    position: absolute;
     bottom: 20px;
     right: 20px;
     width: 48px;
